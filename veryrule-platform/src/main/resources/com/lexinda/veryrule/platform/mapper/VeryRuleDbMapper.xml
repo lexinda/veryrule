@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lexinda.veryrule.platform.mapper.VeryRuleDbMapper">
+
+    <update id="createVeryRuleFlow">
+        CREATE TABLE very_rule_flow (
+		  `id` int(5) NOT NULL AUTO_INCREMENT,
+		  `rule_flow_code` varchar(30) NOT NULL DEFAULT '',
+		  `rule_flow_name` varchar(30) NOT NULL DEFAULT '',
+		  `group_name` varchar(30) NOT NULL DEFAULT '',
+		  `parent_rule_flow_code` varchar(30) NOT NULL DEFAULT '',
+		  `rule_flow_desc` text NOT NULL,
+		  `rule_flow_templet_code` varchar(50) NOT NULL DEFAULT '',
+		  `status` tinyint(5) NOT NULL DEFAULT '0',
+		  `version` tinyint(5) NOT NULL DEFAULT '0',
+		  `create_id` varchar(30) NOT NULL DEFAULT '',
+		  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+		  `update_id` varchar(30) NOT NULL DEFAULT '',
+		  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+		  PRIMARY KEY (`id`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    </update>
+    
+    <update id="createVeryRuleElement">
+        CREATE TABLE very_rule_element (
+		  `id` int(5) NOT NULL AUTO_INCREMENT,
+		  `rule_code` varchar(30) NOT NULL DEFAULT '',
+		  `rule_name` varchar(30) NOT NULL DEFAULT '',
+		  `rule_value` varchar(50) NOT NULL DEFAULT '',
+          `rule_key` varchar(50) NOT NULL DEFAULT '',
+		  `rule_condation` varchar(200) NOT NULL DEFAULT '',
+		  `rule_err_msg` varchar(50) NOT NULL DEFAULT '',
+		  `rule_desc` text NOT NULL,
+		  `group_name` varchar(30) NOT NULL DEFAULT '',
+		  `rule_type` tinyint(5) NOT NULL DEFAULT '1',
+		  `version` tinyint(5) NOT NULL DEFAULT '0',
+		  `create_id` varchar(30) NOT NULL DEFAULT '',
+		  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+		  `update_id` varchar(30) NOT NULL DEFAULT '',
+		  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+		  PRIMARY KEY (`id`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    </update>
+    
+    <update id="createVeryRuleFlowTemplet">
+        CREATE TABLE very_rule_flow_templet (
+		  `id` int(5) NOT NULL AUTO_INCREMENT,
+		  `rule_flow_templet_code` varchar(50) NOT NULL DEFAULT '',
+		  `rule_flow_templet` text NOT NULL,
+		  `version` tinyint(5) NOT NULL DEFAULT '0',
+		  `create_id` varchar(30) NOT NULL DEFAULT '',
+		  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+		  `update_id` varchar(30) NOT NULL DEFAULT '',
+		  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+		  PRIMARY KEY (`id`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    </update>
+    
+    <update id="createVeryRuleFlowTempletLog">
+        CREATE TABLE very_rule_flow_templet_log (
+		  `id` int(5) NOT NULL AUTO_INCREMENT,
+		  `rule_flow_templet_code` varchar(50) NOT NULL DEFAULT '',
+		  `rule_flow_templet` text NOT NULL,
+		  `version` tinyint(5) NOT NULL DEFAULT '0',
+		  `create_id` varchar(30) NOT NULL DEFAULT '',
+		  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+		  `update_id` varchar(30) NOT NULL DEFAULT '',
+		  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+		  PRIMARY KEY (`id`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    </update>
+</mapper>
