@@ -2,10 +2,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	
 	<parent>
-		<groupId>com.lexinda</groupId>
+		<groupId>io.github.lexinda</groupId>
 		<artifactId>veryrule</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>${veryrule.version}</version>
 	</parent>
 	<artifactId>veryrule-platform</artifactId>
 	<packaging>jar</packaging>
@@ -14,43 +15,47 @@
 	<url>http://maven.apache.org</url>
 
 	<properties>
+		<spring.boot.version>2.5.3</spring.boot.version>
+		<mysql.version>8.0.28</mysql.version>
+		<mybatisplus.version>3.5.1</mybatisplus.version>
+		<fastjson.version>1.2.79</fastjson.version>
+		<commonslang3.version>3.12.0</commonslang3.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
-			<groupId>com.lexinda</groupId>
+			<groupId>io.github.lexinda</groupId>
 			<artifactId>veryrule-spring</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.baomidou</groupId>
 			<artifactId>mybatis-plus-boot-starter</artifactId>
-			<version>3.5.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot</artifactId>
-			<version>2.5.3</version>
+			<version>${mybatisplus.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<version>2.5.3</version>
+			<version>${spring.boot.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.28</version>
+			<version>${mysql.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
-			<version>1.2.79</version>
+			<version>${fastjson.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.12.0</version>
+			<version>${commonslang3.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<build>

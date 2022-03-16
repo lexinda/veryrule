@@ -33,11 +33,9 @@ public class VeryRule extends RuleEngine {
 
 	/**
 	 * 
-	 * @param <K>
-	 * @param <V>
 	 * @param <R>
 	 * @param param        入参
-	 * @param ruleElement 需要执行的规则
+	 * @param rule 需要执行的规则
 	 * @return
 	 * @throws Exception
 	 */
@@ -47,11 +45,9 @@ public class VeryRule extends RuleEngine {
 	
 	/**
 	 * 
-	 * @param <K>
-	 * @param <V>
 	 * @param <R>
 	 * @param param        入参
-	 * @param ruleElements 需要执行的规则
+	 * @param rules 需要执行的规则
 	 * @return
 	 * @throws Exception
 	 */
@@ -61,11 +57,8 @@ public class VeryRule extends RuleEngine {
 	
 	/**
 	 * 
-	 * @param <K>
-	 * @param <V>
 	 * @param <R>
-	 * @param param        入参
-	 * @param ruleElement 需要执行的规则
+	 * @param rules 需要执行的规则
 	 * @return
 	 * @throws Exception
 	 */
@@ -75,12 +68,10 @@ public class VeryRule extends RuleEngine {
 	
 	/**
 	 * 
-	 * @param <K>
-	 * @param <V>
 	 * @param <R>
-	 * @param param 入参
+	 * @param isTest 是否测试
 	 * @param condation 前置条件
-	 * @param ruleElements 需要执行的规则
+	 * @param rules 需要执行的规则
 	 * @return
 	 * @throws Exception
 	 */

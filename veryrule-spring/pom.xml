@@ -3,9 +3,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.lexinda</groupId>
+		<groupId>io.github.lexinda</groupId>
 		<artifactId>veryrule</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>${veryrule.version}</version>
 	</parent>
 	<artifactId>veryrule-spring</artifactId>
 	<packaging>jar</packaging>
@@ -16,11 +16,14 @@
 	<properties>
 		<spring.version>5.3.16</spring.version>
 		<aspectj.version>1.9.8</aspectj.version>
-		<veryrule.version>0.0.1-SNAPSHOT</veryrule.version>
 		<spring.boot.version>2.5.3</spring.boot.version>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>io.github.lexinda</groupId>
+			<artifactId>veryrule-core</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
@@ -47,9 +50,9 @@
 			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.lexinda</groupId>
-			<artifactId>veryrule-core</artifactId>
-			<version>${veryrule.version}</version>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<build>
