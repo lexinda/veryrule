@@ -1,14 +1,13 @@
 package com.lexinda.veryrule.platform.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 /**
-* @author zhumengle
-* @version 创建时间：2022-3-9 15:11:30
-* 类说明
-*/
+ * 
+ * @author lexinda
+ *
+ */
 public class VeryRuleElementMenuModel extends VeryRuleElementModel {
 
 	private List<VeryRuleElementMenuModel> children;

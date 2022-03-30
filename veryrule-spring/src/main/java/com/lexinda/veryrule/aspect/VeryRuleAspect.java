@@ -21,10 +21,10 @@ import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.vo.RestApiResponse;
 
 /**
-* @author zhumengle
-* @version 创建时间：2022-3-4 9:30:19
-* 类说明
-*/
+ * 
+ * @author lexinda
+ *
+ */
 @Component
 @Aspect
 public class VeryRuleAspect {

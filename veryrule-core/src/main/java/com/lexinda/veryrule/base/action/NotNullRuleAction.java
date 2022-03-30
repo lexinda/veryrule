@@ -2,7 +2,7 @@ package com.lexinda.veryrule.base.action;
 
 /**
  * 
- * @author zhumengle
+ * @author lexinda
  *
  */
 

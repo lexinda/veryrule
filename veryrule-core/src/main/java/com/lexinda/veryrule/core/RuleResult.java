@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
-* @author zhumengle
-* @version 创建时间：2022-2-23 11:10:41
-* 类说明
-*/
+ * 
+ * @author lexinda
+ *
+ */
 public class RuleResult{
 	
 	private Map<String,Object> result = new HashMap<String,Object>();

@@ -4,13 +4,11 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import com.lexinda.veryrule.VeryRule;
-
 /**
-* @author zhumengle
-* @version 创建时间：2022-3-14 9:31:44
-* 类说明
-*/
+ * 
+ * @author lexinda
+ *
+ */
 public class RuleProxyHandler implements InvocationHandler {
 	
 	Object target;

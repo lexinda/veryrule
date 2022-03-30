@@ -3,10 +3,10 @@ package com.lexinda.veryrule.platform.model;
 import java.util.Date;
 
 /**
-* @author zhumengle
-* @version 创建时间：2022-3-1 15:46:32
-* 类说明
-*/
+ * 
+ * @author lexinda
+ *
+ */
 public class VeryRuleFlowTempletModel{
 	private Integer id;
 	private String ruleFlowTempletCode;

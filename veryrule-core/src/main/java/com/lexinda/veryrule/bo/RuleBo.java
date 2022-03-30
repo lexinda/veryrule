@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * 
- * @author zhumengle
+ * @author lexinda
  *
  */
 public class RuleBo {

@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.lexinda.veryrule.platform.service.mybatis.VeryRuleDbMbService;
 
 /**
-* @author zhumengle
-* @version 创建时间：2022-3-1 16:17:30
-* 类说明
-*/
+ * 
+ * @author lexinda
+ *
+ */
 @RestController
 @RequestMapping("/veryrule")
 public class VeryRuleDbController {

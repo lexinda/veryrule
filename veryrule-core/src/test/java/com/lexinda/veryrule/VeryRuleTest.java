@@ -17,7 +17,7 @@ import com.lexinda.veryrule.common.RuleCode;
 
 /**
  * 
- * @author zhumengle
+ * @author lexinda
  *
  */
 public class VeryRuleTest {
@@ -25,7 +25,7 @@ public class VeryRuleTest {
 
 	@Before
 	public void setUp() throws Exception {
-		veryRuleFactory = VeryRule.builder().condation(RegexRuleCondation.class).action(NotNullRuleAction.class).listener(TestRuleListener.class).build();
+		veryRuleFactory = VeryRule.builder().condation(RegexRuleCondation.class).action(NotNullRuleAction.class).listener(TestRuleListener.class);
 	}
 
 	@Test

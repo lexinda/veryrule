@@ -12,10 +12,10 @@ import com.lexinda.veryrule.platform.service.mybatis.VeryRuleFlowTempletLogMbSer
 import com.lexinda.veryrule.platform.service.mybatis.VeryRuleFlowTempletMbService;
 
 /**
-* @author zhumengle
-* @version 创建时间：2022-3-8 18:56:27
-* 类说明
-*/
+ * 
+ * @author lexinda
+ *
+ */
 @Service
 public class VeryRuleFlowTempletService{
 

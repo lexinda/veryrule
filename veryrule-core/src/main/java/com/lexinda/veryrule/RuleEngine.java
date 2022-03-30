@@ -1,5 +1,9 @@
 package com.lexinda.veryrule;
-
+/**
+ * 
+ * @author lexinda
+ *
+ */
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;
@@ -39,39 +43,6 @@ public class RuleEngine<R extends RuleBo> {
 		invoke.doRuleAction(param, ruleActions,this.ruleListener,isTest);
 		invoke.doRuleResultAction(param, ruleResultActions,this.ruleListener,isTest);
 		return invoke.getRuleResult();
-	}
-	
-	public void action(Class<? extends IRuleAction> clazz) throws Exception {
-		if (clazz.isAnnotationPresent(Rule.class)) {
-			Rule rule = clazz.getAnnotation(Rule.class);
-			if (ruleActionMap.get(rule.code()) == null) {
-				ruleActionMap.put(rule.code(), clazz.getDeclaredConstructor().newInstance());
-			}
-		} else {
-			throw new Exception(clazz.getName() + " is not annotation present rule ");
-		}
-	}
-	
-	public void resultAction(Class<? extends IRuleResultAction> clazz) throws Exception {
-		if (clazz.isAnnotationPresent(Rule.class)) {
-			Rule rule = clazz.getAnnotation(Rule.class);
-			if (ruleResultActionMap.get(rule.code()) == null) {
-				ruleResultActionMap.put(rule.code(), clazz.getDeclaredConstructor().newInstance());
-			}
-		} else {
-			throw new Exception(clazz.getName() + " is not annotation present rule ");
-		}
-	}
-
-	public void condation(Class<? extends IRuleCondation> clazz) throws Exception {
-		if (clazz.isAnnotationPresent(Rule.class)) {
-			Rule rule = clazz.getAnnotation(Rule.class);
-			if (ruleCondationMap.get(rule.code()) == null) {
-				ruleCondationMap.put(rule.code(), clazz.getDeclaredConstructor().newInstance());
-			}
-		} else {
-			throw new Exception(clazz.getName() + " is not annotation present rule ");
-		}
 	}
 	
 	public Map<String, IRuleAction> getRuleActionMap() {

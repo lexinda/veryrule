@@ -2,7 +2,7 @@ package com.lexinda.veryrule.common;
 
 /**
  * 
- * @author zhumengle
+ * @author lexinda
  *
  */
 public class RuleCode {

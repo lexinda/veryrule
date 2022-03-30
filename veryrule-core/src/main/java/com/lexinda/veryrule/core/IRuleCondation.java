@@ -2,7 +2,7 @@ package com.lexinda.veryrule.core;
 
 /**
  * 
- * @author zhumengle
+ * @author lexinda
  *
  */
 import java.util.Map;

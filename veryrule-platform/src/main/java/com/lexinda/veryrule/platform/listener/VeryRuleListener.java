@@ -7,8 +7,9 @@ import com.alibaba.fastjson.JSON;
 import com.lexinda.veryrule.core.IRuleListener;
 
 /**
- * @author zhumengle
- * @version 创建时间：2022-3-14 10:49:16 类说明
+ * 
+ * @author lexinda
+ *
  */
 public class VeryRuleListener implements IRuleListener {
 	private static final Logger logger = LoggerFactory.getLogger(VeryRuleListener.class);

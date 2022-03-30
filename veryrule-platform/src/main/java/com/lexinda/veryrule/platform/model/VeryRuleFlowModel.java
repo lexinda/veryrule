@@ -5,10 +5,10 @@ import java.util.Date;
 import com.lexinda.veryrule.bo.VeryRuleFlowBo;
 
 /**
-* @author zhumengle
-* @version 创建时间：2022-3-1 15:46:32
-* 类说明
-*/
+ * 
+ * @author lexinda
+ *
+ */
 public class VeryRuleFlowModel extends VeryRuleFlowBo{
 	private Integer id;
 	private String ruleFlowDesc;

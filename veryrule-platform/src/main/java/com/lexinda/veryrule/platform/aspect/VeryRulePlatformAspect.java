@@ -16,10 +16,10 @@ import com.lexinda.veryrule.platform.model.VeryRuleFlowTempletModel;
 import com.lexinda.veryrule.platform.service.mybatis.VeryRuleFlowTempletMbService;
 
 /**
-* @author zhumengle
-* @version 创建时间：2022-3-4 14:37:31
-* 类说明
-*/
+ * 
+ * @author lexinda
+ *
+ */
 public class VeryRulePlatformAspect extends VeryRuleAspect{
 
 	@Autowired

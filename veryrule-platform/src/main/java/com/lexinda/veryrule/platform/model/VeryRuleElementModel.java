@@ -7,10 +7,10 @@ import java.util.Date;
 import com.lexinda.veryrule.bo.RuleBo;
 
 /**
-* @author zhumengle
-* @version 创建时间：2022-3-1 15:46:32
-* 类说明
-*/
+ * 
+ * @author lexinda
+ *
+ */
 public class VeryRuleElementModel extends RuleBo{
 	private Integer id;
 	private String ruleName;

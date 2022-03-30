@@ -1,5 +1,11 @@
 package com.lexinda.veryrule.spring;
 
+/**
+ * 
+ * @author lexinda
+ *
+ */
+
 import java.lang.annotation.Annotation;
 
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;

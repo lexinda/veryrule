@@ -2,7 +2,7 @@ package com.lexinda.veryrule.annotation;
 
 /**
  * 
- * @author zhumengle
+ * @author lexinda
  *
  */
 import java.lang.annotation.Documented;

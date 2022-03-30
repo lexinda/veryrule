@@ -2,7 +2,7 @@ package com.lexinda.veryrule.basetest.condation;
 
 /**
  * 
- * @author zhumengle
+ * @author lexinda
  *
  */
 import java.util.Map;

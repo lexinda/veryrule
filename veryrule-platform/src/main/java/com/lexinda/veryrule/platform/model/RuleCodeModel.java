@@ -1,10 +1,10 @@
 package com.lexinda.veryrule.platform.model;
 
 /**
-* @author zhumengle
-* @version 创建时间：2022-3-3 15:17:25
-* 类说明
-*/
+ * 
+ * @author lexinda
+ *
+ */
 
 import com.lexinda.veryrule.common.RuleCode;
 

@@ -27,8 +27,9 @@ import com.lexinda.veryrule.platform.service.mybatis.VeryRuleElementMbService;
 import com.lexinda.veryrule.vo.RestApiResponse;
 
 /**
- * @author zhumengle
- * @version 创建时间：2022-3-1 16:01:41 类说明
+ * 
+ * @author lexinda
+ *
  */
 @RestController
 @RequestMapping("/veryrule")

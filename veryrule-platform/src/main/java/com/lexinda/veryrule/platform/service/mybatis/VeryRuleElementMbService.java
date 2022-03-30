@@ -12,10 +12,10 @@ import com.lexinda.veryrule.platform.mapper.VeryRuleElementMapper;
 import com.lexinda.veryrule.platform.model.VeryRuleElementModel;
 
 /**
-* @author zhumengle
-* @version 创建时间：2022-3-1 15:50:40
-* 类说明
-*/
+ * 
+ * @author lexinda
+ *
+ */
 @Service
 public class VeryRuleElementMbService extends ServiceImpl<VeryRuleElementMapper, VeryRuleElementModel>{
     public Page<VeryRuleElementModel> selectVeryRuleElementList(Page<VeryRuleElementModel> page,Map<String, Object> param) {

@@ -1,7 +1,10 @@
 package com.lexinda.veryrule.springboot;
-
+/**
+ * 
+ * @author lexinda
+ *
+ */
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 /**
 * @author zhumengle

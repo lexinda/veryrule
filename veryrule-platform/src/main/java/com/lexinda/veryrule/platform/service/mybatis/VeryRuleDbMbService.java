@@ -7,10 +7,10 @@ import com.lexinda.veryrule.platform.mapper.VeryRuleDbMapper;
 import com.lexinda.veryrule.platform.model.VeryRuleFlowModel;
 
 /**
-* @author zhumengle
-* @version 创建时间：2022-3-1 15:50:40
-* 类说明
-*/
+ * 
+ * @author lexinda
+ *
+ */
 @Service
 public class VeryRuleDbMbService extends ServiceImpl<VeryRuleDbMapper, VeryRuleFlowModel>{
     public void createVeryRuleFlow() {

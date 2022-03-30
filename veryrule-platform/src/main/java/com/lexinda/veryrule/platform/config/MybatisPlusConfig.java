@@ -9,10 +9,10 @@ import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 
 /**
-* @author zhumengle
-* @version 创建时间：2022-3-1 15:49:59
-* 类说明
-*/
+ * 
+ * @author lexinda
+ *
+ */
 @EnableTransactionManagement
 @Configuration
 public class MybatisPlusConfig {

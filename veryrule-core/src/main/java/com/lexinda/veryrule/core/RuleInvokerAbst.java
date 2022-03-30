@@ -1,9 +1,9 @@
 package com.lexinda.veryrule.core;
 /**
-* @author zhumengle
-* @version 创建时间：2022-2-23 11:32:18
-* 类说明
-*/
+ * 
+ * @author lexinda
+ *
+ */
 
 import java.util.List;
 import java.util.Map;

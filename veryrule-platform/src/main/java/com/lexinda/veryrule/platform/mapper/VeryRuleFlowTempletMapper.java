@@ -11,10 +11,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lexinda.veryrule.platform.model.VeryRuleFlowTempletModel;
 
 /**
-* @author zhumengle
-* @version 创建时间：2022-3-1 15:46:00
-* 类说明
-*/
+ * 
+ * @author lexinda
+ *
+ */
 
 @Mapper
 public interface VeryRuleFlowTempletMapper extends BaseMapper<VeryRuleFlowTempletModel> {

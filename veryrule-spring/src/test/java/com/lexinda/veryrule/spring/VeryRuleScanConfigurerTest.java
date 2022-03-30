@@ -1,5 +1,9 @@
 package com.lexinda.veryrule.spring;
-
+/**
+ * 
+ * @author lexinda
+ *
+ */
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
