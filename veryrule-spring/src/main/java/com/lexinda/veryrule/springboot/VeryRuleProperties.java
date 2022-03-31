@@ -6,18 +6,28 @@ package com.lexinda.veryrule.springboot;
  */
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/**
-* @author zhumengle
-* @version 创建时间：2022-3-2 13:51:01
-* 类说明
-*/
 @ConfigurationProperties(prefix = VeryRuleProperties.VERY_RULE_PREFIX)
 public class VeryRuleProperties {
 	public static final String VERY_RULE_PREFIX="veryrule";
+	/**
+	 * 加载默认规则
+	 */
 	private boolean loadDefaultRule;
+	/**
+	 * 待读取规则路径
+	 */
 	private String rulePackage;
+	/**
+	 * 使用规则切面
+	 */
 	private boolean useAspect;
+	/**
+	 * 规则切面实现
+	 */
 	private String aspectBean;
+	/**
+	 * 规则监听实现
+	 */
 	private String listenerBean;
 	public boolean isLoadDefaultRule() {
 		return loadDefaultRule;

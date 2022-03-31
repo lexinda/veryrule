@@ -21,11 +21,11 @@ import com.lexinda.veryrule.common.RuleCode;
  *
  */
 public class VeryRuleTest {
-	VeryRule veryRuleFactory = null;
+	VeryRule veryRule = null;
 
 	@Before
 	public void setUp() throws Exception {
-		veryRuleFactory = VeryRule.builder().condation(RegexRuleCondation.class).action(NotNullRuleAction.class).listener(TestRuleListener.class);
+		veryRule = VeryRule.builder().condation(RegexRuleCondation.class).action(NotNullRuleAction.class).listener(TestRuleListener.class);
 	}
 
 	@Test
@@ -40,7 +40,7 @@ public class VeryRuleTest {
 		try {
 //			RuleResult RuleResult = veryRuleFactory.fireTest(param, re);
 //			System.out.println(RuleResult);
-			veryRuleFactory.fire(param, res);
+			veryRule.fire(param, res);
 //			veryRuleFactory.fire(param, nn);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

@@ -67,18 +67,18 @@ public class VeryRuleAutoConfiguration implements BeanPostProcessor, Application
 		if (veryRuleProperties.isLoadDefaultRule()) {
 			veryRuleClassPathDefinitionScanner.scan("com.lexinda.veryrule.base");
 		}
-		VeryRule.Builder builder = VeryRule.builder();
+		VeryRule veryRule = VeryRule.builder();
 		Map<String, Object> ruleBeanMap = context.getBeansWithAnnotation(Rule.class);
 		ruleBeanMap.entrySet().forEach(bean -> {
 			try {
 				if (bean.getValue() instanceof IRuleCondation) {
-					builder.condation(((IRuleCondation) bean.getValue()).getClass());
+					veryRule.condation(((IRuleCondation) bean.getValue()).getClass());
 				}
 				if (bean.getValue() instanceof IRuleAction) {
-					builder.action(((IRuleAction) bean.getValue()).getClass());
+					veryRule.action(((IRuleAction) bean.getValue()).getClass());
 				}
 				if (bean.getValue() instanceof IRuleResultAction) {
-					builder.resultAction(((IRuleResultAction) bean.getValue()).getClass());
+					veryRule.resultAction(((IRuleResultAction) bean.getValue()).getClass());
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -90,7 +90,7 @@ public class VeryRuleAutoConfiguration implements BeanPostProcessor, Application
 			Class<IRuleListener> listener;
 			try {
 				listener = (Class<IRuleListener>) classLoader.loadClass(veryRuleProperties.getListenerBean());
-				builder.listener(listener);
+				veryRule.listener(listener);
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -101,10 +101,10 @@ public class VeryRuleAutoConfiguration implements BeanPostProcessor, Application
 		}
 		// 通过BeanDefinitionBuilder创建bean定义
 		BeanDefinitionBuilder veryruleDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(VeryRule.class);
-		veryruleDefinitionBuilder.addPropertyValue("ruleCondationMap", builder.getRuleCondationMap());
-		veryruleDefinitionBuilder.addPropertyValue("ruleActionMap", builder.getRuleActionMap());
-		veryruleDefinitionBuilder.addPropertyValue("ruleResultActionMap", builder.getRuleResultActionMap());
-		veryruleDefinitionBuilder.addPropertyValue("ruleListener", builder.getRuleListener());
+		veryruleDefinitionBuilder.addPropertyValue("ruleCondationMap", veryRule.getRuleCondationMap());
+		veryruleDefinitionBuilder.addPropertyValue("ruleActionMap", veryRule.getRuleActionMap());
+		veryruleDefinitionBuilder.addPropertyValue("ruleResultActionMap", veryRule.getRuleResultActionMap());
+		veryruleDefinitionBuilder.addPropertyValue("ruleListener", veryRule.getRuleListener());
 		
 		// 注册bean
 		context.registerBeanDefinition("veryrule", veryruleDefinitionBuilder.getRawBeanDefinition());
