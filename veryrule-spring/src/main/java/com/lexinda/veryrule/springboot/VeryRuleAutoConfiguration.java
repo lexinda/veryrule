@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -105,6 +106,7 @@ public class VeryRuleAutoConfiguration implements BeanPostProcessor, Application
 		veryruleDefinitionBuilder.addPropertyValue("ruleActionMap", veryRule.getRuleActionMap());
 		veryruleDefinitionBuilder.addPropertyValue("ruleResultActionMap", veryRule.getRuleResultActionMap());
 		veryruleDefinitionBuilder.addPropertyValue("ruleListener", veryRule.getRuleListener());
+		veryruleDefinitionBuilder.setScope(BeanDefinition.SCOPE_SINGLETON);
 		
 		// 注册bean
 		context.registerBeanDefinition("veryrule", veryruleDefinitionBuilder.getRawBeanDefinition());

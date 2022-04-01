@@ -1,4 +1,5 @@
 package com.lexinda.veryrule;
+import java.io.File;
 /**
  * 
  * @author lexinda
@@ -43,6 +44,32 @@ public class RuleEngine<R extends RuleBo> {
 		invoke.doRuleAction(param, ruleActions,this.ruleListener,isTest);
 		invoke.doRuleResultAction(param, ruleResultActions,this.ruleListener,isTest);
 		return invoke.getRuleResult();
+	}
+	
+	public static String getClassByPath(String path,List<Class<?>> classList) throws ClassNotFoundException {
+		if(path!=null) {
+			File file = new File(path);
+			if(file.isDirectory()&&file.listFiles().length>0) {
+				for(File childFile:file.listFiles()) {
+					if(childFile.isDirectory()&&file.listFiles().length>0) {
+						return getClassByPath(childFile.getAbsolutePath(), classList);
+					}else {
+						String childFilePath = childFile.getPath();
+						if (childFilePath.endsWith(".class")) { 
+							if(childFilePath.contains("test-classes")) {
+								childFilePath = childFilePath.substring(childFilePath.indexOf("\\test-classes") + 14, childFilePath.lastIndexOf(".")); 
+							}else {
+								childFilePath = childFilePath.substring(childFilePath.indexOf("\\classes") + 9, childFilePath.lastIndexOf(".")); 
+							}
+							
+							childFilePath = childFilePath.replace("\\", ".");
+							classList.add(Class.forName(childFilePath));
+		                } 
+					}
+				}
+			}
+		}
+		return path;
 	}
 	
 	public Map<String, IRuleAction> getRuleActionMap() {

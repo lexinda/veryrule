@@ -9,6 +9,7 @@ package com.lexinda.veryrule.spring;
 import java.util.Map;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -102,6 +103,7 @@ public class VeryRuleScanConfigurer implements ApplicationContextAware {
 		veryruleDefinitionBuilder.addPropertyValue("ruleActionMap", veryRule.getRuleActionMap());
 		veryruleDefinitionBuilder.addPropertyValue("ruleResultActionMap", veryRule.getRuleResultActionMap());
 		veryruleDefinitionBuilder.addPropertyValue("ruleListener", veryRule.getRuleListener());
+		veryruleDefinitionBuilder.setScope(BeanDefinition.SCOPE_SINGLETON);
 		// 注册bean
 		context.registerBeanDefinition("veryrule", veryruleDefinitionBuilder.getRawBeanDefinition());
 	}

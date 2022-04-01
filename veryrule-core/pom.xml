@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.github.lexinda</groupId>
 		<artifactId>veryrule</artifactId>
-		<version>${veryrule.version}</version>
+		<version>1.2.0-RELEASE</version>
 	</parent>
 	<artifactId>veryrule-core</artifactId>
 	<packaging>jar</packaging>

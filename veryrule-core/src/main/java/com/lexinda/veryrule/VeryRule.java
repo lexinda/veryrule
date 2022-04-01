@@ -1,7 +1,12 @@
 package com.lexinda.veryrule;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -11,6 +16,7 @@ import java.util.Set;
 
 import com.lexinda.veryrule.annotation.Rule;
 import com.lexinda.veryrule.bo.RuleBo;
+import com.lexinda.veryrule.common.RuleType;
 import com.lexinda.veryrule.core.IRuleAction;
 import com.lexinda.veryrule.core.IRuleCondation;
 import com.lexinda.veryrule.core.IRuleListener;
@@ -38,12 +44,6 @@ public class VeryRule extends RuleEngine {
 		return builder;
 	}
 	
-	private static void init() {
-		builder.ruleActionMap = new HashMap<String, IRuleAction>();
-		builder.ruleResultActionMap = new HashMap<String, IRuleResultAction>();
-		builder.ruleCondationMap = new HashMap<String, IRuleCondation>();
-	}
-
 	/**
 	 * 
 	 * @param <R>
@@ -137,12 +137,12 @@ public class VeryRule extends RuleEngine {
 		} else {
 			throw new Exception(clazz.getName() + " is not annotation present rule ");
 		}
-		return builder();
+		return builder;
 	}
 
 	public VeryRule listener(Class<? extends IRuleListener> clazz) throws Exception {
 		this.ruleListener = clazz.getDeclaredConstructor().newInstance();
-		return builder();
+		return builder;
 	}
 
 	public VeryRule resultAction(Class<? extends IRuleResultAction> clazz) throws Exception {
@@ -154,7 +154,7 @@ public class VeryRule extends RuleEngine {
 		} else {
 			throw new Exception(clazz.getName() + " is not annotation present rule ");
 		}
-		return builder();
+		return builder;
 	}
 
 	public VeryRule condation(Class<? extends IRuleCondation> clazz) throws Exception {
@@ -166,7 +166,67 @@ public class VeryRule extends RuleEngine {
 		} else {
 			throw new Exception(clazz.getName() + " is not annotation present rule ");
 		}
-		return builder();
+		return builder;
 	}
-
+	
+	public VeryRule rulePackage(String rulePackage) throws Exception {
+		if(!"".equals(rulePackage)&&rulePackage!=null) {
+			String path = rulePackage.replace(".", "/");
+			Enumeration<URL> urls =Thread.currentThread().getContextClassLoader().getResources(path);
+			List<Class<?>> classList = new ArrayList<Class<?>>();
+			while(urls.hasMoreElements()) {
+				URL url= urls.nextElement();
+				String protol = url.getProtocol();
+				if("file".equals(protol)) {
+					String pathStr = URLDecoder.decode(url.getFile(),"UTF-8");
+					getClassByPath(pathStr,classList);
+				}
+			}
+			if(classList.size()==0) {
+				throw new Exception(" this rulePackage have no ruleClass ");
+			}
+			classList.stream().forEach(clazz->{
+				if (clazz.isAnnotationPresent(Rule.class)) {
+					Rule rule = clazz.getAnnotation(Rule.class);
+					if(RuleType.CONDATION.equals(rule.type())) {
+						try {
+							builder.condation((Class<? extends IRuleCondation>) clazz);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}else if(RuleType.ACTION.equals(rule.type())) {
+						try {
+							builder.action((Class<? extends IRuleAction>) clazz);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}else if(RuleType.RESULT_ACTION.equals(rule.type())) {
+						try {
+							builder.resultAction((Class<? extends IRuleResultAction>) clazz);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}else {
+						try {
+							builder.action((Class<? extends IRuleAction>) clazz);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+			});
+		}
+		return builder;
+	}
+	
+	private static void init() {
+		builder.ruleActionMap = new HashMap<String, IRuleAction>();
+		builder.ruleResultActionMap = new HashMap<String, IRuleResultAction>();
+		builder.ruleCondationMap = new HashMap<String, IRuleCondation>();
+	}
+	
 }
