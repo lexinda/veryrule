@@ -1,7 +1,5 @@
 package com.lexinda.veryrule;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -42,6 +40,30 @@ public class VeryRule extends RuleEngine {
 			}
 		}
 		return builder;
+	}
+	
+	public boolean isEmpty() {
+		if(builder.ruleActionMap.isEmpty()&&builder.ruleResultActionMap.isEmpty()&&builder.ruleCondationMap.isEmpty()) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	public boolean isInit() {
+		if(actionInit||resultActionInit||condationInit) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	public Map<String,Class<?>> allRule() {
+		Map<String,Class<?>> allRule = new HashMap<String,Class<?>>();
+		allRule.putAll(builder.ruleActionMap);
+		allRule.putAll(builder.ruleResultActionMap);
+		allRule.putAll(builder.ruleCondationMap);
+		return allRule;
 	}
 	
 	/**
@@ -102,7 +124,7 @@ public class VeryRule extends RuleEngine {
 				}
 			});
 			rules.stream().forEach(rule -> {
-				IRuleAction ruleAction = (IRuleAction) this.ruleActionMap.get(rule.getRuleCode());
+				IRuleAction ruleAction = (IRuleAction) builder.ruleActionMap.get(rule.getRuleCode());
 				if (ruleAction != null) {
 					ruleActions.put(rule, ruleAction);
 					List<String> condationAnnotations = getCondationList(ruleAction.getClass());
@@ -110,7 +132,7 @@ public class VeryRule extends RuleEngine {
 						condationAnnotationList.addAll(condationAnnotations);
 					}
 				}
-				IRuleResultAction ruleResultAction = (IRuleResultAction) this.ruleResultActionMap
+				IRuleResultAction ruleResultAction = (IRuleResultAction) builder.ruleResultActionMap
 						.get(rule.getRuleCode());
 				if (ruleResultAction != null) {
 					ruleResultActions.put(rule, ruleResultAction);
@@ -121,7 +143,7 @@ public class VeryRule extends RuleEngine {
 				}
 			});
 			condationAnnotationList.stream().filter(condation -> condation != null && !"".equals(condation))
-					.forEach(condation -> ruleCondations.add((IRuleCondation) this.ruleCondationMap.get(condation)));
+					.forEach(condation -> ruleCondations.add((IRuleCondation) builder.ruleCondationMap.get(condation)));
 			return getResult(param, ruleCondations, ruleActions, ruleResultActions, isTest);
 		} else {
 			return null;
@@ -131,41 +153,39 @@ public class VeryRule extends RuleEngine {
 	public VeryRule action(Class<? extends IRuleAction> clazz) throws Exception {
 		if (clazz.isAnnotationPresent(Rule.class)) {
 			Rule rule = clazz.getAnnotation(Rule.class);
-			if (this.ruleActionMap.get(rule.code()) == null) {
-				this.ruleActionMap.put(rule.code(), clazz.getDeclaredConstructor().newInstance());
+			if (builder.ruleActionMap.get(rule.code()) == null) {
+				builder.ruleActionMap.put(rule.code(), clazz.getDeclaredConstructor().newInstance());
 			}
 		} else {
 			throw new Exception(clazz.getName() + " is not annotation present rule ");
 		}
+		actionInit = true;
 		return builder;
 	}
-
-	public VeryRule listener(Class<? extends IRuleListener> clazz) throws Exception {
-		this.ruleListener = clazz.getDeclaredConstructor().newInstance();
-		return builder;
-	}
-
+	
 	public VeryRule resultAction(Class<? extends IRuleResultAction> clazz) throws Exception {
 		if (clazz.isAnnotationPresent(Rule.class)) {
 			Rule rule = clazz.getAnnotation(Rule.class);
-			if (this.ruleResultActionMap.get(rule.code()) == null) {
-				this.ruleResultActionMap.put(rule.code(), clazz.getDeclaredConstructor().newInstance());
+			if (builder.ruleResultActionMap.get(rule.code()) == null) {
+				builder.ruleResultActionMap.put(rule.code(), clazz.getDeclaredConstructor().newInstance());
 			}
 		} else {
 			throw new Exception(clazz.getName() + " is not annotation present rule ");
 		}
+		resultActionInit = true;
 		return builder;
 	}
 
 	public VeryRule condation(Class<? extends IRuleCondation> clazz) throws Exception {
 		if (clazz.isAnnotationPresent(Rule.class)) {
 			Rule rule = clazz.getAnnotation(Rule.class);
-			if (this.ruleCondationMap.get(rule.code()) == null) {
-				this.ruleCondationMap.put(rule.code(), clazz.getDeclaredConstructor().newInstance());
+			if (builder.ruleCondationMap.get(rule.code()) == null) {
+				builder.ruleCondationMap.put(rule.code(), clazz.getDeclaredConstructor().newInstance());
 			}
 		} else {
 			throw new Exception(clazz.getName() + " is not annotation present rule ");
 		}
+		condationInit = true;
 		return builder;
 	}
 	
@@ -183,7 +203,7 @@ public class VeryRule extends RuleEngine {
 				}
 			}
 			if(classList.size()==0) {
-				throw new Exception(" this rulePackage have no ruleClass ");
+				throw new Exception(" builder rulePackage have no ruleClass ");
 			}
 			classList.stream().forEach(clazz->{
 				if (clazz.isAnnotationPresent(Rule.class)) {
@@ -220,6 +240,14 @@ public class VeryRule extends RuleEngine {
 				}
 			});
 		}
+		actionInit = true;
+		resultActionInit = true;
+		condationInit = true;
+		return builder;
+	}
+	
+	public VeryRule listener(Class<? extends IRuleListener> clazz) throws Exception {
+		builder.ruleListener = clazz.getDeclaredConstructor().newInstance();
 		return builder;
 	}
 	

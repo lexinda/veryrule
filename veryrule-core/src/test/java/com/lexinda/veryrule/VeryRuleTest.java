@@ -26,7 +26,7 @@ public class VeryRuleTest {
 	@Before
 	public void setUp() throws Exception {
 //		veryRule = VeryRule.builder().condation(RegexRuleCondation.class).action(NotNullRuleAction.class).listener(TestRuleListener.class);
-		veryRule = VeryRule.builder().rulePackage("com.lexinda.veryrule.base");
+		veryRule = VeryRule.builder().rulePackage("com.lexinda.veryrule.base").listener(TestRuleListener.class);
 	}
 
 	@Test
