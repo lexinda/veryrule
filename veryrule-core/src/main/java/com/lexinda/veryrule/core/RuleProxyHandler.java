@@ -21,7 +21,6 @@ public class RuleProxyHandler implements InvocationHandler {
 
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException{
-		// TODO Auto-generated method stub
 		Object result = method.invoke(target, args);
 		if(ruleListener!=null) {
 			ruleListener.ruleListener(target, args);

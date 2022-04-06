@@ -212,28 +212,24 @@ public class VeryRule extends RuleEngine {
 						try {
 							builder.condation((Class<? extends IRuleCondation>) clazz);
 						} catch (Exception e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}else if(RuleType.ACTION.equals(rule.type())) {
 						try {
 							builder.action((Class<? extends IRuleAction>) clazz);
 						} catch (Exception e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}else if(RuleType.RESULT_ACTION.equals(rule.type())) {
 						try {
 							builder.resultAction((Class<? extends IRuleResultAction>) clazz);
 						} catch (Exception e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}else {
 						try {
 							builder.action((Class<? extends IRuleAction>) clazz);
 						} catch (Exception e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}

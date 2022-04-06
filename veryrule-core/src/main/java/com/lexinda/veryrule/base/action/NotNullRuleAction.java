@@ -20,7 +20,6 @@ public class NotNullRuleAction implements IRuleAction {
 	@Override
 	public <R extends RuleBo> void action(Map<String, Object> param,
 			Map<String, Object> condation, R rule) throws Exception {
-		// TODO Auto-generated method stub
 		String ruleKey = rule.getRuleKey();
 		String[] keys = null;
 		if(ruleKey.indexOf(",")>0) {

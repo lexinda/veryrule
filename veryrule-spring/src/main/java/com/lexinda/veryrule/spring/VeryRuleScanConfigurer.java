@@ -77,7 +77,6 @@ public class VeryRuleScanConfigurer implements ApplicationContextAware {
 					veryRule.resultAction(((IRuleResultAction) beanItem.getValue()).getClass());
 				}
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		});
@@ -89,10 +88,8 @@ public class VeryRuleScanConfigurer implements ApplicationContextAware {
 				listener = (Class<IRuleListener>) classLoader.loadClass(this.listenerBean);
 				veryRule.listener(listener);
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
