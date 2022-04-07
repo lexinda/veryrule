@@ -392,7 +392,7 @@ public class VeryRuleFlowController {
 			JSONObject param = JSON.parseObject(data);
 			Integer id = param.getInteger("id");
 			Map<String, Object> dataParam = new HashMap<String, Object>();
-			dataParam.put("id", 111);
+			dataParam.put("id", id);
 			List<VeryRuleFlowModel> veryRuleFlowList = veryRuleFlowMbService.selectVeryRuleFlowList(dataParam);
 			if (veryRuleFlowList.size() > 0) {
 				Map<String, Object> dataAllParam = new HashMap<String, Object>();
