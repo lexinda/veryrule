@@ -15,9 +15,16 @@ public class VeryRuleListener implements IRuleListener {
 	private static final Logger logger = LoggerFactory.getLogger(VeryRuleListener.class);
 
 	@Override
-	public void ruleListener(Object proxy, Object[] args) {
+	public void initRule(Object proxy) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void ruleListener(Object proxy, Object[] args, Object result) {
 		logger.debug(JSON.toJSONString(proxy));
 		logger.debug(JSON.toJSONString(args));
+		logger.debug(JSON.toJSONString(result));
 	}
 
 }

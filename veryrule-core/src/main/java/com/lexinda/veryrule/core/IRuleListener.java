@@ -6,5 +6,17 @@ package com.lexinda.veryrule.core;
  *
  */
 public interface IRuleListener {
-	void ruleListener(Object proxy, Object[] args);
+	/**
+	 * 初始化完成
+	 * 
+	 * @param proxy
+	 */
+	void initRule(Object proxy);
+
+	/**
+	 * 单个规则执行完成
+	 * 
+	 * @param proxy
+	 */
+	void ruleListener(Object proxy, Object[] args, Object result);
 }

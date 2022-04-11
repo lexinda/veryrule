@@ -50,14 +50,6 @@ public class VeryRule extends RuleEngine {
 		}
 	}
 	
-	public boolean isInit() {
-		if(actionInit||resultActionInit||condationInit) {
-			return true;
-		}else {
-			return false;
-		}
-	}
-	
 	public Map<String,Class<?>> allRule() {
 		Map<String,Class<?>> allRule = new HashMap<String,Class<?>>();
 		allRule.putAll(builder.ruleActionMap);
@@ -159,7 +151,6 @@ public class VeryRule extends RuleEngine {
 		} else {
 			throw new Exception(clazz.getName() + " is not annotation present rule ");
 		}
-		actionInit = true;
 		return builder;
 	}
 	
@@ -172,7 +163,6 @@ public class VeryRule extends RuleEngine {
 		} else {
 			throw new Exception(clazz.getName() + " is not annotation present rule ");
 		}
-		resultActionInit = true;
 		return builder;
 	}
 
@@ -185,7 +175,6 @@ public class VeryRule extends RuleEngine {
 		} else {
 			throw new Exception(clazz.getName() + " is not annotation present rule ");
 		}
-		condationInit = true;
 		return builder;
 	}
 	
@@ -236,9 +225,9 @@ public class VeryRule extends RuleEngine {
 				}
 			});
 		}
-		actionInit = true;
-		resultActionInit = true;
-		condationInit = true;
+		if(builder.getRuleListener()!=null) {
+			builder.getRuleListener().initRule(builder);
+		}
 		return builder;
 	}
 	

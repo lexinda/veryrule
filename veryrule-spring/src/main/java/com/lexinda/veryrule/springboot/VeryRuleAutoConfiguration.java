@@ -107,9 +107,11 @@ public class VeryRuleAutoConfiguration implements BeanPostProcessor, Application
 		veryruleDefinitionBuilder.addPropertyValue("ruleResultActionMap", veryRule.getRuleResultActionMap());
 		veryruleDefinitionBuilder.addPropertyValue("ruleListener", veryRule.getRuleListener());
 		veryruleDefinitionBuilder.setScope(BeanDefinition.SCOPE_SINGLETON);
-		
 		// 注册bean
 		context.registerBeanDefinition("veryrule", veryruleDefinitionBuilder.getRawBeanDefinition());
+		if(veryRule.getRuleListener()!=null) {
+			veryRule.getRuleListener().initRule(veryRule);
+		}
 	}
 
 	@Override

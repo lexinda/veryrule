@@ -103,6 +103,9 @@ public class VeryRuleScanConfigurer implements ApplicationContextAware {
 		veryruleDefinitionBuilder.setScope(BeanDefinition.SCOPE_SINGLETON);
 		// 注册bean
 		context.registerBeanDefinition("veryrule", veryruleDefinitionBuilder.getRawBeanDefinition());
+		if(veryRule.getRuleListener()!=null) {
+			veryRule.getRuleListener().initRule(veryRule);
+		}
 	}
 	
 	public void initAspect(DefaultListableBeanFactory context) {

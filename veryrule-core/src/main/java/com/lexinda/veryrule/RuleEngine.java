@@ -26,9 +26,6 @@ public class RuleEngine<R extends RuleBo> {
 	protected Map<String, IRuleResultAction> ruleResultActionMap;
 	protected Map<String, IRuleCondation> ruleCondationMap;
 	protected IRuleListener ruleListener;
-	protected boolean actionInit = false;
-	protected boolean resultActionInit = false;
-	protected boolean condationInit = false;
 	
 	public List<String> getCondationList(Class<?> clazz){
 		Annotation[]  annotations = clazz.getAnnotations();

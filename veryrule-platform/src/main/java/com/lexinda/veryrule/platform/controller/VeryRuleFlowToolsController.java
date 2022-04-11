@@ -47,7 +47,7 @@ public class VeryRuleFlowToolsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/compareRuleActive", method = RequestMethod.GET, produces = "application/json;charset=utf-8")
+	@RequestMapping(value = "/compareRuleActive", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	public RestApiResponse compareRuleActive(String data) throws Exception {
 		RestApiResponse res = new RestApiResponse();
 		res.setErrorCode(1);
@@ -67,14 +67,18 @@ public class VeryRuleFlowToolsController {
 			}
 			Set<String> diffRuleInfo = new HashSet<String>();
 			if(allRule!=null&&!allRule.isEmpty()) {
+				//规则存在但是规则流没用到
 				allRule.entrySet().stream().forEach(ar->{
 					if(ruleFlowTempletMap.get(ar.getKey())==null) {
 						diffRuleInfo.add(ar.getKey()+"_"+1);
+					}else {
+						diffRuleInfo.add(ar.getKey()+"_"+0);
 					}
 				});
+				//规则不存在但是规则流用到
 				ruleFlowTempletMap.entrySet().stream().forEach(rf->{
 					if(allRule.get(rf.getKey())==null) {
-						diffRuleInfo.add(rf.getKey()+"_"+1);
+						diffRuleInfo.add(rf.getKey()+"_"+2);
 					}
 				});
 				res.setErrorCode(0);
