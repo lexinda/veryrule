@@ -77,6 +77,21 @@
 					<encoding>${project.encoding}</encoding>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring.boot.version}</version>
+				<configuration>
+					<mainClass>com.lexinda.veryrule.platform.VeryrulePlatform</mainClass>
+				</configuration>
+				<executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+			</plugin>
 		</plugins>
 	</build>
 </project>

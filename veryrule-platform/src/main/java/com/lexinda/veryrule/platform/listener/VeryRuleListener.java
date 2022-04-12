@@ -17,7 +17,7 @@ public class VeryRuleListener implements IRuleListener {
 	@Override
 	public void initRule(Object proxy) {
 		// TODO Auto-generated method stub
-		
+		logger.debug("------veryrule inited------");
 	}
 	
 	@Override
