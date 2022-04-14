@@ -4,6 +4,8 @@
 		</el-tab-pane>
 		<el-tab-pane label="规则集">
 		</el-tab-pane>
+		<el-tab-pane label="规则工具">
+		</el-tab-pane>
 	</el-tabs>
 	<router-view></router-view>
 </template>
@@ -23,9 +25,13 @@
 			router.push({
 				name: "ruleFlow"
 			})
-		}else{
+		}else if(target.index == 1){
 			router.push({
 				name: "ruleSet"
+			})
+		}else if(target.index == 2){
+			router.push({
+				name: "ruleTool"
 			})
 		}
 	}
