@@ -16,7 +16,7 @@
 	<properties>
 		<spring.boot.version>2.3.12.RELEASE</spring.boot.version>
 		<mysql.version>8.0.28</mysql.version>
-		<mybatisplus.version>3.5.1</mybatisplus.version>
+		<mybatisplus.version>3.4.2</mybatisplus.version>
 		<fastjson.version>1.2.79</fastjson.version>
 		<commonslang3.version>3.12.0</commonslang3.version>
 	</properties>
