@@ -278,14 +278,19 @@
 					message: '保存成功',
 					type: 'success',
 				})
+				var isDel = false
 				for (var index in ruleFlowTable.value.store.states.lazyTreeNodeMap.value) {
 					const item = ruleFlowTable.value.store.states.lazyTreeNodeMap.value[index]
 					for (var m in item) {
 						console.log(item[m].id)
 						if (item[m].id == row.id) {
 							item.splice(m, 1)
+							isDel = true
 						}
 					}
+				}
+				if(!isDel){
+					getRuleFlowPage("root")
 				}
 			} else {
 				ElMessage.error(data.errorDesc)
