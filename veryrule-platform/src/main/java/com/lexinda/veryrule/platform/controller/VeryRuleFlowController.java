@@ -1,5 +1,9 @@
 package com.lexinda.veryrule.platform.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -10,13 +14,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -46,7 +56,7 @@ public class VeryRuleFlowController {
 	private static final Logger logger = LoggerFactory.getLogger(VeryRuleFlowController.class);
 
 	private final int PAGE_SIZE = 10;
-	
+
 	@Autowired
 	private VeryRuleFlowMbService veryRuleFlowMbService;
 
@@ -58,9 +68,12 @@ public class VeryRuleFlowController {
 
 	@Autowired
 	private VeryRuleFlowTempletService veryRuleFlowTempletService;
-	
+
 	@Autowired
 	private VeryRule veryRule;
+	
+	@Value("${veryrule.scene.path}")
+	private String scenePath;
 
 	@RequestMapping(value = "/getVeryRuleFlowPage", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 //	@VeryRuleFlow(ruleFlowCode = "test")
@@ -111,7 +124,7 @@ public class VeryRuleFlowController {
 		res.setServerTime(System.currentTimeMillis());
 		return res;
 	}
-	
+
 	@RequestMapping(value = "/getVeryRuleFlowList", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	public RestApiResponse getVeryRuleFlowList(String data) throws Exception {
 		RestApiResponse res = new RestApiResponse();
@@ -231,50 +244,51 @@ public class VeryRuleFlowController {
 		res.setServerTime(System.currentTimeMillis());
 		return res;
 	}
-	
+
 	// {"id":1,"status":"0"}
-		@RequestMapping(value = "/updateVeryRuleFlowStatus", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
-		@VeryRuleSingle(ruleCode = RuleCode.NOTNULL, ruleKey = "id,status", ruleErrMsg = "不能为空")
-		public RestApiResponse updateVeryRuleFlowStatus(String data) throws Exception {
-			RestApiResponse res = new RestApiResponse();
-			res.setErrorCode(1);
-			res.setElapsedTime(System.currentTimeMillis());
-			try {
-				Page<VeryRuleFlowModel> page = new Page<VeryRuleFlowModel>(1, 3);
-				JSONObject param = JSON.parseObject(data);
-				Map<String, Object> dataParam = new HashMap<String, Object>();
-				Integer id = param.getInteger("id");
-				dataParam.put("id", id);
-				List<VeryRuleFlowModel> veryRuleFlowList = veryRuleFlowMbService.selectVeryRuleFlowList(dataParam);
-				if (veryRuleFlowList != null && veryRuleFlowList.size() > 0 && veryRuleFlowList.get(0).getId() > 0) {
-					Map<String, Object> dataAllParam = new HashMap<String, Object>();
-					List<VeryRuleFlowModel> veryRuleFlowAllList = veryRuleFlowMbService.selectVeryRuleFlowList(dataAllParam);
-					List<VeryRuleFlowModel> veryRuleFlowSubList = new ArrayList<VeryRuleFlowModel>();
-					getSubVeryRuleFlow(veryRuleFlowList.get(0).getRuleFlowCode(), veryRuleFlowAllList, veryRuleFlowSubList);
-					veryRuleFlowSubList.add(0,veryRuleFlowList.get(0));
-					Map<String, Object> dataStatusParam = new HashMap<String, Object>();
-					veryRuleFlowSubList.stream().forEach(vrf->{
-						dataStatusParam.put("id", vrf.getId());
-						dataStatusParam.put("status", param.getInteger("status"));
-						dataStatusParam.put("version", vrf.getVersion());
-						dataStatusParam.put("versionTo", vrf.getVersion() + 1);
-						veryRuleFlowMbService.updateById(dataStatusParam);
-					});
-				} else {
-					res.setErrorDesc("规则流不存在");
-					res.setElapsedTime(System.currentTimeMillis() - res.getElapsedTime());
-					res.setServerTime(System.currentTimeMillis());
-					return res;
-				}
-				res.setErrorCode(0);
-			} catch (Exception e) {
-				logger.error(e.getMessage());
-				res.setErrorDesc(e.getMessage());
+	@RequestMapping(value = "/updateVeryRuleFlowStatus", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@VeryRuleSingle(ruleCode = RuleCode.NOTNULL, ruleKey = "id,status", ruleErrMsg = "不能为空")
+	public RestApiResponse updateVeryRuleFlowStatus(String data) throws Exception {
+		RestApiResponse res = new RestApiResponse();
+		res.setErrorCode(1);
+		res.setElapsedTime(System.currentTimeMillis());
+		try {
+			Page<VeryRuleFlowModel> page = new Page<VeryRuleFlowModel>(1, 3);
+			JSONObject param = JSON.parseObject(data);
+			Map<String, Object> dataParam = new HashMap<String, Object>();
+			Integer id = param.getInteger("id");
+			dataParam.put("id", id);
+			List<VeryRuleFlowModel> veryRuleFlowList = veryRuleFlowMbService.selectVeryRuleFlowList(dataParam);
+			if (veryRuleFlowList != null && veryRuleFlowList.size() > 0 && veryRuleFlowList.get(0).getId() > 0) {
+				Map<String, Object> dataAllParam = new HashMap<String, Object>();
+				List<VeryRuleFlowModel> veryRuleFlowAllList = veryRuleFlowMbService
+						.selectVeryRuleFlowList(dataAllParam);
+				List<VeryRuleFlowModel> veryRuleFlowSubList = new ArrayList<VeryRuleFlowModel>();
+				getSubVeryRuleFlow(veryRuleFlowList.get(0).getRuleFlowCode(), veryRuleFlowAllList, veryRuleFlowSubList);
+				veryRuleFlowSubList.add(0, veryRuleFlowList.get(0));
+				Map<String, Object> dataStatusParam = new HashMap<String, Object>();
+				veryRuleFlowSubList.stream().forEach(vrf -> {
+					dataStatusParam.put("id", vrf.getId());
+					dataStatusParam.put("status", param.getInteger("status"));
+					dataStatusParam.put("version", vrf.getVersion());
+					dataStatusParam.put("versionTo", vrf.getVersion() + 1);
+					veryRuleFlowMbService.updateById(dataStatusParam);
+				});
+			} else {
+				res.setErrorDesc("规则流不存在");
+				res.setElapsedTime(System.currentTimeMillis() - res.getElapsedTime());
+				res.setServerTime(System.currentTimeMillis());
+				return res;
 			}
-			res.setElapsedTime(System.currentTimeMillis() - res.getElapsedTime());
-			res.setServerTime(System.currentTimeMillis());
-			return res;
+			res.setErrorCode(0);
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			res.setErrorDesc(e.getMessage());
 		}
+		res.setElapsedTime(System.currentTimeMillis() - res.getElapsedTime());
+		res.setServerTime(System.currentTimeMillis());
+		return res;
+	}
 
 	// {"id":1,"ruleFlowName":"test1","groupName":"test1","ruleFlowDesc":"test1","status":"0"}
 	@RequestMapping(value = "/updateVeryRuleFlowAndTemplet", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
@@ -396,24 +410,26 @@ public class VeryRuleFlowController {
 			List<VeryRuleFlowModel> veryRuleFlowList = veryRuleFlowMbService.selectVeryRuleFlowList(dataParam);
 			if (veryRuleFlowList.size() > 0) {
 				Map<String, Object> dataAllParam = new HashMap<String, Object>();
-				List<VeryRuleFlowModel> veryRuleFlowAllList = veryRuleFlowMbService.selectVeryRuleFlowList(dataAllParam);
+				List<VeryRuleFlowModel> veryRuleFlowAllList = veryRuleFlowMbService
+						.selectVeryRuleFlowList(dataAllParam);
 				List<VeryRuleFlowModel> veryRuleFlowSubList = new ArrayList<VeryRuleFlowModel>();
 				getSubVeryRuleFlow(veryRuleFlowList.get(0).getRuleFlowCode(), veryRuleFlowAllList, veryRuleFlowSubList);
-				veryRuleFlowSubList.add(0,veryRuleFlowList.get(0));
+				veryRuleFlowSubList.add(0, veryRuleFlowList.get(0));
 				List<VeryRuleFlowTempletModel> veryRuleFlowTempletModelList = new ArrayList<VeryRuleFlowTempletModel>();
-				if(veryRuleFlowSubList.size()>0) {
+				if (veryRuleFlowSubList.size() > 0) {
 					Set<String> veryRuleFlowTempletSet = new HashSet<String>();
-					veryRuleFlowSubList.stream().forEach(vrfs->{
-						if(StringUtils.isNotBlank(vrfs.getRuleFlowTempletCode())) {
+					veryRuleFlowSubList.stream().forEach(vrfs -> {
+						if (StringUtils.isNotBlank(vrfs.getRuleFlowTempletCode())) {
 							veryRuleFlowTempletSet.add(vrfs.getRuleFlowTempletCode());
 						}
 					});
-					if(veryRuleFlowTempletSet.size()>0) {
+					if (veryRuleFlowTempletSet.size() > 0) {
 						Map<String, Object> dataTempletParam = new HashMap<String, Object>();
 						dataTempletParam.put("ruleFlowTempletCodes", veryRuleFlowTempletSet);
-						veryRuleFlowTempletModelList = veryRuleFlowTempletMbService.selectVeryRuleFlowTempletList(dataTempletParam);
+						veryRuleFlowTempletModelList = veryRuleFlowTempletMbService
+								.selectVeryRuleFlowTempletList(dataTempletParam);
 					}
-					
+
 				}
 				veryRuleFlowService.deleteRuleFlow(veryRuleFlowSubList, veryRuleFlowTempletModelList);
 				res.setErrorCode(0);
@@ -426,7 +442,7 @@ public class VeryRuleFlowController {
 		res.setServerTime(System.currentTimeMillis());
 		return res;
 	}
-	
+
 	@RequestMapping(value = "/copyVeryRuleFlow", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@VeryRuleSingle(ruleCode = RuleCode.NOTNULL, ruleKey = "ruleFlowCode,ruleFlowName,parentRuleFlowCode,id", ruleErrMsg = "不能为空")
 	public RestApiResponse copyVeryRuleFlow(String data) throws Exception {
@@ -437,31 +453,38 @@ public class VeryRuleFlowController {
 			JSONObject param = JSON.parseObject(data);
 			Map<String, Object> dataParam = new HashMap<String, Object>();
 			List<VeryRuleFlowModel> veryRuleFlowList = veryRuleFlowMbService.selectVeryRuleFlowList(dataParam);
-			VeryRuleFlowModel firstRuleFlow = veryRuleFlowList.stream().filter(vrf->vrf.getId() == param.getInteger("id")).collect(Collectors.toList()).get(0);
+			VeryRuleFlowModel firstRuleFlow = veryRuleFlowList.stream()
+					.filter(vrf -> vrf.getId() == param.getInteger("id")).collect(Collectors.toList()).get(0);
 			String parentRuleFlowCode = firstRuleFlow.getRuleFlowCode();
 			firstRuleFlow.setId(0);
 			firstRuleFlow.setParentRuleFlowCode(param.getString("parentRuleFlowCode"));
 			firstRuleFlow.setRuleFlowCode(param.getString("ruleFlowCode"));
 			firstRuleFlow.setRuleFlowName(param.getString("ruleFlowName"));
-			firstRuleFlow.setRuleFlowTempletCode(firstRuleFlow.getRuleFlowTempletCode()+"-"+System.currentTimeMillis());
+			firstRuleFlow
+					.setRuleFlowTempletCode(firstRuleFlow.getRuleFlowTempletCode() + "-" + System.currentTimeMillis());
 			List<VeryRuleFlowModel> veryRuleFlowResultList = new ArrayList<VeryRuleFlowModel>();
-			getVeryRuleFlowByParent(firstRuleFlow,parentRuleFlowCode,veryRuleFlowList,veryRuleFlowResultList);
-			veryRuleFlowResultList.add(0,firstRuleFlow);
-			if(veryRuleFlowResultList.size()>0) {
+			getVeryRuleFlowByParent(firstRuleFlow, parentRuleFlowCode, veryRuleFlowList, veryRuleFlowResultList);
+			veryRuleFlowResultList.add(0, firstRuleFlow);
+			if (veryRuleFlowResultList.size() > 0) {
 				List<VeryRuleFlowTempletModel> veryRuleFlowTempletList = new ArrayList<VeryRuleFlowTempletModel>();
 				Set<String> ruleFlowTempletCodeSet = new HashSet<String>();
-				veryRuleFlowResultList.stream().forEach(vrf->{
-					if(StringUtils.isNotBlank(vrf.getRuleFlowTempletCode())) {
+				veryRuleFlowResultList.stream().forEach(vrf -> {
+					if (StringUtils.isNotBlank(vrf.getRuleFlowTempletCode())) {
 						ruleFlowTempletCodeSet.add(vrf.getRuleFlowTempletCode().split("-")[0]);
 					}
 				});
 				dataParam.put("ruleFlowTempletCodes", ruleFlowTempletCodeSet);
-				List<VeryRuleFlowTempletModel> veryRuleFlowTempletModelList = veryRuleFlowTempletMbService.selectVeryRuleFlowTempletList(dataParam);
-				veryRuleFlowResultList.stream().forEach(vrf->{
-					if(StringUtils.isNotBlank(vrf.getRuleFlowTempletCode())) {
+				List<VeryRuleFlowTempletModel> veryRuleFlowTempletModelList = veryRuleFlowTempletMbService
+						.selectVeryRuleFlowTempletList(dataParam);
+				veryRuleFlowResultList.stream().forEach(vrf -> {
+					if (StringUtils.isNotBlank(vrf.getRuleFlowTempletCode())) {
 						String ruleFlowTempletCode = vrf.getRuleFlowTempletCode().split("-")[0];
-						if(veryRuleFlowTempletModelList.stream().filter(vrft->ruleFlowTempletCode.equals(vrft.getRuleFlowTempletCode())).count()>0) {
-							VeryRuleFlowTempletModel veryRuleFlowTempletModel = veryRuleFlowTempletModelList.stream().filter(vrft->ruleFlowTempletCode.equals(vrft.getRuleFlowTempletCode())).collect(Collectors.toList()).get(0);
+						if (veryRuleFlowTempletModelList.stream()
+								.filter(vrft -> ruleFlowTempletCode.equals(vrft.getRuleFlowTempletCode()))
+								.count() > 0) {
+							VeryRuleFlowTempletModel veryRuleFlowTempletModel = veryRuleFlowTempletModelList.stream()
+									.filter(vrft -> ruleFlowTempletCode.equals(vrft.getRuleFlowTempletCode()))
+									.collect(Collectors.toList()).get(0);
 							veryRuleFlowTempletModel.setId(0);
 							veryRuleFlowTempletModel.setVersion(1);
 							veryRuleFlowTempletModel.setRuleFlowTempletCode(vrf.getRuleFlowTempletCode());
@@ -490,7 +513,7 @@ public class VeryRuleFlowController {
 		res.setElapsedTime(System.currentTimeMillis());
 		try {
 			JSONObject param = JSON.parseObject(data);
-			List<RuleBo> ruleList = JSON.parseArray(param.getString("ruleFlowTemplet"),RuleBo.class);
+			List<RuleBo> ruleList = JSON.parseArray(param.getString("ruleFlowTemplet"), RuleBo.class);
 			RuleResult result = veryRule.fireTest(Arrays.asList(ruleList.get(0)));
 			res.setBody(result);
 			res.setErrorCode(0);
@@ -502,44 +525,115 @@ public class VeryRuleFlowController {
 		res.setServerTime(System.currentTimeMillis());
 		return res;
 	}
-	
-	public List<VeryRuleFlowModel> getSubVeryRuleFlow(String parentRuleFlowCode,List<VeryRuleFlowModel> veryRuleFlowList,List<VeryRuleFlowModel> veryRuleFlowResultList){
-		List<VeryRuleFlowModel> subVeryRuleFlowList = veryRuleFlowList.stream().filter(vrf->vrf.getParentRuleFlowCode().equals(parentRuleFlowCode)).collect(Collectors.toList());
-		if(subVeryRuleFlowList.size()>0) {
-			subVeryRuleFlowList.stream().forEach(srf->{
+
+	public List<VeryRuleFlowModel> getSubVeryRuleFlow(String parentRuleFlowCode,
+			List<VeryRuleFlowModel> veryRuleFlowList, List<VeryRuleFlowModel> veryRuleFlowResultList) {
+		List<VeryRuleFlowModel> subVeryRuleFlowList = veryRuleFlowList.stream()
+				.filter(vrf -> vrf.getParentRuleFlowCode().equals(parentRuleFlowCode)).collect(Collectors.toList());
+		if (subVeryRuleFlowList.size() > 0) {
+			subVeryRuleFlowList.stream().forEach(srf -> {
 				veryRuleFlowResultList.add(srf);
 			});
-			for(VeryRuleFlowModel srf:subVeryRuleFlowList) {
-				return getSubVeryRuleFlow(srf.getRuleFlowCode(),veryRuleFlowList,veryRuleFlowResultList);
+			for (VeryRuleFlowModel srf : subVeryRuleFlowList) {
+				return getSubVeryRuleFlow(srf.getRuleFlowCode(), veryRuleFlowList, veryRuleFlowResultList);
 			}
 		}
 		return veryRuleFlowResultList;
 	}
-	
-	public List<VeryRuleFlowModel> getVeryRuleFlowByParent(VeryRuleFlowModel prevRuleFlow,String parentRuleFlowCode,List<VeryRuleFlowModel> veryRuleFlowList,List<VeryRuleFlowModel> veryRuleFlowResultList){
-		List<VeryRuleFlowModel> subVeryRuleFlowList = veryRuleFlowList.stream().filter(vrf->vrf.getParentRuleFlowCode().equals(parentRuleFlowCode)).collect(Collectors.toList());
-		if(subVeryRuleFlowList.size()>0) {
-			subVeryRuleFlowList.stream().forEach(srf->{
-				VeryRuleFlowModel ruleFlow = JSON.parseObject(JSON.toJSONString(srf),VeryRuleFlowModel.class);
+
+	public List<VeryRuleFlowModel> getVeryRuleFlowByParent(VeryRuleFlowModel prevRuleFlow, String parentRuleFlowCode,
+			List<VeryRuleFlowModel> veryRuleFlowList, List<VeryRuleFlowModel> veryRuleFlowResultList) {
+		List<VeryRuleFlowModel> subVeryRuleFlowList = veryRuleFlowList.stream()
+				.filter(vrf -> vrf.getParentRuleFlowCode().equals(parentRuleFlowCode)).collect(Collectors.toList());
+		if (subVeryRuleFlowList.size() > 0) {
+			subVeryRuleFlowList.stream().forEach(srf -> {
+				VeryRuleFlowModel ruleFlow = JSON.parseObject(JSON.toJSONString(srf), VeryRuleFlowModel.class);
 				ruleFlow.setId(0);
-				ruleFlow.setRuleFlowCode(prevRuleFlow.getRuleFlowCode()+srf.getRuleFlowCode());
-				ruleFlow.setRuleFlowName(srf.getRuleFlowName()+"副本");
+				ruleFlow.setRuleFlowCode(prevRuleFlow.getRuleFlowCode() + srf.getRuleFlowCode());
+				ruleFlow.setRuleFlowName(srf.getRuleFlowName() + "副本");
 				ruleFlow.setParentRuleFlowCode(prevRuleFlow.getRuleFlowCode());
 				ruleFlow.setVersion(1);
-				if(StringUtils.isNotBlank(srf.getRuleFlowTempletCode())) {
-					ruleFlow.setRuleFlowTempletCode(srf.getRuleFlowTempletCode()+"-"+System.currentTimeMillis());
+				if (StringUtils.isNotBlank(srf.getRuleFlowTempletCode())) {
+					ruleFlow.setRuleFlowTempletCode(srf.getRuleFlowTempletCode() + "-" + System.currentTimeMillis());
 				}
 				veryRuleFlowResultList.add(ruleFlow);
 			});
-			for(VeryRuleFlowModel srf:subVeryRuleFlowList) {
+			for (VeryRuleFlowModel srf : subVeryRuleFlowList) {
 				VeryRuleFlowModel prevRule = new VeryRuleFlowModel();
-				prevRule.setRuleFlowCode(prevRuleFlow.getRuleFlowCode()+srf.getRuleFlowCode());
-				prevRule.setRuleFlowName(srf.getRuleFlowName()+"副本");
+				prevRule.setRuleFlowCode(prevRuleFlow.getRuleFlowCode() + srf.getRuleFlowCode());
+				prevRule.setRuleFlowName(srf.getRuleFlowName() + "副本");
 				prevRule.setParentRuleFlowCode(prevRuleFlow.getRuleFlowCode());
-				return getVeryRuleFlowByParent(prevRule,srf.getRuleFlowCode(),veryRuleFlowList,veryRuleFlowResultList);
+				return getVeryRuleFlowByParent(prevRule, srf.getRuleFlowCode(), veryRuleFlowList,
+						veryRuleFlowResultList);
 			}
 		}
 		return veryRuleFlowResultList;
+	}
+
+	// 业务场景详情页面
+	@RequestMapping(value="/showSceneInfo", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@VeryRuleSingle(ruleCode = RuleCode.NOTNULL, ruleKey = "ruleFlowTempletCode", ruleErrMsg = "不能为空")
+	public RestApiResponse showSceneInfo(String data) {
+		RestApiResponse res = new RestApiResponse();
+		res.setErrorCode(0);
+		Set<String> imageList = new HashSet<String>();
+		try {
+			JSONObject param = JSON.parseObject(data);
+			scenePath = scenePath + File.separator + param.getString("ruleFlowTempletCode");
+			File file = new File(scenePath);
+			if (file.exists()) {
+				File[] files = file.listFiles();
+				for (File fileItem : files) {
+					imageList.add(param.getString("ruleFlowTempletCode") + "/" + fileItem.getName());
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		res.setBody(imageList);
+		return res;
+	}
+
+	@RequestMapping(value = "/sceneImage/{path}/{img}", method = RequestMethod.GET)
+	public void sceneImage(HttpServletRequest request, HttpServletResponse response, @PathVariable("path") String path,
+			@PathVariable("img") String img) throws IOException {
+		response.setContentType("image/png");
+		try (OutputStream out = response.getOutputStream()) {
+			// 获取图片存放路径
+			FileInputStream ips = null;
+			try {
+				scenePath = scenePath + File.separator + path + File.separator + img;
+				ips = new FileInputStream(new File(scenePath));
+				// 读取文件流
+
+				int len = 0;
+
+				byte[] buffer = new byte[1024 * 10];
+
+				while ((len = ips.read(buffer)) != -1) {
+
+					out.write(buffer, 0, len);
+
+				}
+
+				out.flush();
+
+			}
+
+			catch (Exception e) {
+
+				e.printStackTrace();
+
+			}
+
+			finally {
+
+				out.close();
+
+				ips.close();
+
+			}
+		}
 	}
 
 }
