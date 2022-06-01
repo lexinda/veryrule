@@ -74,6 +74,9 @@ public class VeryRuleFlowController {
 	
 	@Value("${veryrule.scene.path}")
 	private String scenePath;
+	
+	@Value("${server.name}")
+	private String serverName;
 
 	@RequestMapping(value = "/getVeryRuleFlowPage", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 //	@VeryRuleFlow(ruleFlowCode = "test")
@@ -579,12 +582,12 @@ public class VeryRuleFlowController {
 		Set<String> imageList = new HashSet<String>();
 		try {
 			JSONObject param = JSON.parseObject(data);
-			scenePath = scenePath + File.separator + param.getString("ruleFlowTempletCode");
-			File file = new File(scenePath);
+			String sceneImgPath = scenePath + File.separator + param.getString("ruleFlowTempletCode");
+			File file = new File(sceneImgPath);
 			if (file.exists()) {
 				File[] files = file.listFiles();
 				for (File fileItem : files) {
-					imageList.add(param.getString("ruleFlowTempletCode") + "/" + fileItem.getName());
+					imageList.add(serverName+"/veryrule/sceneImage/"+param.getString("ruleFlowTempletCode") + "/" + fileItem.getName());
 				}
 			}
 		} catch (Exception e) {
@@ -602,8 +605,8 @@ public class VeryRuleFlowController {
 			// 获取图片存放路径
 			FileInputStream ips = null;
 			try {
-				scenePath = scenePath + File.separator + path + File.separator + img;
-				ips = new FileInputStream(new File(scenePath));
+				String sceneImage = scenePath + File.separator + path + File.separator + img;
+				ips = new FileInputStream(new File(sceneImage));
 				// 读取文件流
 
 				int len = 0;
