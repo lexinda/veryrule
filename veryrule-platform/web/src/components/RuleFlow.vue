@@ -75,6 +75,11 @@
 					<el-button size="small" type="primary" @click="handleTempletEdit(scope.$index, scope.row)">新增规则模板
 					</el-button>
 				</div>
+				
+				<div style="margin-top: 5px;">
+					<el-button size="small" type="primary" @click="showScene(scope.$index, scope.row)">场景</el-button>
+				</div>
+				
 			</template>
 		</el-table-column>
 	</el-table>
@@ -105,6 +110,9 @@
 		<FlowCopy :veryFlowAllData="veryFlowAllData" :veryFlowtempletCopyData = "veryFlowtempletCopyData"
 		 @cancelFlowCopy="cancelFlowCopy" @successFlowCopy="successFlowCopy"></FlowCopy>
 	</el-dialog>
+	<el-dialog v-model="veryFlowtempletSceneVisible" destroy-on-close width="800px">
+		<FlowScene :veryFlowSceneData="veryFlowSceneData" @cancelFlowScene="cancelFlowScene"></FlowScene>
+	</el-dialog>
 </template>
 
 <script lang="ts" setup>
@@ -112,6 +120,7 @@
 	import FlowCopy from "./flow/FlowCopy.vue";
 	import FlowTempletEdit from "./flow/FlowTempletEdit.vue";
 	import FlowTempletEditDetail from "./flow/FlowTempletEditDetail.vue";
+	import FlowScene from "./flow/FlowScene.vue";
 	import {
 		ElMessage
 	} from 'element-plus'
@@ -427,5 +436,27 @@
 
 	const cancelFlowCopy = () => {
 		veryFlowtempletCopyVisible.value = false
+	}
+	
+	const veryFlowtempletSceneVisible = ref(false)
+	const veryFlowSceneData = ref([])
+	const showScene=(index: number, row: RuleFlow)=>{
+		veryFlowSceneData.value = []
+		const param = {
+			"ruleFlowTempletCode": row.ruleFlowTempletCode
+		}
+		post("/api/showSceneInfo", param, (data) => {
+			if (data.errorCode == 0) {
+				if (data.body.length > 0) {
+					veryFlowSceneData.value = data.body
+					veryFlowtempletSceneVisible.value = true
+				}
+			} else {
+				ElMessage.error(data.errorDesc)
+			}
+		});
+	}
+	const cancelFlowScene=()=>{
+		veryFlowtempletSceneVisible.value = false
 	}
 </script>
