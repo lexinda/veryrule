@@ -8,7 +8,7 @@ import java.util.Map;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 import com.lexinda.veryrule.VeryRule;
 import com.lexinda.veryrule.aspect.VeryRuleAspect;
 import com.lexinda.veryrule.bo.RuleBo;

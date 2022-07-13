@@ -12,15 +12,14 @@ import java.util.regex.Pattern;
 import com.lexinda.veryrule.annotation.Rule;
 import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.common.RuleType;
-import com.lexinda.veryrule.core.IRuleAction;
+import com.lexinda.veryrule.core.IRuleCondation;
 import com.lexinda.veryrule.platform.model.RuleCodeModel;
 
 @Rule(code = RuleCodeModel.REGEXFIND,name = "指定key匹配正则表达式查找", desc = "指定key匹配正则表达式查找", type = RuleType.ACTION)
-public class RegexFindRuleAction implements IRuleAction {
+public class RegexFindRuleAction implements IRuleCondation {
 
 	@Override
-	public <R extends RuleBo> void action(Map<String, Object> param,
-			Map<String, Object> condation, R rule) throws Exception {
+	public <R extends RuleBo> void contation(Map<String, Object> param, R rule) throws Exception {
 		String info = (String) param.get(rule.getRuleKey());
 		if (info == null || "".equals(info)) {
 			throw new Exception(rule.getRuleKey() + "不能为空");

@@ -21,10 +21,10 @@ import org.springframework.context.support.GenericApplicationContext;
 import com.lexinda.veryrule.VeryRule;
 import com.lexinda.veryrule.annotation.Rule;
 import com.lexinda.veryrule.aspect.VeryRuleAspect;
-import com.lexinda.veryrule.core.IRuleAction;
+import com.lexinda.veryrule.core.IRuleResultCondation;
 import com.lexinda.veryrule.core.IRuleCondation;
 import com.lexinda.veryrule.core.IRuleListener;
-import com.lexinda.veryrule.core.IRuleResultAction;
+import com.lexinda.veryrule.core.IRuleAction;
 import com.lexinda.veryrule.spring.VeryRuleClassPathDefinitionScanner;
 
 @Configuration
@@ -75,11 +75,11 @@ public class VeryRuleAutoConfiguration implements BeanPostProcessor, Application
 				if (bean.getValue() instanceof IRuleCondation) {
 					veryRule.condation(((IRuleCondation) bean.getValue()).getClass());
 				}
+				if (bean.getValue() instanceof IRuleResultCondation) {
+					veryRule.resultCondation(((IRuleResultCondation) bean.getValue()).getClass());
+				}
 				if (bean.getValue() instanceof IRuleAction) {
 					veryRule.action(((IRuleAction) bean.getValue()).getClass());
-				}
-				if (bean.getValue() instanceof IRuleResultAction) {
-					veryRule.resultAction(((IRuleResultAction) bean.getValue()).getClass());
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -104,7 +104,7 @@ public class VeryRuleAutoConfiguration implements BeanPostProcessor, Application
 		BeanDefinitionBuilder veryruleDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(VeryRule.class);
 		veryruleDefinitionBuilder.addPropertyValue("ruleCondationMap", veryRule.getRuleCondationMap());
 		veryruleDefinitionBuilder.addPropertyValue("ruleActionMap", veryRule.getRuleActionMap());
-		veryruleDefinitionBuilder.addPropertyValue("ruleResultActionMap", veryRule.getRuleResultActionMap());
+		veryruleDefinitionBuilder.addPropertyValue("ruleResultCondationMap", veryRule.getRuleResultCondationMap());
 		veryruleDefinitionBuilder.addPropertyValue("ruleListener", veryRule.getRuleListener());
 		veryruleDefinitionBuilder.setScope(BeanDefinition.SCOPE_SINGLETON);
 		// 注册bean

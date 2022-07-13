@@ -39,10 +39,10 @@ public class VeryRuleScanConfigurerTest {
 	public void test() {
 		Map<String,Object> param = new HashMap<>();
 		param.put("a", "123a");
-		List<String> resCondation = new ArrayList<String>();
-		resCondation.add("regexRuleCondation");
+		List<RuleBo> resCondation = new ArrayList<RuleBo>();
+		resCondation.add(new RuleBo("regexRuleCondation","a","(\\D*)(\\d+)(.*)","regex",1,null));
 		List<RuleBo> res= new ArrayList<RuleBo>();
-		res.add(new RuleBo("regex","a","(\\D*)(\\d+)(.*)","regex",resCondation));
+		res.add(new RuleBo("regex","a","(\\D*)(\\d+)(.*)","regex",3,resCondation));
 		try {
 			veryRule.fire(param,res);
 		} catch (Exception e) {

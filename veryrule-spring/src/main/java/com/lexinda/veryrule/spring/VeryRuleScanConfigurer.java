@@ -20,10 +20,10 @@ import org.springframework.stereotype.Component;
 import com.lexinda.veryrule.VeryRule;
 import com.lexinda.veryrule.annotation.Rule;
 import com.lexinda.veryrule.aspect.VeryRuleAspect;
-import com.lexinda.veryrule.core.IRuleAction;
+import com.lexinda.veryrule.core.IRuleResultCondation;
 import com.lexinda.veryrule.core.IRuleCondation;
 import com.lexinda.veryrule.core.IRuleListener;
-import com.lexinda.veryrule.core.IRuleResultAction;
+import com.lexinda.veryrule.core.IRuleAction;
 
 @Component
 public class VeryRuleScanConfigurer implements ApplicationContextAware {
@@ -70,11 +70,11 @@ public class VeryRuleScanConfigurer implements ApplicationContextAware {
 				if (beanItem.getValue() instanceof IRuleCondation) {
 					veryRule.condation(((IRuleCondation) beanItem.getValue()).getClass());
 				}
+				if (beanItem.getValue() instanceof IRuleResultCondation) {
+					veryRule.resultCondation(((IRuleResultCondation) beanItem.getValue()).getClass());
+				}
 				if (beanItem.getValue() instanceof IRuleAction) {
 					veryRule.action(((IRuleAction) beanItem.getValue()).getClass());
-				}
-				if (beanItem.getValue() instanceof IRuleResultAction) {
-					veryRule.resultAction(((IRuleResultAction) beanItem.getValue()).getClass());
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -98,7 +98,7 @@ public class VeryRuleScanConfigurer implements ApplicationContextAware {
 		BeanDefinitionBuilder veryruleDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(VeryRule.class);
 		veryruleDefinitionBuilder.addPropertyValue("ruleCondationMap", veryRule.getRuleCondationMap());
 		veryruleDefinitionBuilder.addPropertyValue("ruleActionMap", veryRule.getRuleActionMap());
-		veryruleDefinitionBuilder.addPropertyValue("ruleResultActionMap", veryRule.getRuleResultActionMap());
+		veryruleDefinitionBuilder.addPropertyValue("ruleResultCondationMap", veryRule.getRuleResultCondationMap());
 		veryruleDefinitionBuilder.addPropertyValue("ruleListener", veryRule.getRuleListener());
 		veryruleDefinitionBuilder.setScope(BeanDefinition.SCOPE_SINGLETON);
 		// 注册bean

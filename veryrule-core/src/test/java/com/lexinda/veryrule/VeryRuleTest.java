@@ -14,6 +14,7 @@ import com.lexinda.veryrule.base.action.NotNullRuleAction;
 import com.lexinda.veryrule.base.condation.RegexRuleCondation;
 import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.common.RuleCode;
+import com.lexinda.veryrule.common.RuleType;
 
 /**
  * 
@@ -36,7 +37,7 @@ public class VeryRuleTest {
 		List<String> resCondation = new ArrayList<String>();
 		resCondation.add("regexRuleCondation");
 		List<RuleBo> res = new ArrayList<RuleBo>();
-		RuleBo nn = new RuleBo(RuleCode.NOTNULL, "", "a", "不可为空",null);
+		RuleBo nn = new RuleBo(RuleCode.NOTNULL, "", "a", "不可为空",RuleType.CONDATION,null);
 		res.add(nn);
 		try {
 //			RuleResult RuleResult = veryRuleFactory.fireTest(param, re);

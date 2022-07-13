@@ -16,10 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lexinda.veryrule.annotation.VeryRuleSingle;
+import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.common.RuleCode;
 import com.lexinda.veryrule.platform.model.VeryRuleElementMenuModel;
 import com.lexinda.veryrule.platform.model.VeryRuleElementModel;
@@ -159,10 +160,11 @@ public class VeryRuleElementController {
 				veryRuleElementData.setRuleValue("");
 			}
 			String ruleCondation = param.getString("ruleCondation");
+			List<RuleBo> ruleBoList = new ArrayList<RuleBo>();
 			if (StringUtils.isNotBlank(ruleCondation)) {
-				veryRuleElementData.setRuleCondation(ruleCondation);
+				veryRuleElementData.setRuleCondations(ruleBoList);
 			} else {
-				veryRuleElementData.setRuleCondation("");
+				veryRuleElementData.setRuleCondations(ruleBoList);
 			}
 			String ruleDesc = param.getString("ruleDesc");
 			if (StringUtils.isNotBlank(ruleDesc)) {

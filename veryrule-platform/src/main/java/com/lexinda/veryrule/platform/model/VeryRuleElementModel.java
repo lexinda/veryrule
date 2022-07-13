@@ -14,9 +14,7 @@ import com.lexinda.veryrule.bo.RuleBo;
 public class VeryRuleElementModel extends RuleBo{
 	private Integer id;
 	private String ruleName;
-	private String ruleCondation;
 	private String ruleDesc;
-	private Integer ruleType;
 	private String groupName;
 	private Integer version;
 	private String createId;
@@ -42,20 +40,6 @@ public class VeryRuleElementModel extends RuleBo{
 		this.ruleName = ruleName;
 	}
 	
-	public String getRuleCondation() {
-		return ruleCondation;
-	}
-	//String字符串，多个,隔开
-	public void setRuleCondation(String ruleCondation) {
-		this.ruleCondation = ruleCondation;
-		if(ruleCondation.indexOf(",")>0) {
-			this.ruleCondations = Arrays.asList(ruleCondation.split(","));
-		}else {
-			this.ruleCondations = new ArrayList<String>();
-			this.ruleCondations.add(ruleCondation);
-		}
-		
-	}
 	public String getRuleValue() {
 		return ruleValue;
 	}
@@ -109,12 +93,6 @@ public class VeryRuleElementModel extends RuleBo{
 	}
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
-	}
-	public Integer getRuleType() {
-		return ruleType;
-	}
-	public void setRuleType(Integer ruleType) {
-		this.ruleType = ruleType;
 	}
 	public String getGroupName() {
 		return groupName;

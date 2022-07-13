@@ -5,10 +5,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,10 +26,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lexinda.veryrule.VeryRule;
 import com.lexinda.veryrule.annotation.VeryRuleSingle;
@@ -509,17 +508,45 @@ public class VeryRuleFlowController {
 
 	// {"id":1}
 	@RequestMapping(value = "/testVeryRuleFlow", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
-	@VeryRuleSingle(ruleCode = RuleCode.NOTNULL, ruleKey = "ruleFlowTemplet", ruleErrMsg = "不能为空")
 	public RestApiResponse testVeryRuleFlow(String data) throws Exception {
 		RestApiResponse res = new RestApiResponse();
 		res.setErrorCode(1);
 		res.setElapsedTime(System.currentTimeMillis());
 		try {
 			JSONObject param = JSON.parseObject(data);
-			List<RuleBo> ruleList = JSON.parseArray(param.getString("ruleFlowTemplet"), RuleBo.class);
-			RuleResult result = veryRule.fireTest(Arrays.asList(ruleList.get(0)));
-			res.setBody(result);
-			res.setErrorCode(0);
+			String ruleFlowTemplet = param.getString("ruleFlowTemplet");
+			String ruleFlowTempletCode = param.getString("ruleFlowTempletCode");
+			if(StringUtils.isNotBlank(ruleFlowTemplet)||StringUtils.isNotBlank(ruleFlowTempletCode)) {
+				List<RuleBo> ruleList = new ArrayList<RuleBo>();
+				if(StringUtils.isNotBlank(ruleFlowTemplet)){
+					ruleList = JSON.parseArray(ruleFlowTemplet, RuleBo.class);
+				}else {
+					Map<String,Object> dataParam = new HashMap<String,Object>();
+					dataParam.put("ruleFlowTempletCode", ruleFlowTempletCode);
+					List<VeryRuleFlowTempletModel> veryRuleFlowTempletList = veryRuleFlowTempletMbService
+							.selectVeryRuleFlowTempletList(dataParam);
+					if(veryRuleFlowTempletList.size()>0) {
+						ruleList = JSON.parseArray(veryRuleFlowTempletList.get(0).getRuleFlowTemplet(), RuleBo.class);
+					}
+				}
+				if(ruleList.size()>0) {
+					RuleResult ruleResult = veryRule.fireTest(ruleList);
+					Map<String,String> result = new LinkedHashMap<String, String>();
+					ruleList.forEach(rule->{
+						if(ruleResult.getResult().get(rule.getRuleCode())!=null) {
+							result.put(rule.getRuleCode(), ruleResult.getResult().get(rule.getRuleCode()).toString());
+						}else {
+							result.put(rule.getRuleCode(), "");
+						}
+					});
+					res.setBody(result);
+					res.setErrorCode(0);
+				}else {
+					res.setErrorDesc("无此规则");
+				}
+			}else {
+				res.setErrorDesc("无效规则");
+			}
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			res.setErrorDesc(e.getMessage());

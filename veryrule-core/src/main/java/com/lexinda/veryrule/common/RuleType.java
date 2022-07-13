@@ -6,7 +6,7 @@ package com.lexinda.veryrule.common;
  *
  */
 public class RuleType {
-	public static final String CONDATION = "CONDATION";
-	public static final String ACTION = "ACTION";
-	public static final String RESULT_ACTION = "RESULT_ACTION";
+	public static final int CONDATION = 1;
+	public static final int RESULT_CONDATION = 2;
+	public static final int ACTION = 3;
 }

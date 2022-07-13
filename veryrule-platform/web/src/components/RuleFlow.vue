@@ -77,6 +77,7 @@
 				</div>
 				
 				<div style="margin-top: 5px;">
+					<el-button size="small" type="primary" @click="showTest(scope.$index, scope.row)">测试</el-button>
 					<el-button size="small" type="primary" @click="showScene(scope.$index, scope.row)">场景</el-button>
 				</div>
 				
@@ -110,6 +111,22 @@
 		<FlowCopy :veryFlowAllData="veryFlowAllData" :veryFlowtempletCopyData = "veryFlowtempletCopyData"
 		 @cancelFlowCopy="cancelFlowCopy" @successFlowCopy="successFlowCopy"></FlowCopy>
 	</el-dialog>
+	
+	<el-dialog v-model="templetTestVisible" destroy-on-close width="500px">
+		<div style="max-height: 500px;overflow-y: scroll;">
+			<div v-for="(item,index) in templetTestResult" style="width: 400px;">
+				<div style=" text-align: center;width: 200px;height: 40px;float: left;">
+					<span >{{item.ruleCode}}</span><br>
+					<span >{{item.ruleName}}</span>
+				</div>
+				<div style=" text-align: center;width: 200px;height: 40px;float: left;">
+					<span style="line-height: 40px;height: 40px;" v-if="item.success">成功</span>
+					<span style="line-height: 40px;height: 40px;color:red;" v-else>失败</span>
+				</div>
+			</div>
+		</div>
+	</el-dialog>
+	
 	<el-dialog v-model="veryFlowtempletSceneVisible" destroy-on-close width="800px">
 		<FlowScene :veryFlowSceneData="veryFlowSceneData" @cancelFlowScene="cancelFlowScene"></FlowScene>
 	</el-dialog>
@@ -436,6 +453,37 @@
 
 	const cancelFlowCopy = () => {
 		veryFlowtempletCopyVisible.value = false
+	}
+	
+	const templetTestVisible = ref(false)
+	const templetTestResult = ref([])
+	const showTest = (index: number, row: RuleFlow)=>{
+		const param = {
+			"ruleFlowTempletCode": row.ruleFlowTempletCode
+		}
+		post("/api/testVeryRuleFlow", param, (data) => {
+			templetTestResult.value = []
+			if (data.errorCode == 0) {
+				templetTestVisible.value = true
+				const result = data.body;
+				for(var ruleCode in result){
+					const ruleName = result[ruleCode]
+					var resultData = {
+						"ruleCode":ruleCode,
+						"ruleName":ruleName,
+						"success":true
+					}
+					if(ruleName == ''){
+						resultData.success = false
+					}
+					
+					templetTestResult.value.push(resultData)
+				}
+				console.log(templetTestResult)
+			}else{
+				ElMessage.error(data.errorDesc)
+			}
+		});
 	}
 	
 	const veryFlowtempletSceneVisible = ref(false)

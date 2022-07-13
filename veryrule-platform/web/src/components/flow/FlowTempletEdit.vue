@@ -268,7 +268,7 @@
 				templetTestVisible.value = true
 				for(var index in tableData.value){
 					var success = false
-					if(data.body.result[tableData.value[index].ruleCode]!=null){
+					if(data.body[tableData.value[index].ruleCode]!=null){
 						success = true
 					}
 					const result = {

@@ -8,6 +8,7 @@ package com.lexinda.veryrule.base.condation;
 import java.util.Map;
 
 import com.lexinda.veryrule.annotation.Rule;
+import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.common.RuleType;
 import com.lexinda.veryrule.core.IRuleCondation;
 
@@ -16,10 +17,9 @@ public class RegexRuleCondation implements IRuleCondation {
 
 
 	@Override
-	public Map<String, Object> contation(Map<String, Object> param) throws Exception {
+	public <R extends RuleBo> void contation(Map<String, Object> param, R rule) throws Exception {
 		// TODO Auto-generated method stub
 		System.out.println("contation");
-		return null;
 	}
 
 }

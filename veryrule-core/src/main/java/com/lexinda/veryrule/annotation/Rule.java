@@ -26,7 +26,5 @@ public @interface Rule {
 
 	String desc() default "";
 
-	String type() default RuleType.ACTION;
-	
-	String[] condations() default "";
+	int type() default RuleType.CONDATION;
 }

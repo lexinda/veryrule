@@ -15,10 +15,10 @@ import java.util.Set;
 import com.lexinda.veryrule.annotation.Rule;
 import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.common.RuleType;
-import com.lexinda.veryrule.core.IRuleAction;
+import com.lexinda.veryrule.core.IRuleResultCondation;
 import com.lexinda.veryrule.core.IRuleCondation;
 import com.lexinda.veryrule.core.IRuleListener;
-import com.lexinda.veryrule.core.IRuleResultAction;
+import com.lexinda.veryrule.core.IRuleAction;
 import com.lexinda.veryrule.core.RuleResult;
 
 /**
@@ -43,7 +43,7 @@ public class VeryRule extends RuleEngine {
 	}
 	
 	public boolean isEmpty() {
-		if(builder.ruleActionMap.isEmpty()&&builder.ruleResultActionMap.isEmpty()&&builder.ruleCondationMap.isEmpty()) {
+		if(builder.ruleActionMap.isEmpty()&&builder.ruleResultCondationMap.isEmpty()&&builder.ruleCondationMap.isEmpty()) {
 			return true;
 		}else {
 			return false;
@@ -53,7 +53,7 @@ public class VeryRule extends RuleEngine {
 	public Map<String,Class<?>> allRule() {
 		Map<String,Class<?>> allRule = new HashMap<String,Class<?>>();
 		allRule.putAll(builder.ruleActionMap);
-		allRule.putAll(builder.ruleResultActionMap);
+		allRule.putAll(builder.ruleResultCondationMap);
 		allRule.putAll(builder.ruleCondationMap);
 		return allRule;
 	}
@@ -104,39 +104,52 @@ public class VeryRule extends RuleEngine {
 	 */
 	private <R extends RuleBo> RuleResult fireWithCondation(Map<String, Object> param, List<R> rules, boolean isTest)
 			throws Exception {
-		List<IRuleCondation> ruleCondations = new ArrayList<IRuleCondation>();
+		Map<R, List<IRuleCondation>> ruleCondations = new LinkedHashMap<R, List<IRuleCondation>>();
+		Map<R, List<IRuleResultCondation>> ruleResultCondations = new LinkedHashMap<R, List<IRuleResultCondation>>();
 		Map<R, IRuleAction> ruleActions = new LinkedHashMap<R, IRuleAction>();
-		Map<R, IRuleResultAction> ruleResultActions = new LinkedHashMap<R, IRuleResultAction>();
 		if (rules != null) {
-			Set<String> condationAnnotationList = new HashSet<String>();
+			List<IRuleCondation> condationList = new ArrayList<IRuleCondation>();
+			List<IRuleResultCondation> resultCondationList = new ArrayList<IRuleResultCondation>();
 			rules.stream().forEach(rule -> {
+				int ruleType = rule.getRuleType()==null?1:rule.getRuleType();
+				if(ruleType==1) {
+					IRuleCondation condationAction = (IRuleCondation) builder.ruleCondationMap.get(rule.getRuleCode());
+					if (condationAction != null) {
+						List<IRuleCondation> condationRuleList = new ArrayList<IRuleCondation>();
+						condationRuleList.add(condationAction);
+						ruleCondations.put(rule, condationRuleList);
+					}
+				}else if(ruleType==2) {
+					IRuleResultCondation resultCondationAction = (IRuleResultCondation) builder.ruleResultCondationMap.get(rule.getRuleCode());
+					if (resultCondationAction != null) {
+						List<IRuleResultCondation> resultCondationRuleList = new ArrayList<IRuleResultCondation>();
+						resultCondationRuleList.add(resultCondationAction);
+						ruleResultCondations.put(rule, resultCondationRuleList);
+					}
+				}else if(ruleType==3) {
+					IRuleAction ruleAction = (IRuleAction) builder.ruleActionMap.get(rule.getRuleCode());
+					if (ruleAction != null) {
+						ruleActions.put(rule, ruleAction);
+					}
+				}
 				if (rule.getRuleCondations() != null && rule.getRuleCondations().size() > 0) {
-					rule.getRuleCondations().stream().filter(condation -> condation != null && !"".equals(condation))
-							.forEach(condation -> condationAnnotationList.add(condation));
-				}
-			});
-			rules.stream().forEach(rule -> {
-				IRuleAction ruleAction = (IRuleAction) builder.ruleActionMap.get(rule.getRuleCode());
-				if (ruleAction != null) {
-					ruleActions.put(rule, ruleAction);
-					List<String> condationAnnotations = getCondationList(ruleAction.getClass());
-					if (condationAnnotations != null && condationAnnotations.size() > 0) {
-						condationAnnotationList.addAll(condationAnnotations);
+					rule.getRuleCondations().stream().forEach(ruleCondation -> {
+						int condationRuleType = ruleCondation.getRuleType()==null?1:ruleCondation.getRuleType();
+						if(condationRuleType==1) {
+							condationList.add((IRuleCondation) builder.ruleCondationMap.get(ruleCondation.getRuleCode()));
+						}else if(condationRuleType==2) {
+							resultCondationList.add((IRuleResultCondation) builder.ruleResultCondationMap.get(ruleCondation.getRuleCode()));
+						}
+					});
+					if(condationList.size()>0) {
+						ruleCondations.put(rule, condationList);
 					}
-				}
-				IRuleResultAction ruleResultAction = (IRuleResultAction) builder.ruleResultActionMap
-						.get(rule.getRuleCode());
-				if (ruleResultAction != null) {
-					ruleResultActions.put(rule, ruleResultAction);
-					List<String> condationAnnotations = getCondationList(ruleResultAction.getClass());
-					if (condationAnnotations != null) {
-						condationAnnotationList.addAll(condationAnnotations);
+					if(resultCondationList.size()>0) {
+						ruleResultCondations.put(rule, resultCondationList);
 					}
 				}
 			});
-			condationAnnotationList.stream().filter(condation -> condation != null && !"".equals(condation))
-					.forEach(condation -> ruleCondations.add((IRuleCondation) builder.ruleCondationMap.get(condation)));
-			return getResult(param, ruleCondations, ruleActions, ruleResultActions, isTest);
+			return getResult(param, ruleCondations, ruleResultCondations, ruleActions, isTest);
 		} else {
 			return null;
 		}
@@ -154,11 +167,11 @@ public class VeryRule extends RuleEngine {
 		return builder;
 	}
 	
-	public VeryRule resultAction(Class<? extends IRuleResultAction> clazz) throws Exception {
+	public VeryRule resultCondation(Class<? extends IRuleResultCondation> clazz) throws Exception {
 		if (clazz.isAnnotationPresent(Rule.class)) {
 			Rule rule = clazz.getAnnotation(Rule.class);
-			if (builder.ruleResultActionMap.get(rule.code()) == null) {
-				builder.ruleResultActionMap.put(rule.code(), clazz.getDeclaredConstructor().newInstance());
+			if (builder.ruleResultCondationMap.get(rule.code()) == null) {
+				builder.ruleResultCondationMap.put(rule.code(), clazz.getDeclaredConstructor().newInstance());
 			}
 		} else {
 			throw new Exception(clazz.getName() + " is not annotation present rule ");
@@ -197,27 +210,27 @@ public class VeryRule extends RuleEngine {
 			classList.stream().forEach(clazz->{
 				if (clazz.isAnnotationPresent(Rule.class)) {
 					Rule rule = clazz.getAnnotation(Rule.class);
-					if(RuleType.CONDATION.equals(rule.type())) {
+					if(RuleType.CONDATION == rule.type()) {
 						try {
 							builder.condation((Class<? extends IRuleCondation>) clazz);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
-					}else if(RuleType.ACTION.equals(rule.type())) {
+					}else if(RuleType.RESULT_CONDATION == rule.type()) {
 						try {
-							builder.action((Class<? extends IRuleAction>) clazz);
+							builder.resultCondation((Class<? extends IRuleResultCondation>) clazz);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
-					}else if(RuleType.RESULT_ACTION.equals(rule.type())) {
+					}else if(RuleType.ACTION == rule.type()) {
 						try {
-							builder.resultAction((Class<? extends IRuleResultAction>) clazz);
+							builder.action((Class<? extends IRuleAction>) clazz);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
 					}else {
 						try {
-							builder.action((Class<? extends IRuleAction>) clazz);
+							builder.condation((Class<? extends IRuleCondation>) clazz);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -237,8 +250,8 @@ public class VeryRule extends RuleEngine {
 	}
 	
 	private static void init() {
-		builder.ruleActionMap = new HashMap<String, IRuleAction>();
-		builder.ruleResultActionMap = new HashMap<String, IRuleResultAction>();
+		builder.ruleActionMap = new HashMap<String, IRuleResultCondation>();
+		builder.ruleResultCondationMap = new HashMap<String, IRuleAction>();
 		builder.ruleCondationMap = new HashMap<String, IRuleCondation>();
 	}
 	

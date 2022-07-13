@@ -6,6 +6,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.lexinda.veryrule.common.RuleType;
+
 /**
  * 
  * @author lexinda
@@ -19,5 +21,5 @@ public @interface VeryRuleSingle {
 	String ruleValue() default "";
 	String ruleKey() default "";
 	String ruleErrMsg() default "";
-	String[] ruleCondations() default "";
+	int ruleType() default RuleType.CONDATION;
 }

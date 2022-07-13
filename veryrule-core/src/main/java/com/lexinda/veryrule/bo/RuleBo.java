@@ -24,20 +24,30 @@ public class RuleBo {
 	 * 自定义错误信息
 	 */
 	protected String ruleErrMsg;
+	
+	/**
+	 * 规则类型
+	 * 1:条件
+	 * 2:带返回值的条件
+	 * 3:执行动作
+	 */
+	protected Integer ruleType;
+	
 	/**
 	 * 自定义条件
 	 */
-	protected List<String> ruleCondations;
+	protected List<RuleBo> ruleCondations;
 
 	public RuleBo() {
 	}
 
-	public RuleBo(String ruleCode, String ruleValue, String ruleKey, String ruleErrMsg,
-			List<String> ruleCondations) {
+	public RuleBo(String ruleCode, String ruleValue, String ruleKey, String ruleErrMsg,Integer ruleType,
+			List<RuleBo> ruleCondations) {
 		this.ruleCode = ruleCode;
 		this.ruleValue = ruleValue;
 		this.ruleKey = ruleKey;
 		this.ruleErrMsg = ruleErrMsg;
+		this.ruleType = ruleType;
 		this.ruleCondations = ruleCondations;
 	}
 
@@ -73,19 +83,26 @@ public class RuleBo {
 		this.ruleErrMsg = ruleErrMsg;
 	}
 
-	public List<String> getRuleCondations() {
+	public Integer getRuleType() {
+		return ruleType;
+	}
+
+	public void setRuleType(Integer ruleType) {
+		this.ruleType = ruleType;
+	}
+
+	public List<RuleBo> getRuleCondations() {
 		return ruleCondations;
 	}
 
-	public void setRuleCondations(List<String> ruleCondations) {
+	public void setRuleCondations(List<RuleBo> ruleCondations) {
 		this.ruleCondations = ruleCondations;
 	}
 
 	@Override
 	public String toString() {
-		return "RuleModel [ruleCode=" + ruleCode  + ", ruleValue=" + ruleValue + ", ruleKey="
-				+ ruleKey + ", ruleErrMsg=" + ruleErrMsg + ", ruleCondations=" + ruleCondations + "]";
+		return "RuleBo [ruleCode=" + ruleCode + ", ruleValue=" + ruleValue + ", ruleKey=" + ruleKey + ", ruleErrMsg="
+				+ ruleErrMsg + ", ruleType=" + ruleType + ", ruleCondations=" + ruleCondations + "]";
 	}
-
 
 }

@@ -7,6 +7,9 @@ package com.lexinda.veryrule.core;
  */
 import java.util.Map;
 
+import com.lexinda.veryrule.bo.RuleBo;
+
 public interface IRuleCondation {
-	Map<String, Object> contation(Map<String, Object> param) throws Exception;
+	<R extends RuleBo> void contation(Map<String, Object> param, R rule)
+			throws Exception;
 }

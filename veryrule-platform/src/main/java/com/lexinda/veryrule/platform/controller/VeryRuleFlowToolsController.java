@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 import com.lexinda.veryrule.VeryRule;
 import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.platform.model.VeryRuleFlowTempletModel;
@@ -32,8 +32,6 @@ public class VeryRuleFlowToolsController {
 
 	private static final Logger logger = LoggerFactory.getLogger(VeryRuleFlowToolsController.class);
 
-	private final int PAGE_SIZE = 10;
-	
 	@Autowired
 	private VeryRuleFlowTempletMbService veryRuleFlowTempletMbService;
 

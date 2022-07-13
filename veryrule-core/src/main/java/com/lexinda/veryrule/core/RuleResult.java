@@ -25,6 +25,10 @@ public class RuleResult{
 	public void addResult(String code,String name) {
 		this.result.put(code,name);
 	}
+	
+	public void addResultAll(Map<String,Object> result) {
+		this.result.putAll(result);
+	}
 
 	public Map<String, Object> getCondationResult() {
 		return condationResult;
@@ -32,6 +36,10 @@ public class RuleResult{
 
 	public void setCondationResult(Map<String, Object> condationResult) {
 		this.condationResult = condationResult;
+	}
+	
+	public void setCondationResultAll(Map<String,Object> condationResult) {
+		this.condationResult.putAll(condationResult);
 	}
 
 }

@@ -17,63 +17,76 @@ import com.lexinda.veryrule.bo.RuleBo;
 public class RuleInvoker extends RuleInvokerAbst{
 	
 	@Override
-	public void doRuleCondation(Map<String, Object> param, List<IRuleCondation> ruleCondations,IRuleListener ruleListener,boolean isTest) {
-		Map<String, Object> condationResultMap = new HashMap<String, Object>();
-		ruleCondations.stream().forEach(condation->{
+	public <R extends RuleBo> void doRuleCondation(Map<String, Object> param, Map<R, List<IRuleCondation>> ruleCondations,IRuleListener ruleListener,boolean isTest) {
+		ruleCondations.entrySet().stream().forEach(condation->{
 			try {
-				if(isTest) {
-					Rule rule = condation.getClass().getAnnotation(Rule.class);
-					ruleResult.addResult(rule.code(),rule.name());
-				}else {
-					RuleProxyHandler ruleTestHandler = new RuleProxyHandler(condation,ruleListener);
-					IRuleCondation subject = (IRuleCondation) Proxy.newProxyInstance(IRuleCondation.class.getClassLoader(), new Class<?>[] {IRuleCondation.class}, ruleTestHandler);
-					Map<String, Object> condationResult = (Map<String, Object>) subject.contation(param);
-					if (condationResult != null) {
-						condationResultMap.putAll(condationResult);
+				condation.getValue().stream().forEach(condationAction->{
+					try {
+						RuleProxyHandler ruleHandler = new RuleProxyHandler(condationAction,ruleListener);
+						if(isTest) {
+							Map<String, Object> testResult = getTestResult(ruleHandler,condation.getKey());
+							if(testResult!=null) {
+								ruleResult.addResultAll(testResult);
+							}
+						}else {
+							IRuleCondation subject = (IRuleCondation) Proxy.newProxyInstance(IRuleCondation.class.getClassLoader(), new Class<?>[] {IRuleCondation.class}, ruleHandler);
+							subject.contation(param,condation.getKey());
+						}
+					}catch(Exception e) {
+						throw new RuntimeException(e.getMessage());
 					}
-				}
-				
+				});
 			}catch(Exception e) {
 				throw new RuntimeException(e.getMessage());
 			}
-			
+		});
+	}
+
+	@Override
+	public <R extends RuleBo> void doRuleResultCondation(Map<String, Object> param, Map<R, List<IRuleResultCondation>> ruleCondations,IRuleListener ruleListener,boolean isTest) {
+		Map<String, Object> condationResultMap = new HashMap<String, Object>();
+		ruleCondations.entrySet().stream().forEach(condation->{
+			try {
+				condation.getValue().stream().forEach(condationAction->{
+					try {
+						RuleProxyHandler ruleHandler = new RuleProxyHandler(condationAction,ruleListener);
+						if(isTest) {
+							Map<String, Object> testResult = getTestResult(ruleHandler,condation.getKey());
+							if(testResult!=null) {
+								ruleResult.addResultAll(testResult);
+							}
+						}else {
+							IRuleResultCondation subject = (IRuleResultCondation) Proxy.newProxyInstance(IRuleResultCondation.class.getClassLoader(), new Class<?>[] {IRuleResultCondation.class}, ruleHandler);
+							Map<String, Object> condationResult = (Map<String, Object>) subject.contation(param,condation.getKey());
+							if (condationResult != null) {
+								condationResultMap.putAll(condationResult);
+							}
+						}
+					}catch(Exception e) {
+						throw new RuntimeException(e.getMessage());
+					}
+				});
+			}catch(Exception e) {
+				throw new RuntimeException(e.getMessage());
+			}
 		});
 		ruleResult.setCondationResult(condationResultMap);
 	}
 
 	@Override
-	public <R extends RuleBo> void doRuleAction(Map<String, Object> param, Map<R, IRuleAction> ruleActions,IRuleListener ruleListener,boolean isTest) {
-		ruleActions.entrySet().stream().forEach(action->{
-			try {
-				if(isTest) {
-					Rule rule = action.getValue().getClass().getAnnotation(Rule.class);
-					ruleResult.addResult(rule.code(),rule.name());
-				}else {
-					RuleProxyHandler ruleTestHandler = new RuleProxyHandler(action.getValue(),ruleListener);
-					IRuleAction subject = (IRuleAction) Proxy.newProxyInstance(IRuleAction.class.getClassLoader(), new Class<?>[] {IRuleAction.class}, ruleTestHandler);
-					subject.action(param, ruleResult.getCondationResult(), action.getKey());
-				}
-			}catch(InvocationTargetException e) {
-				throw new RuntimeException(e.getTargetException().getMessage());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				throw new RuntimeException(e.getMessage());
-			}
-		});
-	}
-
-	@Override
-	public <R extends RuleBo> void doRuleResultAction(Map<String, Object> param,
-			Map<R, IRuleResultAction> ruleResultActions,IRuleListener ruleListener,boolean isTest) {
+	public <R extends RuleBo> void doRuleAction(Map<String, Object> param,
+			Map<R, IRuleAction> ruleResultActions,IRuleListener ruleListener,boolean isTest) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		ruleResultActions.entrySet().stream().forEach(action->{
 			try {
+				RuleProxyHandler ruleHandler = new RuleProxyHandler(action.getValue(),ruleListener);
 				if(isTest) {
-					Rule rule = action.getValue().getClass().getAnnotation(Rule.class);
-					ruleResult.addResult(rule.code(),rule.name());
+					Map<String, Object> testResult = getTestResult(ruleHandler, action.getKey());
+					if(testResult!=null) {
+						ruleResult.addResultAll(testResult);
+					}
 				}else {
-					RuleProxyHandler ruleTestHandler = new RuleProxyHandler(action.getValue(),ruleListener);
-					IRuleResultAction subject = (IRuleResultAction) Proxy.newProxyInstance(IRuleResultAction.class.getClassLoader(), new Class<?>[] {IRuleResultAction.class}, ruleTestHandler);
+					IRuleAction subject = (IRuleAction) Proxy.newProxyInstance(IRuleAction.class.getClassLoader(), new Class<?>[] {IRuleAction.class}, ruleHandler);
 					Map<String, Object> resultData = (Map<String, Object>)subject.action(param, ruleResult.getCondationResult(), action.getKey());
 					if (resultData != null) {
 						resultMap.putAll(resultData);
@@ -87,6 +100,16 @@ public class RuleInvoker extends RuleInvokerAbst{
 			ruleResult.setResult(resultMap);
 		}
 	}
-
+	
+	public <R extends RuleBo> Map<String,Object> getTestResult(RuleProxyHandler ruleHandler,R rule) {
+		Map<String, Object> testResult = new HashMap<String, Object>();
+		try {
+			IRuleTest subject = (IRuleTest) Proxy.newProxyInstance(IRuleTest.class.getClassLoader(), new Class<?>[] {IRuleTest.class}, ruleHandler);
+			testResult = (Map<String, Object>) subject.ruleTest(rule);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return testResult;
+	}
 
 }
