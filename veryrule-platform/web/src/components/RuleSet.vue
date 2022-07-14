@@ -2,9 +2,9 @@
 	<el-row>
 		<el-col :span="3">
 			<el-tabs :tab-position="tabPosition" style="height: 90vh;" type="border-card" @tab-click="tabClick">
-				<el-tab-pane label="执行规则(Action)">
-				</el-tab-pane>
 				<el-tab-pane label="执行条件(Condation)">
+				</el-tab-pane>
+				<el-tab-pane label="执行动作(Action)">
 				</el-tab-pane>
 			</el-tabs>
 		</el-col>
@@ -17,8 +17,14 @@
 					<el-form-item label="规则名" prop="ruleName">
 						<el-input v-model="rule.ruleName" placeholder="请输入规则名"></el-input>
 					</el-form-item>
-					<el-form-item label="组名" prop="groupName" v-if="ruleType == 1">
+					<el-form-item label="组名" prop="groupName">
 						<el-input v-model="rule.groupName" placeholder="请输入组名"></el-input>
+					</el-form-item>
+					<el-form-item label="规则类型" prop="ruleType" v-if="ruleType == 9 || ruleType == 1 || ruleType == 2">
+						<el-select v-model="rule.ruleType" clearable placeholder="请选择类型" @change="handleConditionChange" style="width: 240px">
+							<el-option  key="1" label="无返回值" value="1" />
+							<el-option  key="2" label="有返回值" value="2" />
+						</el-select>
 					</el-form-item>
 					<el-form-item>
 						<el-button type="primary" @click="searchRule">查询</el-button>
@@ -26,24 +32,27 @@
 					</el-form-item>
 				</el-form>
 			</el-row>
+			<i v-if="ruleType == 9 || ruleType == 1 || ruleType == 2" style="font-size:10px;color:#aaaaaa;">
+				<el-icon>
+				    <Flag />
+				  </el-icon>:有返回值
+			</i>
 			<el-table :data="ruleTableData" border style="width: 100%">
 				<el-table-column label="规则" align="center">
 					<template #default="scope">
 						<div style="text-align: center">
 							{{ scope.row.ruleName }}
+							<el-icon v-if="scope.row.ruleType == 2">
+							    <Flag />
+							  </el-icon>
 						</div>
 						<div style="text-align: center">
 							({{ scope.row.ruleCode }})
 						</div>
 					</template>
 				</el-table-column>
-				<el-table-column label="分组" prop="groupName" v-if="ruleType == 1"></el-table-column>
-				<el-table-column label="默认值" prop="ruleValue" v-if="ruleType == 1"></el-table-column>
-				<el-table-column label="执行条件" v-if="ruleType == 1">
-					<template #default="scope">
-						<div style="margin-left: 10px" v-for="(item,index) in scope.row.ruleCondations">{{item}}</div>
-					</template>
-				</el-table-column>
+				<el-table-column label="分组" prop="groupName"></el-table-column>
+				<el-table-column label="默认值" prop="ruleValue"></el-table-column>
 				<el-table-column label="描述">
 					<template #default="scope">
 						<el-popover effect="light" trigger="hover" placement="top" width="auto">
@@ -86,6 +95,10 @@
 <script lang="ts" setup>
 	import RuleEdit from "./rule/RuleEdit.vue"
 	import {
+		Flag,
+		Key
+	} from '@element-plus/icons-vue'
+	import {
 		ElMessage
 	} from 'element-plus'
 	import post from "../axios/post.js";
@@ -100,12 +113,12 @@
 
 	/* tab */
 	const tabPosition = ref('left')
-	const ruleType = ref(1)
+	const ruleType = ref(9)
 	const tabClick = (target: string) => {
-		if (target.index == 1) {
-			ruleType.value = 2
+		if (target.index == 0) {
+			ruleType.value = 9
 		} else {
-			ruleType.value = 1
+			ruleType.value = 3
 		}
 		ruleTableData.value = []
 		pageCurrent.value = 1
@@ -115,7 +128,7 @@
 	const rule = ref({
 		ruleCode: "",
 		ruleName: "",
-		groupName: ""
+		groupName: "",
 	})
 
 	const ruleActionFormRef = ref()
@@ -126,8 +139,8 @@
 	}
 
 	const addRule = () => {
-		if(ruleType==1){
-			ruleEditTitle.value = "新增执行规则"
+		if(ruleType==3){
+			ruleEditTitle.value = "新增执行动作"
 		}else{
 			ruleEditTitle.value = "新增执行条件"
 		}
@@ -137,10 +150,11 @@
 			"ruleCode": "",
 			"ruleName": "",
 			"ruleValue": "",
-			"ruleCondation": "",
-			"ruleCondations": [],
 			"ruleDesc": "",
 			"ruleType": ruleType.value
+		}
+		if(ruleType.value==9){
+			currentRuleData.value.ruleType="1"
 		}
 	}
 	/* table */
@@ -148,17 +162,24 @@
 		ruleCode: string
 		ruleName: string
 		ruleValue: string
-		ruleCondation: string
-		ruleCondations: Array
-		ruleDesc: string
+		ruleDesc: string,
+		ruleType:number
 	}
 	const ruleTableData: Rule[] = ref([])
 	const currentRuleData = ref({})
+	const handleConditionChange = (value)=>{
+		if(value == ''){
+			ruleType.value = 9
+		}else{
+			ruleType.value = value
+		}
+	}
 	const getVeryRuleElementList = () => {
 		const param = {
 			"ruleCode": ruleActionFormRef.value["model"].ruleCode,
 			"ruleName": ruleActionFormRef.value["model"].ruleName,
 			"groupName": ruleActionFormRef.value["model"].groupName,
+			"ruleType": ruleType.value,
 			"currentPage": pageCurrent.value,
 			"pageSize": pageSize.value,
 			"ruleType": ruleType.value
@@ -175,6 +196,7 @@
 		});
 	}
 	const handleEdit = (index: number, row: User) => {
+		row.ruleType = String(row.ruleType)
 		currentRuleData.value = row
 		ruleEditTitle.value = "编辑规则"
 		ruleEditVisible.value = true

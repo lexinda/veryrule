@@ -57,7 +57,13 @@ public class VeryRuleElementController {
 					pageSize == null ? PAGE_SIZE : pageSize);
 
 			Map<String, Object> dataParam = new HashMap<String, Object>();
-			dataParam.put("ruleType", param.getString("ruleType"));
+			Integer ruleType = param.getInteger("ruleType");
+			if(ruleType==9) {
+				dataParam.put("ruleTypes", new int[] {1,2});
+			}else {
+				dataParam.put("ruleType", ruleType);
+			}
+			
 			String ruleCode = param.getString("ruleCode");
 			if (StringUtils.isNotBlank(ruleCode)) {
 				dataParam.put("ruleCode", param.getString("ruleCode"));
@@ -203,7 +209,6 @@ public class VeryRuleElementController {
 			res.setErrorCode(0);
 		} catch (Exception e) {
 			logger.error(e.getMessage());
-			;
 			res.setErrorDesc(e.getMessage());
 		}
 		res.setElapsedTime(System.currentTimeMillis() - res.getElapsedTime());
@@ -227,6 +232,7 @@ public class VeryRuleElementController {
 			dataParam.put("ruleValue", param.getString("ruleValue"));
 			dataParam.put("ruleCondation", param.getString("ruleCondation"));
 			dataParam.put("ruleDesc", param.getString("ruleDesc"));
+			dataParam.put("ruleType", param.getInteger("ruleType"));
 			dataParam.put("groupName", param.getString("groupName"));
 			Map<String, Object> dataIdParam = new HashMap<String, Object>();
 			dataIdParam.put("id", id);

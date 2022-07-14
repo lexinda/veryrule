@@ -1,9 +1,9 @@
 package com.lexinda.veryrule.platform.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.lexinda.veryrule.bo.RuleBo;
 
 /**
@@ -12,6 +12,7 @@ import com.lexinda.veryrule.bo.RuleBo;
  *
  */
 public class VeryRuleElementModel extends RuleBo{
+	@TableId(value = "id", type = IdType.AUTO)
 	private Integer id;
 	private String ruleName;
 	private String ruleDesc;

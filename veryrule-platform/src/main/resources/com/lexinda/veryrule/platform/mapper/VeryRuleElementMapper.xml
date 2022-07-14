@@ -8,7 +8,6 @@
         <result column="rule_name" property="ruleName" jdbcType="VARCHAR"/>
         <result column="rule_value" property="ruleValue" jdbcType="VARCHAR"/>
         <result column="rule_key" property="ruleKey" jdbcType="VARCHAR"/>
-        <result column="rule_condation" property="ruleCondation" jdbcType="VARCHAR"/>
 		<result column="rule_err_msg" property="ruleErrMsg" jdbcType="VARCHAR"/>
         <result column="rule_desc" property="ruleDesc" jdbcType="VARCHAR"/>
         <result column="rule_type" property="ruleType" jdbcType="VARCHAR"/>
@@ -22,7 +21,7 @@
 
     <!-- 通用查询结果列-->
     <sql id="Base_Column_List">
-        id,rule_code,rule_name,rule_value,rule_key,rule_condation,rule_err_msg,
+        id,rule_code,rule_name,rule_value,rule_key,rule_err_msg,
         rule_desc,rule_type,group_name,version,create_id,create_time,update_id,update_time
     </sql>
     
@@ -33,6 +32,12 @@
             <if test="pm.ruleName != null">and rule_name = #{pm.ruleName,jdbcType=VARCHAR}</if>
             <if test="pm.groupName != null">and group_name = #{pm.groupName,jdbcType=VARCHAR}</if>
             <if test="pm.ruleType != null">and rule_type = #{pm.ruleType,jdbcType=TINYINT}</if>
+            <if test="pm.ruleTypes != null">
+				and rule_type in 
+			    <foreach collection="pm.ruleTypes" item="item" open="(" close=")" separator=",">
+			    #{item}
+			    </foreach>
+			</if>
             <if test="pm.version != null">and version = #{pm.version,jdbcType=TINYINT}</if>
         </where>
     </sql>
@@ -62,9 +67,6 @@
             </if>
             <if test="ruleKey != null">
                 rule_key,
-            </if>
-            <if test="ruleCondation != null">
-                rule_condation,
             </if>
             <if test="ruleErrMsg != null">
                 rule_err_msg,
@@ -110,9 +112,6 @@
             <if test="ruleKey != null">
                 #{ruleKey,jdbcType=VARCHAR},
             </if>
-            <if test="ruleCondation != null">
-                #{ruleCondation,jdbcType=VARCHAR},
-            </if>
             <if test="ruleErrMsg != null">
                 #{ruleErrMsg,jdbcType=VARCHAR},
             </if>
@@ -150,7 +149,7 @@
             <if test="pm.groupName != null">group_name= #{pm.groupName,jdbcType=VARCHAR},</if>
             <if test="pm.ruleValue != null">rule_value = #{pm.ruleValue,jdbcType=TINYINT},</if>
             <if test="pm.ruleKey != null">rule_key = #{pm.ruleKey,jdbcType=VARCHAR},</if>
-            <if test="pm.ruleCondation != null">rule_condation = #{pm.ruleCondation,jdbcType=VARCHAR},</if>
+            <if test="pm.ruleType != null">rule_type = #{pm.ruleType,jdbcType=VARCHAR},</if>
             <if test="pm.ruleErrMsg != null">rule_err_msg = #{pm.ruleErrMsg,jdbcType=VARCHAR},</if>
             <if test="pm.ruleDesc != null">rule_desc = #{pm.ruleDesc,jdbcType=VARCHAR},</if>
              <if test="pm.updateId != null">update_id = #{pm.updateId,jdbcType=VARCHAR},</if>

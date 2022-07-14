@@ -2,12 +2,16 @@ package com.lexinda.veryrule.platform.model;
 
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+
 /**
  * 
  * @author lexinda
  *
  */
 public class VeryRuleFlowTempletModel{
+	@TableId(value = "id", type = IdType.AUTO)
 	private Integer id;
 	private String ruleFlowTempletCode;
 	private String ruleFlowTemplet;

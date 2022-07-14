@@ -9,15 +9,17 @@
 		<el-form-item label="规则名" prop="ruleName" required>
 			<el-input v-model="ruleData.ruleName"></el-input>
 		</el-form-item>
-		<el-form-item label="组名" prop="groupName" v-if="ruleData.ruleType == 1">
+		<el-form-item label="规则类型" prop="ruleName" required v-if="ruleData.ruleType != 3">
+			<el-select v-model="ruleData.ruleType" @change="handleConditionChange" style="width: 240px">
+				<el-option  key="1" label="无返回值" value="1" />
+				<el-option  key="2" label="有返回值" value="2" />
+			</el-select>
+		</el-form-item>
+		<el-form-item label="组名" prop="groupName">
 			<el-input v-model="ruleData.groupName"></el-input>
 		</el-form-item>
-		<el-form-item label="默认值" prop="ruleValue" v-if="ruleData.ruleType == 1">
+		<el-form-item label="默认值" prop="ruleValue">
 			<el-input v-model="ruleData.ruleValue"></el-input>
-		</el-form-item>
-		<el-form-item label="执行条件" prop="ruleCondation" v-if="ruleData.ruleType == 1">
-			<el-input v-model="ruleData.ruleCondation" type="textarea"></el-input>
-			<font color="red">多个,隔开</font>
 		</el-form-item>
 		<el-form-item label="描述" prop="ruleDesc" required>
 			<el-input v-model="ruleData.ruleDesc" type="textarea"></el-input>
@@ -72,17 +74,19 @@
 		ruleEditFormRef.value.validate((valid: any, values) => {
 			if (valid) {
 				const id = ruleEditFormRef.value["model"].id
+				var ruleType = props.ruleData.ruleType
+				if(ruleType !=3){
+					ruleType = ruleEditFormRef.value["model"].ruleType
+				}
 				const param = {
 					"id": id,
 					"ruleCode": ruleEditFormRef.value["model"].ruleCode,
 					"ruleName": ruleEditFormRef.value["model"].ruleName,
 					"ruleValue": ruleEditFormRef.value["model"].ruleValue,
-					"ruleCondation": ruleEditFormRef.value["model"].ruleCondation,
 					"groupName": ruleEditFormRef.value["model"].groupName,
 					"ruleDesc": ruleEditFormRef.value["model"].ruleDesc,
-					"ruleType": props.ruleData.ruleType,
+					"ruleType": ruleType,
 				}
-				console.log(param)
 				if (id > 0) {
 					updateVeryrule(param)
 				} else {
