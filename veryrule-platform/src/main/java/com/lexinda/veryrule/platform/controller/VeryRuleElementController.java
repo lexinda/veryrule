@@ -58,7 +58,7 @@ public class VeryRuleElementController {
 
 			Map<String, Object> dataParam = new HashMap<String, Object>();
 			Integer ruleType = param.getInteger("ruleType");
-			if(ruleType==9) {
+			if(ruleType==12) {
 				dataParam.put("ruleTypes", new int[] {1,2});
 			}else {
 				dataParam.put("ruleType", ruleType);
@@ -89,7 +89,7 @@ public class VeryRuleElementController {
 	}
 
 	@RequestMapping(value = "/getVeryRuleElementMenu", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
-	@VeryRuleSingle(ruleCode = RuleCode.NOTNULL, ruleKey = "ruleType", ruleErrMsg = "不能为空")
+	@VeryRuleSingle(ruleCode = RuleCode.NOTNULL, ruleKey = "ruleMenu", ruleErrMsg = "不能为空")
 	public RestApiResponse getVeryRuleElementMenu(String data) throws Exception {
 		RestApiResponse res = new RestApiResponse();
 		res.setErrorCode(1);
@@ -97,8 +97,17 @@ public class VeryRuleElementController {
 		try {
 			JSONObject param = JSON.parseObject(data);
 			Map<String, Object> dataParam = new HashMap<String, Object>();
+			if(StringUtils.isNotBlank(param.getString("ruleType"))) {
+				int ruleType = param.getIntValue("ruleType");
+				if(ruleType==12) {
+					dataParam.put("ruleTypes", new int[] {1,2});
+				}else {
+					dataParam.put("ruleType", ruleType);
+				}
+			}
+			dataParam.put("orderRuleType",1);
 			List<VeryRuleElementModel> veryRuleElementList = veryRuleElementService.selectVeryRuleElementList(dataParam);
-			if (param.getInteger("ruleType") == 1) {
+			if (param.getInteger("ruleMenu") == 1) {
 				Set<String> groupNameSet = new HashSet<String>();
 				List<VeryRuleElementMenuModel> veryRuleElementMenuList = new ArrayList<VeryRuleElementMenuModel>();
 				veryRuleElementList.stream().forEach(vgr -> {
@@ -164,13 +173,6 @@ public class VeryRuleElementController {
 				veryRuleElementData.setRuleValue(ruleValue);
 			} else {
 				veryRuleElementData.setRuleValue("");
-			}
-			String ruleCondation = param.getString("ruleCondation");
-			List<RuleBo> ruleBoList = new ArrayList<RuleBo>();
-			if (StringUtils.isNotBlank(ruleCondation)) {
-				veryRuleElementData.setRuleCondations(ruleBoList);
-			} else {
-				veryRuleElementData.setRuleCondations(ruleBoList);
 			}
 			String ruleDesc = param.getString("ruleDesc");
 			if (StringUtils.isNotBlank(ruleDesc)) {

@@ -28,7 +28,6 @@
 		  `rule_name` varchar(30) NOT NULL DEFAULT '',
 		  `rule_value` varchar(50) NOT NULL DEFAULT '',
           `rule_key` varchar(50) NOT NULL DEFAULT '',
-		  `rule_condation` varchar(200) NOT NULL DEFAULT '',
 		  `rule_err_msg` varchar(50) NOT NULL DEFAULT '',
 		  `rule_desc` text NOT NULL,
 		  `group_name` varchar(30) NOT NULL DEFAULT '',

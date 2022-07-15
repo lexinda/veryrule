@@ -47,7 +47,14 @@
         <include refid="Base_Column_List"></include>
         FROM very_rule_element
         <include refid="Base_Condition"></include>
-        order by create_time desc
+        <choose>
+        	<when test="pm.orderRuleType != null">
+        		order by rule_type asc,create_time desc
+        	</when>
+        	<otherwise>
+        		order by create_time desc
+        	</otherwise>
+        </choose>
     </select>
     
     <insert id="insert" parameterType="com.lexinda.veryrule.platform.model.VeryRuleElementModel">

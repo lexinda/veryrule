@@ -1,17 +1,33 @@
 <template>
 	<el-row class="tac">
 		<el-col :span="17">
-			<el-table :data="tableData" style="width: 100%;height:80vh" border>
-				<el-table-column label="规则名称" align="center">
+			<i style="font-size:10px;color:#aaaaaa;">
+				<el-icon>
+				    <Bell />
+				  </el-icon>:条件(无返回值)
+				  <el-icon>
+				      <BellFilled />
+				    </el-icon>:条件(有返回值)
+					<el-icon>
+					    <Promotion />
+					  </el-icon>:动作
+			</i>
+			<el-table :data="tableCondationData" style="width: 100%;" border>
+				<el-table-column label="(无返回值)条件规则名称" align="center">
 					<template #default="scope">
-						<div>{{ scope.row.ruleCode }}</div>
+						<div>{{ scope.row.ruleCode }}
+						<el-icon v-if="scope.row.ruleType == 1">
+						    <Bell />
+						  </el-icon>
+						  <el-icon v-if="scope.row.ruleType == 2">
+						      <BellFilled />
+						    </el-icon>
+							<el-icon v-if="scope.row.ruleType == 3">
+							    <Promotion />
+							  </el-icon>
+						</div>
 						<el-popover effect="light" trigger="hover" placement="top" width="auto">
-							<template #default>
-								<div>{{ scope.row.ruleDesc }}</div>
-							</template>
-							<template #reference>
-								<el-tag>({{ scope.row.ruleName }})</el-tag>
-							</template>
+							<el-tag>({{ scope.row.ruleName }})</el-tag>
 						</el-popover>
 					</template>
 				</el-table-column>
@@ -19,10 +35,57 @@
 				</el-table-column>
 				<el-table-column label="默认值" prop="ruleValue">
 				</el-table-column>
-				<el-table-column label="执行条件">
+				<el-table-column label="异常提示" prop="ruleErrMsg">
+				</el-table-column>
+			</el-table>
+			<el-table :data="tableResultCondationData" style="width: 100%;" border>
+				<el-table-column label="(有返回值)条件规则名称" align="center">
 					<template #default="scope">
-			  	<div v-for="(item,index) in scope.row.ruleCondations">{{ item }}</div>
+						<div>{{ scope.row.ruleCode }}
+						<el-icon v-if="scope.row.ruleType == 1">
+						    <Bell />
+						  </el-icon>
+						  <el-icon v-if="scope.row.ruleType == 2">
+						      <BellFilled />
+						    </el-icon>
+							<el-icon v-if="scope.row.ruleType == 3">
+							    <Promotion />
+							  </el-icon>
+						</div>
+						<el-popover effect="light" trigger="hover" placement="top" width="auto">
+							<el-tag>({{ scope.row.ruleName }})</el-tag>
+						</el-popover>
 					</template>
+				</el-table-column>
+				<el-table-column label="指定入参key" prop="ruleKey">
+				</el-table-column>
+				<el-table-column label="默认值" prop="ruleValue">
+				</el-table-column>
+				<el-table-column label="异常提示" prop="ruleErrMsg">
+				</el-table-column>
+			</el-table>
+			<el-table :data="tableActionData" style="width: 100%;" border>
+				<el-table-column label="(执行动作)规则名称" align="center">
+					<template #default="scope">
+						<div>{{ scope.row.ruleCode }}
+						<el-icon v-if="scope.row.ruleType == 1">
+						    <Bell />
+						  </el-icon>
+						  <el-icon v-if="scope.row.ruleType == 2">
+						      <BellFilled />
+						    </el-icon>
+							<el-icon v-if="scope.row.ruleType == 3">
+							    <Promotion />
+							  </el-icon>
+						</div>
+						<el-popover effect="light" trigger="hover" placement="top" width="auto">
+							<el-tag>({{ scope.row.ruleName }})</el-tag>
+						</el-popover>
+					</template>
+				</el-table-column>
+				<el-table-column label="指定入参key" prop="ruleKey">
+				</el-table-column>
+				<el-table-column label="默认值" prop="ruleValue">
 				</el-table-column>
 				<el-table-column label="异常提示" prop="ruleErrMsg">
 				</el-table-column>
@@ -31,7 +94,7 @@
 		<el-col :span="7">
 			<div style="height:80vh;">
 				<el-row class="mb-4">
-					<el-button type="primary" @click="handleTempletTest">测试</el-button>
+					<el-button style="margin-left:5px;" type="primary" @click="handleTempletTest">测试</el-button>
 				</el-row>
 				<div style="height:80vh;overflow-y:scroll;margin-top: 10px;">
 					<json-viewer :value="jsonData" box sort :expandDepth="9" />
@@ -41,14 +104,14 @@
 	</el-row>
 	<el-dialog v-model="templetTestVisible" destroy-on-close width="500px" @close="templetTestClose">
 		<div style="max-height: 500px;overflow-y: scroll;">
-			<div v-for="(item,index) in templetTestResult" style="width: 400px;">
-				<div style=" text-align: center;width: 200px;height: 40px;float: left;">
+			<div v-for="(item,index) in templetTestResult" style="width: 460px;border-bottom: 1px dotted #aaaaaa;height: 40px;padding:5px 0px;">
+				<div style=" text-align: center;width: 200px;float: left;">
 					<span >{{item.ruleCode}}</span><br>
 					<span >{{item.ruleName}}</span>
 				</div>
-				<div style=" text-align: center;width: 200px;height: 40px;float: left;">
-					<span style="line-height: 40px;height: 40px;" v-if="item.success">成功</span>
-					<span style="line-height: 40px;height: 40px;color:red;" v-else>失败</span>
+				<div style=" text-align: center;width: 200px;float: left;line-height: 40px;">
+					<span style="" v-if="item.success">成功</span>
+					<span style="color:red;" v-else>失败</span>
 				</div>
 			</div>
 		</div>
@@ -61,7 +124,11 @@
 		onMounted,
 		nextTick
 	} from 'vue'
-	
+	import {
+			Bell,
+			BellFilled,
+			Promotion
+		} from '@element-plus/icons-vue'
 	import post from "../../axios/post.js";
 	
 	const props = defineProps < {
@@ -72,25 +139,26 @@
 	const templetTestResult = ref([])
 	const handleTempletTest = ()=>{
 		const param = {
-			"ruleFlowTemplet": tableData.value
+			"ruleFlowTemplet": jsonData.value
 		}
 		post("/api/testVeryRuleFlow", param, (data) => {
 			templetTestResult.value = []
 			if (data.errorCode == 0) {
 				templetTestVisible.value = true
-				for(var index in tableData.value){
-					var success = false
-					if(data.body[tableData.value[index].ruleCode]!=null){
-						success = true
+				const result = data.body;
+				for(var ruleCode in result){
+					const ruleName = result[ruleCode]
+					var resultData = {
+						"ruleCode":ruleCode,
+						"ruleName":ruleName,
+						"success":true
 					}
-					const result = {
-						"ruleCode":tableData.value[index].ruleCode,
-						"ruleName":tableData.value[index].ruleName,
-						"success":success
+					if(ruleName == ''){
+						resultData.success = false
 					}
-					templetTestResult.value.push(result)
+					
+					templetTestResult.value.push(resultData)
 				}
-				console.log(templetTestResult)
 			}else{
 				ElMessage.error(data.errorDesc)
 			}
@@ -111,7 +179,11 @@
 		ruleDesc: string
 	}
 
-	const tableData: RuleData[] = ref(props.ruleFlowTemplet.ruleFlowTemplet)
+	const tableCondationData: RuleData[] = ref(props.ruleFlowTemplet.ruleFlowTemplet.filter(item => item.ruleType == 1))
+	
+	const tableResultCondationData : RuleData[] = ref(props.ruleFlowTemplet.ruleFlowTemplet.filter(item => item.ruleType == 2)) 
+	
+	const tableActionData: RuleData[] = ref(props.ruleFlowTemplet.ruleFlowTemplet.filter(item => item.ruleType == 3))
 
-	const jsonData = ref(tableData.value)
+	const jsonData = ref(props.ruleFlowTemplet.ruleFlowTemplet)
 </script>

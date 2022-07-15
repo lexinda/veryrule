@@ -114,14 +114,14 @@
 	
 	<el-dialog v-model="templetTestVisible" destroy-on-close width="500px">
 		<div style="max-height: 500px;overflow-y: scroll;">
-			<div v-for="(item,index) in templetTestResult" style="width: 400px;">
-				<div style=" text-align: center;width: 200px;height: 40px;float: left;">
+			<div v-for="(item,index) in templetTestResult" style="width: 460px;border-bottom: 1px dotted #aaaaaa;height: 40px;padding:5px 0px;">
+				<div style=" text-align: center;width: 200px;float: left;">
 					<span >{{item.ruleCode}}</span><br>
 					<span >{{item.ruleName}}</span>
 				</div>
-				<div style=" text-align: center;width: 200px;height: 40px;float: left;">
-					<span style="line-height: 40px;height: 40px;" v-if="item.success">成功</span>
-					<span style="line-height: 40px;height: 40px;color:red;" v-else>失败</span>
+				<div style=" text-align: center;width: 200px;float: left;line-height: 40px;">
+					<span style="" v-if="item.success">成功</span>
+					<span style="color:red;" v-else>失败</span>
 				</div>
 			</div>
 		</div>
@@ -479,7 +479,6 @@
 					
 					templetTestResult.value.push(resultData)
 				}
-				console.log(templetTestResult)
 			}else{
 				ElMessage.error(data.errorDesc)
 			}

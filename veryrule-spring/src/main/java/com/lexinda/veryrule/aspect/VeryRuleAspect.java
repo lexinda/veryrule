@@ -1,7 +1,6 @@
 package com.lexinda.veryrule.aspect;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +17,7 @@ import com.lexinda.veryrule.VeryRule;
 import com.lexinda.veryrule.annotation.VeryRuleFlow;
 import com.lexinda.veryrule.annotation.VeryRuleSingle;
 import com.lexinda.veryrule.bo.RuleBo;
+import com.lexinda.veryrule.core.RuleResult;
 import com.lexinda.veryrule.vo.RestApiResponse;
 
 /**
@@ -37,9 +37,13 @@ public class VeryRuleAspect {
 		Object result= null;
 		Signature signature = proceedingJoinPoint.getSignature();
 		MethodSignature methodSignature = (MethodSignature) signature;
-		RuleBo ruleModel = new RuleBo(veryRuleSingle.ruleCode(),veryRuleSingle.ruleValue(),veryRuleSingle.ruleKey(),veryRuleSingle.ruleErrMsg(),veryRuleSingle.ruleType(),null);
+		RuleBo ruleModel = new RuleBo(veryRuleSingle.ruleCode(),veryRuleSingle.ruleValue(),veryRuleSingle.ruleKey(),veryRuleSingle.ruleErrMsg(),veryRuleSingle.ruleType());
 		try{
-			veryRule.fire(getParam(methodSignature,proceedingJoinPoint.getArgs()),ruleModel);
+			RuleResult ruleResult = veryRule.fire(getParam(methodSignature,proceedingJoinPoint.getArgs()),ruleModel);
+			Object[] args = proceedingJoinPoint.getArgs();
+			if(args.length==2) {
+				args[1] = ruleResult;
+			}
 			result=(Object) proceedingJoinPoint.proceed();
 		}catch(Exception e) {
 			RestApiResponse res = new RestApiResponse();
@@ -57,7 +61,11 @@ public class VeryRuleAspect {
 		Signature signature = proceedingJoinPoint.getSignature();
 		MethodSignature methodSignature = (MethodSignature) signature;
 		try{
-			veryRule.fire(getParam(methodSignature,proceedingJoinPoint.getArgs()),getRuleFlow(veryRuleFlow.ruleFlowCode()));
+			RuleResult ruleResult = veryRule.fire(getParam(methodSignature,proceedingJoinPoint.getArgs()),getRuleFlow(veryRuleFlow.ruleFlowCode()));
+			Object[] args = proceedingJoinPoint.getArgs();
+			if(args.length==2) {
+				args[1] = ruleResult;
+			}
 			result=(Object) proceedingJoinPoint.proceed();
 		}catch(Exception e) {
 			RestApiResponse res = new RestApiResponse();

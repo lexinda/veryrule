@@ -31,6 +31,7 @@
             <if test="pm.ruleFlowCode != null">and rule_flow_code = #{pm.ruleFlowCode,jdbcType=VARCHAR}</if>
             <if test="pm.parentRuleFlowCode!= null">and parent_rule_flow_code = #{pm.parentRuleFlowCode,jdbcType=VARCHAR}</if>
             <if test="pm.parentRuleFlowInfo!= null">and (parent_rule_flow_code = #{pm.parentRuleFlowInfo,jdbcType=VARCHAR} or rule_flow_code = #{pm.parentRuleFlowInfo,jdbcType=VARCHAR})</if>
+            <if test="pm.status!= null">and status = #{pm.status,jdbcType=TINYINT}</if>
             <if test="pm.parentRuleFlowCodes!= null">
 				and parent_rule_flow_code in 
 				    <foreach collection="pm.parentRuleFlowCodes" item="item" open="(" close=")" separator=",">

@@ -50,4 +50,7 @@
 		border:none;
 		box-shadow:none;
 	}
+	.el-dialog__body{
+		padding:5px;
+	}
 </style>

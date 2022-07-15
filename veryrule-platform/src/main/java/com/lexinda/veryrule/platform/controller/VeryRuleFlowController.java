@@ -31,6 +31,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lexinda.veryrule.VeryRule;
+import com.lexinda.veryrule.annotation.VeryRuleFlow;
 import com.lexinda.veryrule.annotation.VeryRuleSingle;
 import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.common.RuleCode;
@@ -79,8 +80,8 @@ public class VeryRuleFlowController {
 
 	@RequestMapping(value = "/getVeryRuleFlowPage", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 //	@VeryRuleFlow(ruleFlowCode = "test")
-//	@VeryRuleSingle(ruleCode = RuleCode.NOTNULL, ruleKey = "parentRuleFlowCode,currentPage", ruleErrMsg = "不能为空")
-	public RestApiResponse getVeryRuleFlowPage(String data) throws Exception {
+	@VeryRuleSingle(ruleCode = RuleCode.NOTNULL, ruleKey = "parentRuleFlowCode,currentPage", ruleErrMsg = "不能为空")
+	public RestApiResponse getVeryRuleFlowPage(String data,RuleResult ruleResult) throws Exception {
 		RestApiResponse res = new RestApiResponse();
 		res.setErrorCode(1);
 		res.setElapsedTime(System.currentTimeMillis());

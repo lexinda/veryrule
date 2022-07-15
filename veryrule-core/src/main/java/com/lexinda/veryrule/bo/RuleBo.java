@@ -33,22 +33,15 @@ public class RuleBo {
 	 */
 	protected Integer ruleType;
 	
-	/**
-	 * 自定义条件
-	 */
-	protected List<RuleBo> ruleCondations;
-
 	public RuleBo() {
 	}
 
-	public RuleBo(String ruleCode, String ruleValue, String ruleKey, String ruleErrMsg,Integer ruleType,
-			List<RuleBo> ruleCondations) {
+	public RuleBo(String ruleCode, String ruleValue, String ruleKey, String ruleErrMsg,Integer ruleType) {
 		this.ruleCode = ruleCode;
 		this.ruleValue = ruleValue;
 		this.ruleKey = ruleKey;
 		this.ruleErrMsg = ruleErrMsg;
 		this.ruleType = ruleType;
-		this.ruleCondations = ruleCondations;
 	}
 
 	public String getRuleCode() {
@@ -91,18 +84,10 @@ public class RuleBo {
 		this.ruleType = ruleType;
 	}
 
-	public List<RuleBo> getRuleCondations() {
-		return ruleCondations;
-	}
-
-	public void setRuleCondations(List<RuleBo> ruleCondations) {
-		this.ruleCondations = ruleCondations;
-	}
-
 	@Override
 	public String toString() {
 		return "RuleBo [ruleCode=" + ruleCode + ", ruleValue=" + ruleValue + ", ruleKey=" + ruleKey + ", ruleErrMsg="
-				+ ruleErrMsg + ", ruleType=" + ruleType + ", ruleCondations=" + ruleCondations + "]";
+				+ ruleErrMsg + ", ruleType=" + ruleType + "]";
 	}
 
 }

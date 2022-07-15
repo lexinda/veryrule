@@ -20,7 +20,7 @@
 					<el-form-item label="组名" prop="groupName">
 						<el-input v-model="rule.groupName" placeholder="请输入组名"></el-input>
 					</el-form-item>
-					<el-form-item label="规则类型" prop="ruleType" v-if="ruleType == 9 || ruleType == 1 || ruleType == 2">
+					<el-form-item label="规则类型" prop="ruleType" v-if="ruleType == 12 || ruleType == 1 || ruleType == 2">
 						<el-select v-model="rule.ruleType" clearable placeholder="请选择类型" @change="handleConditionChange" style="width: 240px">
 							<el-option  key="1" label="无返回值" value="1" />
 							<el-option  key="2" label="有返回值" value="2" />
@@ -32,19 +32,31 @@
 					</el-form-item>
 				</el-form>
 			</el-row>
-			<i v-if="ruleType == 9 || ruleType == 1 || ruleType == 2" style="font-size:10px;color:#aaaaaa;">
+			<i style="font-size:10px;color:#aaaaaa;">
 				<el-icon>
-				    <Flag />
-				  </el-icon>:有返回值
+				    <Bell />
+				  </el-icon>:条件(无返回值)
+				  <el-icon>
+				      <BellFilled />
+				    </el-icon>:条件(有返回值)
+					<el-icon>
+					    <Promotion />
+					  </el-icon>:动作
 			</i>
 			<el-table :data="ruleTableData" border style="width: 100%">
 				<el-table-column label="规则" align="center">
 					<template #default="scope">
 						<div style="text-align: center">
 							{{ scope.row.ruleName }}
-							<el-icon v-if="scope.row.ruleType == 2">
-							    <Flag />
+							<el-icon v-if="scope.row.ruleType == 1">
+							    <Bell />
 							  </el-icon>
+							  <el-icon v-if="scope.row.ruleType == 2">
+							      <BellFilled />
+							    </el-icon>
+								<el-icon v-if="scope.row.ruleType == 3">
+								    <Promotion />
+								  </el-icon>
 						</div>
 						<div style="text-align: center">
 							({{ scope.row.ruleCode }})
@@ -95,7 +107,9 @@
 <script lang="ts" setup>
 	import RuleEdit from "./rule/RuleEdit.vue"
 	import {
-		Flag,
+		Bell,
+		BellFilled,
+		Promotion,
 		Key
 	} from '@element-plus/icons-vue'
 	import {
@@ -113,10 +127,10 @@
 
 	/* tab */
 	const tabPosition = ref('left')
-	const ruleType = ref(9)
+	const ruleType = ref(12)
 	const tabClick = (target: string) => {
 		if (target.index == 0) {
-			ruleType.value = 9
+			ruleType.value = 12
 		} else {
 			ruleType.value = 3
 		}
@@ -153,7 +167,7 @@
 			"ruleDesc": "",
 			"ruleType": ruleType.value
 		}
-		if(ruleType.value==9){
+		if(ruleType.value==12){
 			currentRuleData.value.ruleType="1"
 		}
 	}
@@ -169,7 +183,7 @@
 	const currentRuleData = ref({})
 	const handleConditionChange = (value)=>{
 		if(value == ''){
-			ruleType.value = 9
+			ruleType.value = 12
 		}else{
 			ruleType.value = value
 		}

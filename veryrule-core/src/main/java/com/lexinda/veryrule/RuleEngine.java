@@ -27,7 +27,7 @@ public class RuleEngine<R extends RuleBo> {
 	protected Map<String, IRuleCondation> ruleCondationMap;
 	protected IRuleListener ruleListener;
 	
-	public RuleResult getResult(Map<String, Object> param,Map<R, List<IRuleCondation>> ruleCondations,Map<R, List<IRuleResultCondation>> ruleResultCondations,Map<R, IRuleAction> ruleActions,boolean isTest) throws Exception {
+	public RuleResult getResult(Map<String, Object> param,Map<R, IRuleCondation> ruleCondations,Map<R, IRuleResultCondation> ruleResultCondations,Map<R, IRuleAction> ruleActions,boolean isTest) throws Exception {
 		RuleInvoker invoke = new RuleInvoker();
 		invoke.doRuleCondation(param, ruleCondations,this.ruleListener,isTest);
 		invoke.doRuleResultCondation(param, ruleResultCondations,this.ruleListener,isTest);

@@ -11,8 +11,7 @@ public class TestRuleListener implements IRuleListener {
 
 	@Override
 	public void initRule(Object proxy) {
-		// TODO Auto-generated method stub
-
+		System.out.println(proxy);
 	}
 
 	@Override

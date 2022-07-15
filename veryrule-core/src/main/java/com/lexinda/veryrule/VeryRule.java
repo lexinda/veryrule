@@ -104,48 +104,26 @@ public class VeryRule extends RuleEngine {
 	 */
 	private <R extends RuleBo> RuleResult fireWithCondation(Map<String, Object> param, List<R> rules, boolean isTest)
 			throws Exception {
-		Map<R, List<IRuleCondation>> ruleCondations = new LinkedHashMap<R, List<IRuleCondation>>();
-		Map<R, List<IRuleResultCondation>> ruleResultCondations = new LinkedHashMap<R, List<IRuleResultCondation>>();
+		Map<R, IRuleCondation> ruleCondations = new LinkedHashMap<R, IRuleCondation>();
+		Map<R, IRuleResultCondation> ruleResultCondations = new LinkedHashMap<R, IRuleResultCondation>();
 		Map<R, IRuleAction> ruleActions = new LinkedHashMap<R, IRuleAction>();
 		if (rules != null) {
-			List<IRuleCondation> condationList = new ArrayList<IRuleCondation>();
-			List<IRuleResultCondation> resultCondationList = new ArrayList<IRuleResultCondation>();
 			rules.stream().forEach(rule -> {
 				int ruleType = rule.getRuleType()==null?1:rule.getRuleType();
 				if(ruleType==1) {
 					IRuleCondation condationAction = (IRuleCondation) builder.ruleCondationMap.get(rule.getRuleCode());
 					if (condationAction != null) {
-						List<IRuleCondation> condationRuleList = new ArrayList<IRuleCondation>();
-						condationRuleList.add(condationAction);
-						ruleCondations.put(rule, condationRuleList);
+						ruleCondations.put(rule, condationAction);
 					}
 				}else if(ruleType==2) {
 					IRuleResultCondation resultCondationAction = (IRuleResultCondation) builder.ruleResultCondationMap.get(rule.getRuleCode());
 					if (resultCondationAction != null) {
-						List<IRuleResultCondation> resultCondationRuleList = new ArrayList<IRuleResultCondation>();
-						resultCondationRuleList.add(resultCondationAction);
-						ruleResultCondations.put(rule, resultCondationRuleList);
+						ruleResultCondations.put(rule, resultCondationAction);
 					}
 				}else if(ruleType==3) {
 					IRuleAction ruleAction = (IRuleAction) builder.ruleActionMap.get(rule.getRuleCode());
 					if (ruleAction != null) {
 						ruleActions.put(rule, ruleAction);
-					}
-				}
-				if (rule.getRuleCondations() != null && rule.getRuleCondations().size() > 0) {
-					rule.getRuleCondations().stream().forEach(ruleCondation -> {
-						int condationRuleType = ruleCondation.getRuleType()==null?1:ruleCondation.getRuleType();
-						if(condationRuleType==1) {
-							condationList.add((IRuleCondation) builder.ruleCondationMap.get(ruleCondation.getRuleCode()));
-						}else if(condationRuleType==2) {
-							resultCondationList.add((IRuleResultCondation) builder.ruleResultCondationMap.get(ruleCondation.getRuleCode()));
-						}
-					});
-					if(condationList.size()>0) {
-						ruleCondations.put(rule, condationList);
-					}
-					if(resultCondationList.size()>0) {
-						ruleResultCondations.put(rule, resultCondationList);
 					}
 				}
 			});
@@ -238,14 +216,14 @@ public class VeryRule extends RuleEngine {
 				}
 			});
 		}
-		if(builder.getRuleListener()!=null) {
-			builder.getRuleListener().initRule(builder);
-		}
 		return builder;
 	}
 	
 	public VeryRule listener(Class<? extends IRuleListener> clazz) throws Exception {
 		builder.ruleListener = clazz.getDeclaredConstructor().newInstance();
+		if(builder.getRuleListener()!=null) {
+			builder.getRuleListener().initRule(builder);
+		}
 		return builder;
 	}
 	

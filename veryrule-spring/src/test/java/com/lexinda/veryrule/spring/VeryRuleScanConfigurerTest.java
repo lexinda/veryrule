@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.lexinda.veryrule.VeryRule;
 import com.lexinda.veryrule.bo.RuleBo;
+import com.lexinda.veryrule.common.RuleType;
 
 //指定在单元测试启动的时候创建spring的工厂类对象
 @ContextConfiguration(locations = {"classpath:./applicationContext.xml"})
@@ -39,10 +40,8 @@ public class VeryRuleScanConfigurerTest {
 	public void test() {
 		Map<String,Object> param = new HashMap<>();
 		param.put("a", "123a");
-		List<RuleBo> resCondation = new ArrayList<RuleBo>();
-		resCondation.add(new RuleBo("regexRuleCondation","a","(\\D*)(\\d+)(.*)","regex",1,null));
 		List<RuleBo> res= new ArrayList<RuleBo>();
-		res.add(new RuleBo("regex","a","(\\D*)(\\d+)(.*)","regex",3,resCondation));
+		res.add(new RuleBo("regex","a","(\\D*)(\\d+)(.*)","regex",RuleType.ACTION));
 		try {
 			veryRule.fire(param,res);
 		} catch (Exception e) {
