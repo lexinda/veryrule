@@ -26,9 +26,7 @@
 							    <Promotion />
 							  </el-icon>
 						</div>
-						<el-popover effect="light" trigger="hover" placement="top" width="auto">
-							<el-tag>({{ scope.row.ruleName }})</el-tag>
-						</el-popover>
+						<div>{{ scope.row.ruleName }}</div>
 					</template>
 				</el-table-column>
 				<el-table-column label="指定入参key" prop="ruleKey">
@@ -52,9 +50,7 @@
 							    <Promotion />
 							  </el-icon>
 						</div>
-						<el-popover effect="light" trigger="hover" placement="top" width="auto">
-							<el-tag>({{ scope.row.ruleName }})</el-tag>
-						</el-popover>
+						<div>{{ scope.row.ruleName }}</div>
 					</template>
 				</el-table-column>
 				<el-table-column label="指定入参key" prop="ruleKey">
@@ -78,9 +74,7 @@
 							    <Promotion />
 							  </el-icon>
 						</div>
-						<el-popover effect="light" trigger="hover" placement="top" width="auto">
-							<el-tag>({{ scope.row.ruleName }})</el-tag>
-						</el-popover>
+						<div>{{ scope.row.ruleName }}</div>
 					</template>
 				</el-table-column>
 				<el-table-column label="指定入参key" prop="ruleKey">

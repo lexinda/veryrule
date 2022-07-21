@@ -35,7 +35,7 @@
 			<el-table :data="tableCondationData" style="width: 100%;" border @row-click="tableRowClick">
 				<el-table-column label="(无返回值)条件规则名称" align="center">
 					<template #default="scope">
-						<div>{{ scope.row.ruleCode }}{{scope.row.ruleType}}
+						<div>{{ scope.row.ruleCode }}
 						<el-icon v-if="scope.row.ruleType == 1">
 						    <Bell />
 						  </el-icon>
@@ -46,9 +46,7 @@
 							    <Promotion />
 							  </el-icon>
 						</div>
-						<el-popover effect="light" trigger="hover" placement="top" width="auto">
-							<el-tag>({{ scope.row.ruleName }})</el-tag>
-						</el-popover>
+						<div>{{ scope.row.ruleName }}</div>
 					</template>
 				</el-table-column>
 				<el-table-column label="指定入参key" prop="ruleKey">
@@ -85,7 +83,7 @@
 			<el-table :data="tableResultCondationData" style="width: 100%;" border @row-click="tableRowClick">
 				<el-table-column label="(有返回值)条件规则名称" align="center">
 					<template #default="scope">
-						<div>{{ scope.row.ruleCode }}{{scope.row.ruleType}}
+						<div>{{ scope.row.ruleCode }}
 						<el-icon v-if="scope.row.ruleType == 1">
 						    <Bell />
 						  </el-icon>
@@ -96,9 +94,7 @@
 							    <Promotion />
 							  </el-icon>
 						</div>
-						<el-popover effect="light" trigger="hover" placement="top" width="auto">
-							<el-tag>({{ scope.row.ruleName }})</el-tag>
-						</el-popover>
+						<div>{{ scope.row.ruleName }}</div>
 					</template>
 				</el-table-column>
 				<el-table-column label="指定入参key" prop="ruleKey">
@@ -135,7 +131,7 @@
 			<el-table :data="tableActionData" style="width: 100%;" border @row-click="tableRowClick">
 				<el-table-column label="(执行动作)规则名称" align="center">
 					<template #default="scope">
-						<div>{{ scope.row.ruleCode }}{{scope.row.ruleType}}
+						<div>{{ scope.row.ruleCode }}
 						<el-icon v-if="scope.row.ruleType == 1">
 						    <Bell />
 						  </el-icon>
@@ -146,9 +142,7 @@
 							    <Promotion />
 							  </el-icon>
 						</div>
-						<el-popover effect="light" trigger="hover" placement="top" width="auto">
-							<el-tag>({{ scope.row.ruleName }})</el-tag>
-						</el-popover>
+						<div>{{ scope.row.ruleName }}</div>
 					</template>
 				</el-table-column>
 				<el-table-column label="指定入参key" prop="ruleKey">
