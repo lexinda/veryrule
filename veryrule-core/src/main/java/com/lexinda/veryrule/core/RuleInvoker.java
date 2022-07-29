@@ -6,8 +6,14 @@ package com.lexinda.veryrule.core;
  */
 
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import com.lexinda.veryrule.bo.RuleBo;
 
@@ -38,8 +44,9 @@ public class RuleInvoker extends RuleInvokerAbst{
 	}
 
 	@Override
-	public <R extends RuleBo> void doRuleResultCondation(Map<String, Object> param, Map<R, IRuleResultCondation> ruleCondations,IRuleListener ruleListener,boolean isTest) {
+	public <R extends RuleBo> void doRuleResultCondation(Map<String, Object> param, Map<R, IRuleResultCondation> ruleCondations,IRuleListener ruleListener,boolean isTest,ThreadPoolExecutor threadPoolExecutor) {
 		Map<String, Object> condationResultMap = new HashMap<String, Object>();
+		List<Future> list = new ArrayList<Future>();
 		ruleCondations.entrySet().stream().forEach(condation->{
 			try {
 				RuleProxyHandler ruleHandler = new RuleProxyHandler(condation.getValue(),ruleListener);
@@ -50,15 +57,31 @@ public class RuleInvoker extends RuleInvokerAbst{
 					}
 				}else {
 					IRuleResultCondation subject = (IRuleResultCondation) Proxy.newProxyInstance(IRuleResultCondation.class.getClassLoader(), new Class<?>[] {IRuleResultCondation.class}, ruleHandler);
-					Map<String, Object> condationResult = (Map<String, Object>) subject.contation(param,condation.getKey());
-					if (condationResult != null) {
-						condationResultMap.putAll(condationResult);
+					if(threadPoolExecutor!=null) {
+						Callable c = new RuleResultCondationCallable(subject,param,condation.getKey());
+						Future f = threadPoolExecutor.submit(c);
+						list.add(f);
+					}else {
+						Map<String, Object> condationResult = (Map<String, Object>) subject.contation(param,condation.getKey());
+						if (condationResult != null) {
+							condationResultMap.putAll(condationResult);
+						}
 					}
 				}
 			}catch(Exception e) {
 				throw new RuntimeException(e.getMessage());
 			}
 		});
+		if(threadPoolExecutor!=null) {
+			for (Future f : list) {
+				try {
+					condationResultMap.putAll((Map<String, Object>)f.get());
+				} catch (InterruptedException | ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 		ruleResult.setCondationResult(condationResultMap);
 	}
 

@@ -6,19 +6,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import com.lexinda.veryrule.annotation.Rule;
 import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.common.RuleType;
-import com.lexinda.veryrule.core.IRuleResultCondation;
+import com.lexinda.veryrule.core.IRuleAction;
 import com.lexinda.veryrule.core.IRuleCondation;
 import com.lexinda.veryrule.core.IRuleListener;
-import com.lexinda.veryrule.core.IRuleAction;
+import com.lexinda.veryrule.core.IRuleResultCondation;
 import com.lexinda.veryrule.core.RuleResult;
 
 /**
@@ -29,7 +30,7 @@ import com.lexinda.veryrule.core.RuleResult;
 public class VeryRule extends RuleEngine {
 
 	private static volatile VeryRule builder;
-
+	
 	public static VeryRule builder() {
 		if (builder == null) {
 			synchronized (VeryRule.class) {
@@ -67,7 +68,7 @@ public class VeryRule extends RuleEngine {
 	 * @throws Exception
 	 */
 	public <R extends RuleBo> RuleResult fire(Map<String, Object> param, R rule) throws Exception {
-		return fireWithCondation(param, Arrays.asList(rule), false);
+		return fireWithCondation(param, Arrays.asList(rule), false,null);
 	}
 
 	/**
@@ -79,7 +80,20 @@ public class VeryRule extends RuleEngine {
 	 * @throws Exception
 	 */
 	public <R extends RuleBo> RuleResult fire(Map<String, Object> param, List<R> rules) throws Exception {
-		return fireWithCondation(param, rules, false);
+		return fireWithCondation(param, rules, false,null);
+	}
+	
+	/**
+	 * 
+	 * @param <R>
+	 * @param param 入参
+	 * @param rules 需要执行的规则
+	 * @param threadPoolExecutor 线程池
+	 * @return
+	 * @throws Exception
+	 */
+	public <R extends RuleBo> RuleResult fire(Map<String, Object> param, List<R> rules,ThreadPoolExecutor threadPoolExecutor) throws Exception {
+		return fireWithCondation(param, rules, false,threadPoolExecutor);
 	}
 
 	/**
@@ -90,7 +104,7 @@ public class VeryRule extends RuleEngine {
 	 * @throws Exception
 	 */
 	public <R extends RuleBo> RuleResult fireTest(List<R> rules) throws Exception {
-		return fireWithCondation(new HashMap<String, Object>(), rules, true);
+		return fireWithCondation(new HashMap<String, Object>(), rules, true,null);
 	}
 
 	/**
@@ -102,7 +116,7 @@ public class VeryRule extends RuleEngine {
 	 * @return
 	 * @throws Exception
 	 */
-	private <R extends RuleBo> RuleResult fireWithCondation(Map<String, Object> param, List<R> rules, boolean isTest)
+	private <R extends RuleBo> RuleResult fireWithCondation(Map<String, Object> param, List<R> rules, boolean isTest,ThreadPoolExecutor threadPoolExecutor)
 			throws Exception {
 		Map<R, IRuleCondation> ruleCondations = new LinkedHashMap<R, IRuleCondation>();
 		Map<R, IRuleResultCondation> ruleResultCondations = new LinkedHashMap<R, IRuleResultCondation>();
@@ -127,7 +141,7 @@ public class VeryRule extends RuleEngine {
 					}
 				}
 			});
-			return getResult(param, ruleCondations, ruleResultCondations, ruleActions, isTest);
+			return getResult(param, ruleCondations, ruleResultCondations, ruleActions, isTest,threadPoolExecutor);
 		} else {
 			return null;
 		}

@@ -9,6 +9,7 @@ import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
 
 import com.lexinda.veryrule.annotation.Rule;
@@ -27,21 +28,21 @@ public class RuleEngine<R extends RuleBo> {
 	protected Map<String, IRuleCondation> ruleCondationMap;
 	protected IRuleListener ruleListener;
 	
-	public RuleResult getResult(Map<String, Object> param,Map<R, IRuleCondation> ruleCondations,Map<R, IRuleResultCondation> ruleResultCondations,Map<R, IRuleAction> ruleActions,boolean isTest) throws Exception {
+	public RuleResult getResult(Map<String, Object> param,Map<R, IRuleCondation> ruleCondations,Map<R, IRuleResultCondation> ruleResultCondations,Map<R, IRuleAction> ruleActions,boolean isTest,ThreadPoolExecutor threadPoolExecutor) throws Exception {
 		RuleInvoker invoke = new RuleInvoker();
 		invoke.doRuleCondation(param, ruleCondations,this.ruleListener,isTest);
-		invoke.doRuleResultCondation(param, ruleResultCondations,this.ruleListener,isTest);
+		invoke.doRuleResultCondation(param, ruleResultCondations,this.ruleListener,isTest,threadPoolExecutor);
 		invoke.doRuleAction(param, ruleActions,this.ruleListener,isTest);
 		return invoke.getRuleResult();
 	}
 	
-	public static String getClassByPath(String path,List<Class<?>> classList) throws ClassNotFoundException {
+	public static void getClassByPath(String path,List<Class<?>> classList) throws ClassNotFoundException {
 		if(path!=null) {
 			File file = new File(path);
 			if(file.isDirectory()&&file.listFiles().length>0) {
 				for(File childFile:file.listFiles()) {
 					if(childFile.isDirectory()&&file.listFiles().length>0) {
-						return getClassByPath(childFile.getAbsolutePath(), classList);
+						getClassByPath(childFile.getAbsolutePath(), classList);
 					}else {
 						String childFilePath = childFile.getPath();
 						if (childFilePath.endsWith(".class")) { 
@@ -58,7 +59,6 @@ public class RuleEngine<R extends RuleBo> {
 				}
 			}
 		}
-		return path;
 	}
 
 	public Map<String, IRuleAction> getRuleActionMap() {
