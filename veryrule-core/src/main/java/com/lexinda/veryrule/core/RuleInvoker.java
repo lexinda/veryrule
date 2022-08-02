@@ -46,43 +46,58 @@ public class RuleInvoker extends RuleInvokerAbst{
 	@Override
 	public <R extends RuleBo> void doRuleResultCondation(Map<String, Object> param, Map<R, IRuleResultCondation> ruleCondations,IRuleListener ruleListener,boolean isTest,ThreadPoolExecutor threadPoolExecutor) {
 		Map<String, Object> condationResultMap = new HashMap<String, Object>();
-		List<Future> list = new ArrayList<Future>();
-		ruleCondations.entrySet().stream().forEach(condation->{
-			try {
-				RuleProxyHandler ruleHandler = new RuleProxyHandler(condation.getValue(),ruleListener);
-				if(isTest) {
-					Map<String, Object> testResult = getTestResult(ruleHandler,condation.getKey());
-					if(testResult!=null) {
-						ruleResult.addResultAll(testResult);
-					}
-				}else {
-					IRuleResultCondation subject = (IRuleResultCondation) Proxy.newProxyInstance(IRuleResultCondation.class.getClassLoader(), new Class<?>[] {IRuleResultCondation.class}, ruleHandler);
-					if(threadPoolExecutor!=null) {
+		if(threadPoolExecutor!=null) {
+			List<Future> futurelist = new ArrayList<Future>();
+			ruleCondations.entrySet().stream().forEach(condation->{
+				try {
+					RuleProxyHandler ruleHandler = new RuleProxyHandler(condation.getValue(),ruleListener);
+					if(isTest) {
+						Map<String, Object> testResult = getTestResult(ruleHandler,condation.getKey());
+						if(testResult!=null) {
+							ruleResult.addResultAll(testResult);
+						}
+					}else {
+						IRuleResultCondation subject = (IRuleResultCondation) Proxy.newProxyInstance(IRuleResultCondation.class.getClassLoader(), new Class<?>[] {IRuleResultCondation.class}, ruleHandler);
 						Callable c = new RuleResultCondationCallable(subject,param,condation.getKey());
 						Future f = threadPoolExecutor.submit(c);
-						list.add(f);
+						futurelist.add(f);
+					}
+				}catch(Exception e) {
+					throw new RuntimeException(e.getMessage());
+				}
+			});
+			if(futurelist.size()>0) {
+				for (Future f : futurelist) {
+					try {
+						if(f.get()!=null) {
+							condationResultMap.putAll((Map<String, Object>)f.get());
+						}
+					} catch (InterruptedException | ExecutionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}else {
+			ruleCondations.entrySet().stream().parallel().forEach(condation->{
+				try {
+					RuleProxyHandler ruleHandler = new RuleProxyHandler(condation.getValue(),ruleListener);
+					if(isTest) {
+						Map<String, Object> testResult = getTestResult(ruleHandler,condation.getKey());
+						if(testResult!=null) {
+							ruleResult.addResultAll(testResult);
+						}
 					}else {
+						IRuleResultCondation subject = (IRuleResultCondation) Proxy.newProxyInstance(IRuleResultCondation.class.getClassLoader(), new Class<?>[] {IRuleResultCondation.class}, ruleHandler);
 						Map<String, Object> condationResult = (Map<String, Object>) subject.contation(param,condation.getKey());
 						if (condationResult != null) {
 							condationResultMap.putAll(condationResult);
 						}
 					}
+				}catch(Exception e) {
+					throw new RuntimeException(e.getMessage());
 				}
-			}catch(Exception e) {
-				throw new RuntimeException(e.getMessage());
-			}
-		});
-		if(threadPoolExecutor!=null) {
-			for (Future f : list) {
-				try {
-					if(f.get()!=null) {
-						condationResultMap.putAll((Map<String, Object>)f.get());
-					}
-				} catch (InterruptedException | ExecutionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+			});
 		}
 		ruleResult.setCondationResult(condationResultMap);
 	}

@@ -76,9 +76,9 @@ public class VeryRuleTest {
 		try {
 //			RuleResult RuleResult = veryRuleFactory.fireTest(param, re);
 //			System.out.println(RuleResult);
-//			Long time = System.currentTimeMillis();
-//			veryRule.fire(param, res);
-//			System.out.println(System.currentTimeMillis()-time);
+			Long time = System.currentTimeMillis();
+			veryRule.fire(param, res);
+			System.out.println(System.currentTimeMillis()-time);
 			Long time1 = System.currentTimeMillis();
 			veryRule.fire(param, res,threadPoolExecutor);
 			System.out.println(System.currentTimeMillis()-time1);
