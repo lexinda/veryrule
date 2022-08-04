@@ -41,7 +41,7 @@ public class VeryRuleScanConfigurerTest {
 		Map<String,Object> param = new HashMap<>();
 		param.put("a", "123a");
 		List<RuleBo> res= new ArrayList<RuleBo>();
-		res.add(new RuleBo("regex","a","(\\D*)(\\d+)(.*)","regex",RuleType.ACTION));
+		res.add(new RuleBo("regexRuleCondation","a","(\\D*)(\\d+)(.*)","regex",RuleType.ACTION));
 		try {
 			veryRule.fire(param,res);
 		} catch (Exception e) {
