@@ -15,7 +15,7 @@ import com.lexinda.veryrule.common.RuleType;
 import com.lexinda.veryrule.core.IRuleCondation;
 import com.lexinda.veryrule.platform.model.RuleCodeModel;
 
-@Rule(code = RuleCodeModel.REGEXFIND,name = "指定key匹配正则表达式查找", desc = "指定key匹配正则表达式查找", type = RuleType.ACTION)
+@Rule(code = RuleCodeModel.REGEXFIND,name = "指定key匹配正则表达式查找", desc = "指定key匹配正则表达式查找", type = RuleType.CONDATION)
 public class RegexFindRuleAction implements IRuleCondation {
 
 	@Override

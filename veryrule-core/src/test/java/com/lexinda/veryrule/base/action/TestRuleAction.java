@@ -1,5 +1,6 @@
 package com.lexinda.veryrule.base.action;
 
+import java.util.HashMap;
 /**
  * 
  * @author lexinda
@@ -23,6 +24,18 @@ public class TestRuleAction implements IRuleAction {
 		// TODO Auto-generated method stub
 		System.out.println(condation);
 		return null;
+	}
+	
+	@Override
+	public <R extends RuleBo> Map<String,Object> ruleTest(R rule){
+		System.out.println("start------test");
+		Map<String,Object> result = new HashMap<String,Object>();
+		Rule ruleAnnotation = this.getClass().getAnnotation(Rule.class);
+		if(rule!=null&&rule.getRuleCode().equals(ruleAnnotation.code())) {
+			result.put(rule.getRuleCode(), ruleAnnotation.name());
+		}
+		System.out.println("end------test");
+		return result;
 	}
 
 }

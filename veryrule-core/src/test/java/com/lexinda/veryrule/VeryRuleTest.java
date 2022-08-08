@@ -45,6 +45,10 @@ public class VeryRuleTest {
 	 *	 new ThreadPoolExecutor.DiscardOldestPolicy() //队列满了，尝试和最早的竞争，也不会抛出异常
 	 */
 	ThreadPoolExecutor threadPoolExecutor = null;
+	
+	private Map<String, Object> param = null;
+	
+	private List<RuleBo> res = null;
 
 	@Before
 	public void setUp() throws Exception {
@@ -56,15 +60,11 @@ public class VeryRuleTest {
 //				.listener(TestRuleListener.class);
 		veryRule = VeryRule.builder().rulePackage("com.lexinda.veryrule.base").listener(TestRuleListener.class);
 		threadPoolExecutor = new ThreadPoolExecutor(2, 20, 20, TimeUnit.SECONDS, new ArrayBlockingQueue<>(3), new ThreadPoolExecutor.CallerRunsPolicy());
-	}
-
-	@Test
-	public void test() {
-		Map<String, Object> param = new HashMap<String, Object>();
+		param = new HashMap<String, Object>();
 		param.put("a", "abc123");
-		List<RuleBo> res = new ArrayList<RuleBo>();
-//		RuleBo nn = new RuleBo(RuleCode.NOTNULL, "", "a", "不可为空",RuleType.CONDATION);
-//		res.add(nn);
+		res = new ArrayList<RuleBo>();
+		RuleBo nn = new RuleBo(RuleCode.NOTNULL, "", "a", "不可为空",RuleType.CONDATION);
+		res.add(nn);
 		RuleBo one = new RuleBo(RuleTestCode.RULERESULTCONDATIONONE, "", "", "测试",RuleType.RESULT_CONDATION);
 		RuleBo two = new RuleBo(RuleTestCode.RULERESULTCONDATIONTWO, "", "", "测试",RuleType.RESULT_CONDATION);
 		RuleBo three = new RuleBo(RuleTestCode.RULERESULTCONDATIONTHREE, "", "", "测试",RuleType.RESULT_CONDATION);
@@ -73,16 +73,42 @@ public class VeryRuleTest {
 		res.add(two);
 		res.add(three);
 		res.add(action);
+	}
+
+	@Test
+	public void testFire() {
+		
 		try {
-//			RuleResult RuleResult = veryRuleFactory.fireTest(param, re);
-//			System.out.println(RuleResult);
 			Long time = System.currentTimeMillis();
 			veryRule.fire(param, res);
 			System.out.println(System.currentTimeMillis()-time);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			fail("Not yet implemented");
+		}
+
+	}
+	
+	@Test
+	public void testFireThreadPool() {
+		try {
 			Long time1 = System.currentTimeMillis();
 			veryRule.fire(param, res,threadPoolExecutor);
 			System.out.println(System.currentTimeMillis()-time1);
 			threadPoolExecutor.shutdown();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			fail("Not yet implemented");
+		}
+
+	}
+	
+	@Test
+	public void testFireTest() {
+		try {
+			veryRule.fireTest(res);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
