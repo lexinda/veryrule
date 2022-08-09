@@ -21,6 +21,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.lexinda.veryrule.VeryRule;
 import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.common.RuleType;
+import com.lexinda.veryrule.core.RuleResult;
 
 //指定在单元测试启动的时候创建spring的工厂类对象
 @ContextConfiguration(locations = {"classpath:./applicationContext.xml"})
@@ -32,18 +33,36 @@ public class VeryRuleScanConfigurerTest {
 	@Autowired
 	private VeryRule veryRule;
 	
+	private Map<String,Object> param = null;
+	
+	private List<RuleBo> res = null;
+	
 	@Before
 	public void setUp() throws Exception {
+		param = new HashMap<>();
+		param.put("a", "123a");
+		res = new ArrayList<RuleBo>();
+		res.add(new RuleBo("regexRuleCondation","a","(\\D*)(\\d+)(.*)","regex",RuleType.CONDATION));
 	}
 
 	@Test
-	public void test() {
-		Map<String,Object> param = new HashMap<>();
-		param.put("a", "123a");
-		List<RuleBo> res= new ArrayList<RuleBo>();
-		res.add(new RuleBo("regexRuleCondation","a","(\\D*)(\\d+)(.*)","regex",RuleType.ACTION));
+	public void testFire() {
+		
 		try {
 			veryRule.fire(param,res);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			fail("Not yet implemented");
+		}
+	}
+	
+	@Test
+	public void testFireTest() {
+		
+		try {
+			RuleResult result = veryRule.fireTest(res);
+			System.out.println(result.getResult());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
