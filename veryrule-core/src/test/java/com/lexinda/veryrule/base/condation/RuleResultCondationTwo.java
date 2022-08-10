@@ -23,7 +23,7 @@ public class RuleResultCondationTwo implements IRuleResultCondation {
 		// TODO Auto-generated method stub
 		System.out.println("contation");
 		Map<String, Object> result = new HashMap<String,Object>();
-		Thread.sleep(3000);
+		Thread.sleep(1000);
 		result.put("two", 2);
 		return result;
 	}
