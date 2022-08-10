@@ -37,7 +37,7 @@
 ```
 	//定义不带返回值条件
 	@Rule(code = RuleCode.NOTNULL,name = "指定key不可为空", desc = "指定key不可为空", type = RuleType.CONDATION)
-	public class NotNullRuleCondation implements IRuleCondation,IRuleTest {
+	public class NotNullRuleCondation implements IRuleCondation {
 	
 		@Override
 		public <R extends RuleBo> void contation(Map<String, Object> param, R rule) throws Exception {
@@ -60,15 +60,16 @@
 			}
 		}
 	
-		@Override
-		public <R extends RuleBo> Map<String, Object> ruleTest(R rule) {
-			Map<String,Object> result = new HashMap<String,Object>();
-			Rule ruleAnnotation = this.getClass().getAnnotation(Rule.class);
-			if(rule!=null&&rule.getRuleCode().equals(ruleAnnotation.code())) {
-				result.put(rule.getRuleCode(), ruleAnnotation.name());
-			}
-			return result;
-		}
+		//可覆盖，自定义测试
+		//@Override
+		//public <R extends RuleBo> Map<String, Object> ruleTest(R rule) {
+		//	Map<String,Object> result = new HashMap<String,Object>();
+		//	Rule ruleAnnotation = this.getClass().getAnnotation(Rule.class);
+		//	if(rule!=null&&rule.getRuleCode().equals(ruleAnnotation.code())) {
+		//		result.put(rule.getRuleCode(), ruleAnnotation.name());
+		//	}
+		//	return result;
+		//}
 	
 	}
 	//初始化
