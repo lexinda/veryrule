@@ -20,10 +20,10 @@ import org.springframework.stereotype.Component;
 import com.lexinda.veryrule.VeryRule;
 import com.lexinda.veryrule.annotation.Rule;
 import com.lexinda.veryrule.aspect.VeryRuleAspect;
-import com.lexinda.veryrule.core.IRuleResultCondation;
+import com.lexinda.veryrule.core.IRuleAction;
 import com.lexinda.veryrule.core.IRuleCondation;
 import com.lexinda.veryrule.core.IRuleListener;
-import com.lexinda.veryrule.core.IRuleAction;
+import com.lexinda.veryrule.core.IRuleResultCondation;
 
 @Component
 public class VeryRuleScanConfigurer implements ApplicationContextAware {
@@ -83,10 +83,10 @@ public class VeryRuleScanConfigurer implements ApplicationContextAware {
 		
 		if (this.listenerBean != null && !this.listenerBean.equals("")) {
 			ClassLoader classLoader = this.getClass().getClassLoader();
-			Class<IRuleListener> listener;
+			Class<IRuleListener> listenerBean;
 			try {
-				listener = (Class<IRuleListener>) classLoader.loadClass(this.listenerBean);
-				veryRule.listener(listener);
+				listenerBean = (Class<IRuleListener>) classLoader.loadClass(this.listenerBean);
+				veryRule.listener(listenerBean);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			} catch (Exception e) {
@@ -100,12 +100,10 @@ public class VeryRuleScanConfigurer implements ApplicationContextAware {
 		veryruleDefinitionBuilder.addPropertyValue("ruleActionMap", veryRule.getRuleActionMap());
 		veryruleDefinitionBuilder.addPropertyValue("ruleResultCondationMap", veryRule.getRuleResultCondationMap());
 		veryruleDefinitionBuilder.addPropertyValue("ruleListener", veryRule.getRuleListener());
+		veryruleDefinitionBuilder.addPropertyValue("ruleInvoker", veryRule.getRuleInvoker());
 		veryruleDefinitionBuilder.setScope(BeanDefinition.SCOPE_SINGLETON);
 		// 注册bean
 		context.registerBeanDefinition("veryrule", veryruleDefinitionBuilder.getRawBeanDefinition());
-		if(veryRule.getRuleListener()!=null) {
-			veryRule.getRuleListener().initRule(veryRule);
-		}
 	}
 	
 	public void initAspect(DefaultListableBeanFactory context) {

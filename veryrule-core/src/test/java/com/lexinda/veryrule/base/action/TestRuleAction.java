@@ -12,7 +12,6 @@ import com.lexinda.veryrule.annotation.Rule;
 import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.common.RuleType;
 import com.lexinda.veryrule.core.IRuleAction;
-import com.lexinda.veryrule.core.IRuleCondation;
 
 @Rule(code = "testRuleAction",name = "测试规则执行", desc = "测试规则执行", type = RuleType.ACTION)
 public class TestRuleAction implements IRuleAction {

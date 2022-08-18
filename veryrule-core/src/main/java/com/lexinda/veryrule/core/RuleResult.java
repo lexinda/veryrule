@@ -8,7 +8,7 @@ import java.util.Map;
  * @author lexinda
  *
  */
-public class RuleResult{
+public class RuleResult implements Cloneable{
 	
 	private Map<String,Object> result = new HashMap<String,Object>();
 	
@@ -41,5 +41,16 @@ public class RuleResult{
 	public void setCondationResultAll(Map<String,Object> condationResult) {
 		this.condationResult.putAll(condationResult);
 	}
+	
+	@Override
+	public Object clone(){
+        Object obj = null;
+        try {
+            obj = super.clone();
+        } catch (CloneNotSupportedException e){
+            e.printStackTrace();
+        }
+        return obj;
+    }
 
 }

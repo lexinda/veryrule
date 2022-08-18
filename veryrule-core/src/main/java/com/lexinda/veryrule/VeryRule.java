@@ -9,9 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import com.lexinda.veryrule.annotation.Rule;
 import com.lexinda.veryrule.bo.RuleBo;
@@ -20,6 +18,7 @@ import com.lexinda.veryrule.core.IRuleAction;
 import com.lexinda.veryrule.core.IRuleCondation;
 import com.lexinda.veryrule.core.IRuleListener;
 import com.lexinda.veryrule.core.IRuleResultCondation;
+import com.lexinda.veryrule.core.RuleInvoker;
 import com.lexinda.veryrule.core.RuleResult;
 
 /**
@@ -110,9 +109,10 @@ public class VeryRule extends RuleEngine {
 	/**
 	 * 
 	 * @param <R>
-	 * @param isTest    是否测试
-	 * @param condation 前置条件
+	 * @param param 入参
 	 * @param rules     需要执行的规则
+	 * @param isTest    是否测试
+	 * @param threadPoolExecutor    线程池
 	 * @return
 	 * @throws Exception
 	 */
@@ -145,6 +145,13 @@ public class VeryRule extends RuleEngine {
 		} else {
 			return null;
 		}
+	}
+	
+	public VeryRule listener(Class<? extends IRuleListener> clazz) throws Exception {
+		IRuleListener ruleListener = clazz.getDeclaredConstructor().newInstance();
+		builder.ruleListener = ruleListener;
+		builder.ruleListener.initRule();
+		return builder;
 	}
 	
 	public VeryRule action(Class<? extends IRuleAction> clazz) throws Exception {
@@ -233,18 +240,11 @@ public class VeryRule extends RuleEngine {
 		return builder;
 	}
 	
-	public VeryRule listener(Class<? extends IRuleListener> clazz) throws Exception {
-		builder.ruleListener = clazz.getDeclaredConstructor().newInstance();
-		if(builder.getRuleListener()!=null) {
-			builder.getRuleListener().initRule(builder);
-		}
-		return builder;
-	}
-	
 	private static void init() {
 		builder.ruleActionMap = new HashMap<String, IRuleResultCondation>();
 		builder.ruleResultCondationMap = new HashMap<String, IRuleAction>();
 		builder.ruleCondationMap = new HashMap<String, IRuleCondation>();
+		builder.ruleInvoker = new RuleInvoker();
 	}
 	
 }

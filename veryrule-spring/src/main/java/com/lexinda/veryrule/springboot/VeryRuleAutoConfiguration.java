@@ -21,10 +21,10 @@ import org.springframework.context.support.GenericApplicationContext;
 import com.lexinda.veryrule.VeryRule;
 import com.lexinda.veryrule.annotation.Rule;
 import com.lexinda.veryrule.aspect.VeryRuleAspect;
-import com.lexinda.veryrule.core.IRuleResultCondation;
+import com.lexinda.veryrule.core.IRuleAction;
 import com.lexinda.veryrule.core.IRuleCondation;
 import com.lexinda.veryrule.core.IRuleListener;
-import com.lexinda.veryrule.core.IRuleAction;
+import com.lexinda.veryrule.core.IRuleResultCondation;
 import com.lexinda.veryrule.spring.VeryRuleClassPathDefinitionScanner;
 
 @Configuration
@@ -88,15 +88,13 @@ public class VeryRuleAutoConfiguration implements BeanPostProcessor, Application
 		});
 		if (veryRuleProperties.getListenerBean() != null && !veryRuleProperties.getListenerBean().equals("")) {
 			ClassLoader classLoader = this.getClass().getClassLoader();
-			Class<IRuleListener> listener;
+			Class<IRuleListener> listenerBean;
 			try {
-				listener = (Class<IRuleListener>) classLoader.loadClass(veryRuleProperties.getListenerBean());
-				veryRule.listener(listener);
+				listenerBean = (Class<IRuleListener>) classLoader.loadClass(veryRuleProperties.getListenerBean());
+				veryRule.listener(listenerBean);
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -106,12 +104,10 @@ public class VeryRuleAutoConfiguration implements BeanPostProcessor, Application
 		veryruleDefinitionBuilder.addPropertyValue("ruleActionMap", veryRule.getRuleActionMap());
 		veryruleDefinitionBuilder.addPropertyValue("ruleResultCondationMap", veryRule.getRuleResultCondationMap());
 		veryruleDefinitionBuilder.addPropertyValue("ruleListener", veryRule.getRuleListener());
+		veryruleDefinitionBuilder.addPropertyValue("ruleInvoker", veryRule.getRuleInvoker());
 		veryruleDefinitionBuilder.setScope(BeanDefinition.SCOPE_SINGLETON);
 		// 注册bean
 		context.registerBeanDefinition("veryrule", veryruleDefinitionBuilder.getRawBeanDefinition());
-		if(veryRule.getRuleListener()!=null) {
-			veryRule.getRuleListener().initRule(veryRule);
-		}
 	}
 
 	@Override

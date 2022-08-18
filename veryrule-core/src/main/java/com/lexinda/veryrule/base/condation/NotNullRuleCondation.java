@@ -1,7 +1,5 @@
 package com.lexinda.veryrule.base.condation;
 
-import java.util.HashMap;
-
 /**
  * 
  * @author lexinda
@@ -15,7 +13,6 @@ import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.common.RuleCode;
 import com.lexinda.veryrule.common.RuleType;
 import com.lexinda.veryrule.core.IRuleCondation;
-import com.lexinda.veryrule.core.IRuleTest;
 
 @Rule(code = RuleCode.NOTNULL,name = "指定key不可为空", desc = "指定key不可为空", type = RuleType.CONDATION)
 public class NotNullRuleCondation implements IRuleCondation {

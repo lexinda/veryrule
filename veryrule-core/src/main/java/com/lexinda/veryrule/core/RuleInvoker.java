@@ -1,9 +1,4 @@
 package com.lexinda.veryrule.core;
-/**
- * 
- * @author lexinda
- *
- */
 
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -17,7 +12,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import com.lexinda.veryrule.bo.RuleBo;
 
-public class RuleInvoker extends RuleInvokerAbst{
+public class RuleInvoker extends RuleInvokerAbst implements Cloneable {
 	
 	@Override
 	public <R extends RuleBo> void doRuleCondation(Map<String, Object> param, Map<R, IRuleCondation> ruleCondations,IRuleListener ruleListener,boolean isTest) {
@@ -141,4 +136,17 @@ public class RuleInvoker extends RuleInvokerAbst{
 		return testResult;
 	}
 
+	@Override
+	public Object clone() {
+		Object obj = null;
+		try {
+			obj = super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		RuleInvoker ruleInvoker = (RuleInvoker) obj;
+		ruleInvoker.ruleResult = (RuleResult) ruleInvoker.getRuleResult().clone();
+		return obj;
+	}
+	
 }

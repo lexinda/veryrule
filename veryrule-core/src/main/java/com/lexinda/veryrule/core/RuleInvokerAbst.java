@@ -1,4 +1,5 @@
 package com.lexinda.veryrule.core;
+
 /**
  * 
  * @author lexinda
@@ -23,5 +24,5 @@ public abstract class RuleInvokerAbst{
 	public RuleResult getRuleResult() {
 		return ruleResult;
 	}
-
+	
 }

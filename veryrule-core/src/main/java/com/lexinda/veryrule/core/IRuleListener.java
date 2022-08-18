@@ -1,22 +1,25 @@
 package com.lexinda.veryrule.core;
 
+import java.util.EventListener;
+
 /**
  * 
  * @author lexinda
  *
  */
-public interface IRuleListener {
+public interface IRuleListener extends EventListener{
 	/**
 	 * 初始化完成
 	 * 
 	 * @param proxy
 	 */
-	void initRule(Object proxy);
+	void initRule();
 
 	/**
-	 * 单个规则执行完成
+	 * 规则执行完成
 	 * 
 	 * @param proxy
 	 */
-	void ruleListener(Object proxy, Object[] args, Object result);
+	void ruleListener(Object[] args, Object result);
+
 }

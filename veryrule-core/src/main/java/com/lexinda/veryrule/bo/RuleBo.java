@@ -1,7 +1,5 @@
 package com.lexinda.veryrule.bo;
 
-import java.util.List;
-
 /**
  * 
  * @author lexinda

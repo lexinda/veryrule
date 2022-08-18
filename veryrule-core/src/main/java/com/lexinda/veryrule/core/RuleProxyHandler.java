@@ -24,7 +24,7 @@ public class RuleProxyHandler implements InvocationHandler {
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		Object result = method.invoke(target, args);
 		if (ruleListener != null) {
-			ruleListener.ruleListener(target, args, result);
+			ruleListener.ruleListener(args, result);
 		}
 		return result;
 	}

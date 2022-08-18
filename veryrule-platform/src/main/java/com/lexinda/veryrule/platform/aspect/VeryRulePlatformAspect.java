@@ -40,7 +40,9 @@ public class VeryRulePlatformAspect extends VeryRuleAspect{
 		for(int i=0;i<parameterNames.length;i++) {
 			param.put(parameterNames[i], args[i]);
 			if(parameterNames[i].equals("data")) {
-				param.putAll(JSON.parseObject((String) args[i]));
+				if(args[i]!=null) {
+					param.putAll(JSON.parseObject((String) args[i]));
+				}
 			}
 		}
 		return param;

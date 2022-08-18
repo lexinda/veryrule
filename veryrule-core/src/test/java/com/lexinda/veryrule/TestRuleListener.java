@@ -10,15 +10,15 @@ import com.lexinda.veryrule.core.IRuleListener;
 public class TestRuleListener implements IRuleListener {
 
 	@Override
-	public void initRule(Object proxy) {
-		System.out.println(proxy);
+	public void initRule() {
+		System.out.println("init");
 	}
 
 	@Override
-	public void ruleListener(Object proxy, Object[] args, Object result) {
-		System.out.println(proxy);
-		System.out.println(args);
-		System.out.println(result);
+	public void ruleListener(Object[] args, Object result) {
+		// TODO Auto-generated method stub
+//		System.out.println(args);
+//		System.out.println(result);
 	}
 
 }
