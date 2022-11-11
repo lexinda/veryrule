@@ -11,7 +11,7 @@ import java.util.Map;
 import com.lexinda.veryrule.annotation.Rule;
 import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.common.RuleType;
-import com.lexinda.veryrule.core.IRuleResultCondation;
+import com.lexinda.veryrule.core.interfaces.IRuleResultCondation;
 
 @Rule(code = "ruleResultCondationOne",name = "测试带返回值条件1", desc = "测试带返回值条件1", type = RuleType.RESULT_CONDATION)
 public class RuleResultCondationOne implements IRuleResultCondation {

@@ -20,8 +20,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.lexinda.veryrule.VeryRule;
 import com.lexinda.veryrule.bo.RuleBo;
+import com.lexinda.veryrule.common.RuleResult;
 import com.lexinda.veryrule.common.RuleType;
-import com.lexinda.veryrule.core.RuleResult;
 
 //指定在单元测试启动的时候创建spring的工厂类对象
 @ContextConfiguration(locations = {"classpath:./applicationContext.xml"})

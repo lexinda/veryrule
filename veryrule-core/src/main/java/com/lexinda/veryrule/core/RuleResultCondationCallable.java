@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import com.lexinda.veryrule.bo.RuleBo;
+import com.lexinda.veryrule.core.interfaces.IRuleResultCondation;
 
 public class RuleResultCondationCallable<R extends RuleBo> implements Callable<Object>{
 

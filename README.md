@@ -59,7 +59,8 @@
 				}
 			}
 		}
-	     //可覆盖，自定义
+	
+		//可覆盖，自定义
 		//@Override
 		//public <R extends RuleBo> Map<String, Object> ruleTest(R rule) {
 		//	Map<String,Object> result = new HashMap<String,Object>();
@@ -68,7 +69,7 @@
 		//		result.put(rule.getRuleCode(), ruleAnnotation.name());
 		//	}
 		//	return result;
-		////}
+		//}
 	
 	}
 	//初始化
@@ -105,7 +106,7 @@
 	veryrule.useAspect=true
 	//自定义切面(取值，校验...)
 	veryrule.aspectBean=com.lexinda.veryrule.aspect.VeryRuleAspect
-	//只定义监听器
+	//自定义监听器
 	veryrule.listenerBean=com.lexinda.veryrule.platform.listener.VeryRuleListener
 	
 	//springAOP-单个规则，规则类型缺省为不带返回值的条件

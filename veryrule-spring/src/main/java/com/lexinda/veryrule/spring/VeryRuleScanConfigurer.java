@@ -20,10 +20,10 @@ import org.springframework.stereotype.Component;
 import com.lexinda.veryrule.VeryRule;
 import com.lexinda.veryrule.annotation.Rule;
 import com.lexinda.veryrule.aspect.VeryRuleAspect;
-import com.lexinda.veryrule.core.IRuleAction;
-import com.lexinda.veryrule.core.IRuleCondation;
-import com.lexinda.veryrule.core.IRuleListener;
-import com.lexinda.veryrule.core.IRuleResultCondation;
+import com.lexinda.veryrule.core.interfaces.IRuleAction;
+import com.lexinda.veryrule.core.interfaces.IRuleCondation;
+import com.lexinda.veryrule.core.interfaces.IRuleListener;
+import com.lexinda.veryrule.core.interfaces.IRuleResultCondation;
 
 @Component
 public class VeryRuleScanConfigurer implements ApplicationContextAware {
@@ -101,6 +101,7 @@ public class VeryRuleScanConfigurer implements ApplicationContextAware {
 		veryruleDefinitionBuilder.addPropertyValue("ruleResultCondationMap", veryRule.getRuleResultCondationMap());
 		veryruleDefinitionBuilder.addPropertyValue("ruleListener", veryRule.getRuleListener());
 		veryruleDefinitionBuilder.addPropertyValue("ruleInvoker", veryRule.getRuleInvoker());
+		veryruleDefinitionBuilder.addPropertyValue("ruleProxyHandler", veryRule.getRuleProxyHandler());
 		veryruleDefinitionBuilder.setScope(BeanDefinition.SCOPE_SINGLETON);
 		// 注册bean
 		context.registerBeanDefinition("veryrule", veryruleDefinitionBuilder.getRawBeanDefinition());

@@ -13,8 +13,8 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.lexinda.veryrule.base.key.RuleCode;
 import com.lexinda.veryrule.bo.RuleBo;
-import com.lexinda.veryrule.common.RuleCode;
 import com.lexinda.veryrule.common.RuleType;
 
 /**
@@ -74,10 +74,10 @@ public class VeryRuleTest {
 		
 		try {
 			Long time = System.currentTimeMillis();
-			for(int i=0;i<1000000;i++) {
-				veryRule.fire(param, res);
-			}
-//			veryRule.fire(param, res);
+//			for(int i=0;i<1000000;i++) {
+//				veryRule.fire(param, res);
+//			}
+			veryRule.fire(param, res);
 			System.out.println(System.currentTimeMillis()-time);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

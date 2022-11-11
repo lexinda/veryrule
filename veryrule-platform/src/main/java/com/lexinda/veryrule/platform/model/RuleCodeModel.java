@@ -1,12 +1,6 @@
 package com.lexinda.veryrule.platform.model;
 
-/**
- * 
- * @author lexinda
- *
- */
-
-import com.lexinda.veryrule.common.RuleCode;
+import com.lexinda.veryrule.base.key.RuleCode;
 
 public class RuleCodeModel extends RuleCode {
 

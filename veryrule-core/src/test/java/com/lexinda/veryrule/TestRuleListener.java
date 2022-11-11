@@ -1,6 +1,6 @@
 package com.lexinda.veryrule;
 
-import com.lexinda.veryrule.core.IRuleListener;
+import com.lexinda.veryrule.core.interfaces.IRuleListener;
 
 /**
  * 

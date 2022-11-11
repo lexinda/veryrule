@@ -11,7 +11,7 @@ import java.util.Map;
 import com.lexinda.veryrule.annotation.Rule;
 import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.common.RuleType;
-import com.lexinda.veryrule.core.IRuleResultCondation;
+import com.lexinda.veryrule.core.interfaces.IRuleResultCondation;
 import com.lexinda.veryrule.platform.model.RuleCodeModel;
 
 @Rule(code = RuleCodeModel.REGEXREPLACE,name = "指定key匹配正则表达式替换", desc = "指定key匹配正则表达式替换", type = RuleType.RESULT_CONDATION)

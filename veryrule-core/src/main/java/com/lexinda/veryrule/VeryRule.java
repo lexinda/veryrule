@@ -13,13 +13,14 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import com.lexinda.veryrule.annotation.Rule;
 import com.lexinda.veryrule.bo.RuleBo;
+import com.lexinda.veryrule.common.RuleResult;
 import com.lexinda.veryrule.common.RuleType;
-import com.lexinda.veryrule.core.IRuleAction;
-import com.lexinda.veryrule.core.IRuleCondation;
-import com.lexinda.veryrule.core.IRuleListener;
-import com.lexinda.veryrule.core.IRuleResultCondation;
 import com.lexinda.veryrule.core.RuleInvoker;
-import com.lexinda.veryrule.core.RuleResult;
+import com.lexinda.veryrule.core.RuleProxyHandler;
+import com.lexinda.veryrule.core.interfaces.IRuleAction;
+import com.lexinda.veryrule.core.interfaces.IRuleCondation;
+import com.lexinda.veryrule.core.interfaces.IRuleListener;
+import com.lexinda.veryrule.core.interfaces.IRuleResultCondation;
 
 /**
  * 
@@ -60,7 +61,6 @@ public class VeryRule extends RuleEngine {
 	
 	/**
 	 * 
-	 * @param <R>
 	 * @param param 入参
 	 * @param rule  需要执行的规则
 	 * @return
@@ -72,7 +72,6 @@ public class VeryRule extends RuleEngine {
 
 	/**
 	 * 
-	 * @param <R>
 	 * @param param 入参
 	 * @param rules 需要执行的规则
 	 * @return
@@ -97,7 +96,6 @@ public class VeryRule extends RuleEngine {
 
 	/**
 	 * 
-	 * @param <R>
 	 * @param rules 需要执行的规则
 	 * @return
 	 * @throws Exception
@@ -108,7 +106,6 @@ public class VeryRule extends RuleEngine {
 
 	/**
 	 * 
-	 * @param <R>
 	 * @param param 入参
 	 * @param rules     需要执行的规则
 	 * @param isTest    是否测试
@@ -245,6 +242,9 @@ public class VeryRule extends RuleEngine {
 		builder.ruleResultCondationMap = new HashMap<String, IRuleAction>();
 		builder.ruleCondationMap = new HashMap<String, IRuleCondation>();
 		builder.ruleInvoker = new RuleInvoker();
+		RuleProxyHandler ruleProxyHandler = new RuleProxyHandler(null);
+		ruleProxyHandler.setRuleListener(builder.ruleListener);
+		builder.ruleProxyHandler = ruleProxyHandler;
 	}
 	
 }

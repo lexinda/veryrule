@@ -4,19 +4,21 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import com.lexinda.veryrule.core.interfaces.IRuleAction;
+import com.lexinda.veryrule.core.interfaces.IRuleListener;
+
 /**
  * 
  * @author lexinda
  *
  */
-public class RuleProxyHandler implements InvocationHandler {
+public class RuleProxyHandler implements InvocationHandler,Cloneable {
 
 	Object target;
 	IRuleListener ruleListener;
 
-	public RuleProxyHandler(Object target, IRuleListener ruleListener) {
+	public RuleProxyHandler(Object target) {
 		this.target = target;
-		this.ruleListener = ruleListener;
 	}
 
 	@Override
@@ -28,5 +30,33 @@ public class RuleProxyHandler implements InvocationHandler {
 		}
 		return result;
 	}
+
+	public IRuleListener getRuleListener() {
+		return ruleListener;
+	}
+
+	public void setRuleListener(IRuleListener ruleListener) {
+		this.ruleListener = ruleListener;
+	}
+	
+	public Object getTarget() {
+		return target;
+	}
+
+	public void setTarget(Object target) {
+		this.target = target;
+	}
+
+	@Override
+	public RuleProxyHandler clone(){
+		RuleProxyHandler obj = null;
+        try {
+            obj = (RuleProxyHandler)super.clone();
+            System.out.println(this.target);
+        } catch (CloneNotSupportedException e){
+            e.printStackTrace();
+        }
+        return obj;
+    }
 
 }

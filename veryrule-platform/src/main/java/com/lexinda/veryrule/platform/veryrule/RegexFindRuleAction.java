@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 import com.lexinda.veryrule.annotation.Rule;
 import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.common.RuleType;
-import com.lexinda.veryrule.core.IRuleCondation;
+import com.lexinda.veryrule.core.interfaces.IRuleCondation;
 import com.lexinda.veryrule.platform.model.RuleCodeModel;
 
 @Rule(code = RuleCodeModel.REGEXFIND,name = "指定key匹配正则表达式查找", desc = "指定key匹配正则表达式查找", type = RuleType.CONDATION)

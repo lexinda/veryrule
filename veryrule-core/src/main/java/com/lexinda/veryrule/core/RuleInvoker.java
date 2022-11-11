@@ -11,16 +11,22 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import com.lexinda.veryrule.bo.RuleBo;
+import com.lexinda.veryrule.common.RuleResult;
+import com.lexinda.veryrule.core.interfaces.IRuleAction;
+import com.lexinda.veryrule.core.interfaces.IRuleCondation;
+import com.lexinda.veryrule.core.interfaces.IRuleResultCondation;
+import com.lexinda.veryrule.core.interfaces.IRuleTest;
 
 public class RuleInvoker extends RuleInvokerAbst implements Cloneable {
 	
 	@Override
-	public <R extends RuleBo> void doRuleCondation(Map<String, Object> param, Map<R, IRuleCondation> ruleCondations,IRuleListener ruleListener,boolean isTest) {
+	public <R extends RuleBo> void doRuleCondation(Map<String, Object> param, Map<R, IRuleCondation> ruleCondations,RuleProxyHandler ruleProxyHandler,boolean isTest) {
 		ruleCondations.entrySet().stream().forEach(condation->{
 			try {
-				RuleProxyHandler ruleHandler = new RuleProxyHandler(condation.getValue(),ruleListener);
+				RuleProxyHandler ruleHandler = ruleProxyHandler.clone();
+				ruleHandler.setTarget(condation.getValue());
 				if(isTest) {
-					Map<String, Object> testResult = getTestResult(ruleHandler,condation.getKey());
+					Map<String, Object> testResult = getTestResult(ruleHandler, condation.getKey());
 					if(testResult!=null) {
 						ruleResult.addResultAll(testResult);
 					}
@@ -39,15 +45,16 @@ public class RuleInvoker extends RuleInvokerAbst implements Cloneable {
 	}
 
 	@Override
-	public <R extends RuleBo> void doRuleResultCondation(Map<String, Object> param, Map<R, IRuleResultCondation> ruleCondations,IRuleListener ruleListener,boolean isTest,ThreadPoolExecutor threadPoolExecutor) {
+	public <R extends RuleBo> void doRuleResultCondation(Map<String, Object> param, Map<R, IRuleResultCondation> ruleCondations,RuleProxyHandler ruleProxyHandler,boolean isTest,ThreadPoolExecutor threadPoolExecutor) {
 		Map<String, Object> condationResultMap = new HashMap<String, Object>();
 		if(threadPoolExecutor!=null) {
 			List<Future> futurelist = new ArrayList<Future>();
 			ruleCondations.entrySet().stream().forEach(condation->{
 				try {
-					RuleProxyHandler ruleHandler = new RuleProxyHandler(condation.getValue(),ruleListener);
+					RuleProxyHandler ruleHandler = ruleProxyHandler.clone();
+					ruleHandler.setTarget(condation.getValue());
 					if(isTest) {
-						Map<String, Object> testResult = getTestResult(ruleHandler,condation.getKey());
+						Map<String, Object> testResult = getTestResult(ruleHandler, condation.getKey());
 						if(testResult!=null) {
 							ruleResult.addResultAll(testResult);
 						}
@@ -76,9 +83,10 @@ public class RuleInvoker extends RuleInvokerAbst implements Cloneable {
 		}else {
 			ruleCondations.entrySet().stream().parallel().forEach(condation->{
 				try {
-					RuleProxyHandler ruleHandler = new RuleProxyHandler(condation.getValue(),ruleListener);
+					RuleProxyHandler ruleHandler = ruleProxyHandler.clone();
+					ruleHandler.setTarget(condation.getValue());
 					if(isTest) {
-						Map<String, Object> testResult = getTestResult(ruleHandler,condation.getKey());
+						Map<String, Object> testResult = getTestResult(ruleHandler, condation.getKey());
 						if(testResult!=null) {
 							ruleResult.addResultAll(testResult);
 						}
@@ -99,11 +107,12 @@ public class RuleInvoker extends RuleInvokerAbst implements Cloneable {
 
 	@Override
 	public <R extends RuleBo> void doRuleAction(Map<String, Object> param,
-			Map<R, IRuleAction> ruleResultActions,IRuleListener ruleListener,boolean isTest) {
+			Map<R, IRuleAction> ruleResultActions,RuleProxyHandler ruleProxyHandler,boolean isTest) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		ruleResultActions.entrySet().stream().forEach(action->{
 			try {
-				RuleProxyHandler ruleHandler = new RuleProxyHandler(action.getValue(),ruleListener);
+				RuleProxyHandler ruleHandler = ruleProxyHandler.clone();
+				ruleHandler.setTarget(action.getValue());
 				if(isTest) {
 					Map<String, Object> testResult = getTestResult(ruleHandler, action.getKey());
 					if(testResult!=null) {
@@ -135,7 +144,7 @@ public class RuleInvoker extends RuleInvokerAbst implements Cloneable {
 		}
 		return testResult;
 	}
-
+	
 	@Override
 	public Object clone() {
 		Object obj = null;

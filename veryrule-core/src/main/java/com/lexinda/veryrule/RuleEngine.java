@@ -6,12 +6,13 @@ import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import com.lexinda.veryrule.bo.RuleBo;
-import com.lexinda.veryrule.core.IRuleAction;
-import com.lexinda.veryrule.core.IRuleCondation;
-import com.lexinda.veryrule.core.IRuleListener;
-import com.lexinda.veryrule.core.IRuleResultCondation;
+import com.lexinda.veryrule.common.RuleResult;
 import com.lexinda.veryrule.core.RuleInvoker;
-import com.lexinda.veryrule.core.RuleResult;
+import com.lexinda.veryrule.core.RuleProxyHandler;
+import com.lexinda.veryrule.core.interfaces.IRuleAction;
+import com.lexinda.veryrule.core.interfaces.IRuleCondation;
+import com.lexinda.veryrule.core.interfaces.IRuleListener;
+import com.lexinda.veryrule.core.interfaces.IRuleResultCondation;
 
 public class RuleEngine<R extends RuleBo> {
 
@@ -20,14 +21,15 @@ public class RuleEngine<R extends RuleBo> {
 	protected Map<String, IRuleCondation> ruleCondationMap;
 	protected IRuleListener ruleListener;
 	protected RuleInvoker ruleInvoker;
+	protected RuleProxyHandler ruleProxyHandler = null;
 
 	protected RuleResult getResult(Map<String, Object> param, Map<R, IRuleCondation> ruleCondations,
 			Map<R, IRuleResultCondation> ruleResultCondations, Map<R, IRuleAction> ruleActions, boolean isTest,
 			ThreadPoolExecutor threadPoolExecutor) throws Exception {
 		RuleInvoker invoke = (RuleInvoker) ruleInvoker.clone();
-		invoke.doRuleCondation(param, ruleCondations,this.ruleListener,isTest);
-		invoke.doRuleResultCondation(param, ruleResultCondations,this.ruleListener,isTest,threadPoolExecutor);
-		invoke.doRuleAction(param, ruleActions,this.ruleListener,isTest);
+		invoke.doRuleCondation(param, ruleCondations,ruleProxyHandler,isTest);
+		invoke.doRuleResultCondation(param, ruleResultCondations,ruleProxyHandler,isTest,threadPoolExecutor);
+		invoke.doRuleAction(param, ruleActions,ruleProxyHandler,isTest);
 		return invoke.getRuleResult();
 	}
 
@@ -97,5 +99,12 @@ public class RuleEngine<R extends RuleBo> {
 	public RuleInvoker getRuleInvoker() {
 		return ruleInvoker;
 	}
-	
+
+	public RuleProxyHandler getRuleProxyHandler() {
+		return ruleProxyHandler;
+	}
+
+	public void setRuleProxyHandler(RuleProxyHandler ruleProxyHandler) {
+		this.ruleProxyHandler = ruleProxyHandler;
+	}
 }

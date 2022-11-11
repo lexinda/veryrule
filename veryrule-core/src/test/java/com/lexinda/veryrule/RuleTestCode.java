@@ -1,6 +1,6 @@
 package com.lexinda.veryrule;
 
-import com.lexinda.veryrule.common.RuleCode;
+import com.lexinda.veryrule.base.key.RuleCode;
 
 public class RuleTestCode extends RuleCode {
 

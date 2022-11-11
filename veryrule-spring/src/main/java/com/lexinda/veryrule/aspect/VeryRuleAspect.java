@@ -17,7 +17,7 @@ import com.lexinda.veryrule.VeryRule;
 import com.lexinda.veryrule.annotation.VeryRuleFlow;
 import com.lexinda.veryrule.annotation.VeryRuleSingle;
 import com.lexinda.veryrule.bo.RuleBo;
-import com.lexinda.veryrule.core.RuleResult;
+import com.lexinda.veryrule.common.RuleResult;
 import com.lexinda.veryrule.vo.RestApiResponse;
 
 /**

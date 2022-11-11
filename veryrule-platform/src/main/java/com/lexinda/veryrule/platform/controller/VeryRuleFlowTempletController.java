@@ -18,7 +18,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lexinda.veryrule.VeryRule;
 import com.lexinda.veryrule.annotation.VeryRuleSingle;
-import com.lexinda.veryrule.common.RuleCode;
+import com.lexinda.veryrule.base.key.RuleCode;
 import com.lexinda.veryrule.platform.model.VeryRuleFlowTempletModel;
 import com.lexinda.veryrule.platform.service.mybatis.VeryRuleFlowTempletLogMbService;
 import com.lexinda.veryrule.platform.service.mybatis.VeryRuleFlowTempletMbService;
