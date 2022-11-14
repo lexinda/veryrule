@@ -52,7 +52,6 @@ public class RuleProxyHandler implements InvocationHandler,Cloneable {
 		RuleProxyHandler obj = null;
         try {
             obj = (RuleProxyHandler)super.clone();
-            System.out.println(this.target);
         } catch (CloneNotSupportedException e){
             e.printStackTrace();
         }

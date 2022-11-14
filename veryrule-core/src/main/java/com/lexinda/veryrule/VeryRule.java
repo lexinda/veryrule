@@ -148,6 +148,7 @@ public class VeryRule extends RuleEngine {
 		IRuleListener ruleListener = clazz.getDeclaredConstructor().newInstance();
 		builder.ruleListener = ruleListener;
 		builder.ruleListener.initRule();
+		builder.ruleProxyHandler.setRuleListener(builder.ruleListener);
 		return builder;
 	}
 	
@@ -243,7 +244,6 @@ public class VeryRule extends RuleEngine {
 		builder.ruleCondationMap = new HashMap<String, IRuleCondation>();
 		builder.ruleInvoker = new RuleInvoker();
 		RuleProxyHandler ruleProxyHandler = new RuleProxyHandler(null);
-		ruleProxyHandler.setRuleListener(builder.ruleListener);
 		builder.ruleProxyHandler = ruleProxyHandler;
 	}
 	
