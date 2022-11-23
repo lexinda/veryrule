@@ -12,7 +12,7 @@ export default defineConfig({
 	　　//反向代理配置，注意rewrite写法，开始没看文档在这里踩了坑
 	　　proxy: {
 	　　　　'/api': {
-	　　　　　　target: 'http://10.211.240.45:8088/veryrule', //代理接口
+	　　　　　　target: 'http://10.211.240.45:8090/veryrule', //代理接口
 	　　　　　　changeOrigin: true,
 	　　　　　　ws: true,
 	　　　　　　secure: true,

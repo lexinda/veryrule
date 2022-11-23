@@ -23,7 +23,6 @@ public class RuleResultCondationCallable<R extends RuleBo> implements Callable<O
 
 	@Override
 	public Object call() throws Exception {
-		// TODO Auto-generated method stub
 		return this.ruleResultCondation.contation(param, rule);
 	}
 

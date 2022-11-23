@@ -79,6 +79,7 @@
 				<div style="margin-top: 5px;">
 					<el-button size="small" type="primary" @click="showTest(scope.$index, scope.row)">测试</el-button>
 					<el-button size="small" type="primary" @click="showScene(scope.$index, scope.row)">场景</el-button>
+					<el-button size="small" type="primary" @click="showDocument(scope.$index, scope.row)">接口文档</el-button>
 				</div>
 				
 			</template>
@@ -127,9 +128,14 @@
 		</div>
 	</el-dialog>
 	
-	<el-dialog v-model="veryFlowtempletSceneVisible" destroy-on-close width="800px">
+	<el-dialog v-model="veryFlowtempletSceneVisible" destroy-on-close width="800px" :title="veryFlowSceneTitle">
 		<FlowScene :veryFlowSceneData="veryFlowSceneData" @cancelFlowScene="cancelFlowScene"></FlowScene>
 	</el-dialog>
+	
+	<el-dialog v-model="veryFlowDocumentVisible" destroy-on-close width="800px" :title="veryFlowDocumentTitle">
+		<FlowDocument :veryFlowDocumentData="veryFlowDocumentData" :documentRuleFlowCode="documentRuleFlowCode" @cancelFlowDocument="cancelFlowDocument"></FlowDocument>
+	</el-dialog>
+	
 </template>
 
 <script lang="ts" setup>
@@ -138,6 +144,7 @@
 	import FlowTempletEdit from "./flow/FlowTempletEdit.vue";
 	import FlowTempletEditDetail from "./flow/FlowTempletEditDetail.vue";
 	import FlowScene from "./flow/FlowScene.vue";
+	import FlowDocument from "./flow/FlowDocument.vue";
 	import {
 		ElMessage
 	} from 'element-plus'
@@ -487,17 +494,20 @@
 	
 	const veryFlowtempletSceneVisible = ref(false)
 	const veryFlowSceneData = ref([])
+	const veryFlowSceneTitle = ref();
 	const showScene=(index: number, row: RuleFlow)=>{
 		veryFlowSceneData.value = []
 		const param = {
 			"ruleFlowTempletCode": row.ruleFlowTempletCode
 		}
+		veryFlowSceneTitle.value = row.ruleFlowName+"-场景"
 		post("/api/showSceneInfo", param, (data) => {
 			if (data.errorCode == 0) {
+				
 				if (data.body.length > 0) {
 					veryFlowSceneData.value = data.body
-					veryFlowtempletSceneVisible.value = true
 				}
+				veryFlowtempletSceneVisible.value = true
 			} else {
 				ElMessage.error(data.errorDesc)
 			}
@@ -506,4 +516,33 @@
 	const cancelFlowScene=()=>{
 		veryFlowtempletSceneVisible.value = false
 	}
+	
+	const veryFlowDocumentVisible = ref(false)
+	const veryFlowDocumentData = ref([])
+	const veryFlowDocumentTitle = ref()
+	const documentRuleFlowCode = ref()
+	const showDocument=(index: number, row: RuleFlow)=>{
+		veryFlowDocumentData.value = []
+		documentRuleFlowCode.value = row.ruleFlowCode;
+		const param = {
+			"ruleFlowCode": row.ruleFlowCode
+		}
+		veryFlowDocumentTitle.value = row.ruleFlowName+"-接口文档"
+		post("/api/getDocumentInfo", param, (data) => {
+			if (data.errorCode == 0) {
+				if (data.body.ruleFlowDocument != '') {
+					veryFlowDocumentData.value = JSON.parse(data.body.ruleFlowDocument)
+				}else{
+					veryFlowDocumentData.value = []
+				}
+				veryFlowDocumentVisible.value = true
+			} else {
+				ElMessage.error(data.errorDesc)
+			}
+		});
+	}
+	const cancelFlowDocument=()=>{
+		veryFlowDocumentVisible.value = false
+	}
+	
 </script>

@@ -556,6 +556,66 @@ public class VeryRuleFlowController {
 		return res;
 	}
 
+	@RequestMapping(value = "/getDocumentInfo", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@VeryRuleSingle(ruleCode = RuleCode.NOTNULL, ruleKey = "ruleFlowCode", ruleErrMsg = "不能为空")
+	public RestApiResponse getDocumentInfo(String data) throws Exception {
+		RestApiResponse res = new RestApiResponse();
+		res.setErrorCode(1);
+		res.setElapsedTime(System.currentTimeMillis());
+		try {
+			JSONObject param = JSON.parseObject(data);
+			String ruleFlowCode = param.getString("ruleFlowCode");
+			Map<String,Object> dataParam = new HashMap<String,Object>();
+			dataParam.put("ruleFlowCode", ruleFlowCode);
+			List<VeryRuleFlowModel> veryRuleFlowTempletList = veryRuleFlowMbService
+					.selectVeryRuleFlowList(dataParam);
+			String ruleFlowDocument = "";
+			if(veryRuleFlowTempletList.size()>0) {
+				ruleFlowDocument = veryRuleFlowTempletList.get(0).getRuleFlowDocument();
+			}
+			Map<String,String> result = new LinkedHashMap<String, String>();
+			result.put("ruleFlowDocument", ruleFlowDocument);
+			res.setBody(result);
+			res.setErrorCode(0);
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			res.setErrorDesc(e.getMessage());
+		}
+		res.setElapsedTime(System.currentTimeMillis() - res.getElapsedTime());
+		res.setServerTime(System.currentTimeMillis());
+		return res;
+	}
+	
+	@RequestMapping(value = "/updateVeryRuleFlowDocument", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@VeryRuleSingle(ruleCode = RuleCode.NOTNULL, ruleKey = "ruleFlowCode,ruleFlowDocument", ruleErrMsg = "不能为空")
+	public RestApiResponse updateVeryRuleFlowDocument(String data) throws Exception {
+		RestApiResponse res = new RestApiResponse();
+		res.setErrorCode(1);
+		res.setElapsedTime(System.currentTimeMillis());
+		try {
+			JSONObject param = JSON.parseObject(data);
+			Map<String, Object> dataParam = new HashMap<String, Object>();
+			dataParam.put("ruleFlowCode", param.getString("ruleFlowCode"));
+			List<VeryRuleFlowModel> veryRuleFlowList = veryRuleFlowMbService.selectVeryRuleFlowList(dataParam);
+			if(veryRuleFlowList.size()>0) {
+				Map<String, Object> dataUpdateParam = new HashMap<String, Object>();
+				dataUpdateParam.put("id", veryRuleFlowList.get(0).getId());
+				dataUpdateParam.put("ruleFlowDocument", param.getString("ruleFlowDocument"));
+				dataUpdateParam.put("versionTo", veryRuleFlowList.get(0).getVersion() + 1);
+				dataUpdateParam.put("version", veryRuleFlowList.get(0).getVersion());
+				int result = veryRuleFlowMbService.updateById(dataUpdateParam);
+				System.out.println(result);
+			}
+			res.setErrorCode(0);
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			res.setErrorDesc(e.getMessage());
+		}
+		res.setElapsedTime(System.currentTimeMillis() - res.getElapsedTime());
+		res.setServerTime(System.currentTimeMillis());
+		return res;
+	}
+	
 	public List<VeryRuleFlowModel> getSubVeryRuleFlow(String parentRuleFlowCode,
 			List<VeryRuleFlowModel> veryRuleFlowList, List<VeryRuleFlowModel> veryRuleFlowResultList) {
 		List<VeryRuleFlowModel> subVeryRuleFlowList = veryRuleFlowList.stream()
@@ -606,7 +666,7 @@ public class VeryRuleFlowController {
 	public RestApiResponse showSceneInfo(String data) {
 		RestApiResponse res = new RestApiResponse();
 		res.setErrorCode(0);
-		Set<String> imageList = new HashSet<String>();
+		List<String> imageList = new ArrayList<String>();
 		try {
 			JSONObject param = JSON.parseObject(data);
 			String sceneImgPath = scenePath + File.separator + param.getString("ruleFlowTempletCode");
@@ -623,7 +683,7 @@ public class VeryRuleFlowController {
 		res.setBody(imageList);
 		return res;
 	}
-
+	
 	@RequestMapping(value = "/sceneImage/{path}/{img}", method = RequestMethod.GET)
 	public void sceneImage(HttpServletRequest request, HttpServletResponse response, @PathVariable("path") String path,
 			@PathVariable("img") String img) throws IOException {

@@ -75,7 +75,6 @@ public class RuleInvoker extends RuleInvokerAbst implements Cloneable {
 							condationResultMap.putAll((Map<String, Object>)f.get());
 						}
 					} catch (InterruptedException | ExecutionException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}

@@ -16,6 +16,7 @@ public class VeryRuleFlowModel extends RuleFlowBo{
 	private Integer id;
 	private String ruleFlowDesc;
 	private String ruleFlowTempletCode;
+	private String ruleFlowDocument;
 	private Integer version;
 	private boolean hasChildren;
 	private String createId;
@@ -75,6 +76,12 @@ public class VeryRuleFlowModel extends RuleFlowBo{
 	}
 	public void setRuleFlowTempletCode(String ruleFlowTempletCode) {
 		this.ruleFlowTempletCode = ruleFlowTempletCode;
+	}
+	public String getRuleFlowDocument() {
+		return ruleFlowDocument;
+	}
+	public void setRuleFlowDocument(String ruleFlowDocument) {
+		this.ruleFlowDocument = ruleFlowDocument;
 	}
 	
 }
