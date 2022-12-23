@@ -11,6 +11,7 @@
 		<result column="rule_flow_desc" property="ruleFlowDesc" jdbcType="VARCHAR"/>
 		<result column="rule_flow_templet_code" property="ruleFlowTempletCode" jdbcType="VARCHAR"/>
         <result column="rule_flow_document" property="ruleFlowDocument" jdbcType="VARCHAR"/>
+         <result column="rule_scene_id" property="ruleSceneId" jdbcType="INTEGER"/>
         <result column="status" property="status" jdbcType="TINYINT"/>
         <result column="version" property="version" jdbcType="TINYINT"/>
         <result column="create_id" property="createId" jdbcType="VARCHAR"/>
@@ -22,7 +23,7 @@
     <!-- 通用查询结果列-->
     <sql id="Base_Column_List">
         id,rule_flow_code,rule_flow_name,group_name,parent_rule_flow_code,
-        rule_flow_desc,rule_flow_templet_code,rule_flow_document,status,version,create_id,create_time,update_id,update_time
+        rule_flow_desc,rule_flow_templet_code,rule_flow_document,rule_scene_id,status,version,create_id,create_time,update_id,update_time
     </sql>
     
     <sql id="Base_Condition">
@@ -33,6 +34,7 @@
             <if test="pm.parentRuleFlowCode!= null">and parent_rule_flow_code = #{pm.parentRuleFlowCode,jdbcType=VARCHAR}</if>
             <if test="pm.parentRuleFlowInfo!= null">and (parent_rule_flow_code = #{pm.parentRuleFlowInfo,jdbcType=VARCHAR} or rule_flow_code = #{pm.parentRuleFlowInfo,jdbcType=VARCHAR})</if>
             <if test="pm.status!= null">and status = #{pm.status,jdbcType=TINYINT}</if>
+            <if test="pm.ruleSceneId != null">and rule_scene_id = #{pm.ruleSceneId,jdbcType=INTEGER}</if>
             <if test="pm.parentRuleFlowCodes!= null">
 				and parent_rule_flow_code in 
 				    <foreach collection="pm.parentRuleFlowCodes" item="item" open="(" close=")" separator=",">
@@ -76,6 +78,9 @@
             </if>
             <if test="ruleFlowDocument != null">
                 rule_flow_document,
+            </if>
+            <if test="ruleSceneId != null">
+                rule_scene_id,
             </if>
             <if test="status != null">
                 status,
@@ -121,6 +126,9 @@
             <if test="ruleFlowDocument != null">
                 #{ruleFlowDocument,jdbcType=TINYINT},
             </if>
+             <if test="ruleSceneId != null">
+                #{ruleSceneId,jdbcType=TINYINT},
+            </if>
             <if test="status != null">
                 #{status,jdbcType=TINYINT},
             </if>
@@ -151,6 +159,7 @@
             <if test="pm.ruleFlowDesc != null">rule_flow_desc = #{pm.ruleFlowDesc,jdbcType=VARCHAR},</if>
             <if test="pm.ruleFlowTempletCode != null">rule_flow_templet_code = #{pm.ruleFlowTempletCode,jdbcType=VARCHAR},</if>
             <if test="pm.ruleFlowDocument != null">rule_flow_document = #{pm.ruleFlowDocument,jdbcType=VARCHAR},</if>
+            <if test="pm.ruleSceneId != null">rule_scene_id = #{pm.ruleSceneId,jdbcType=VARCHAR},</if>
             <if test="pm.updateId != null">update_id = #{pm.updateId,jdbcType=VARCHAR},</if>
             <if test="pm.updateTime != null">update_time = #{pm.updateTime,jdbcType=TIMESTAMP},</if>
             version = #{pm.versionTo,jdbcType=TINYINT}

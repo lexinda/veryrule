@@ -15,6 +15,12 @@
 		<el-form-item label="组织" prop="groupName">
 			<el-input v-model="ruleFlowData.groupName"></el-input>
 		</el-form-item>
+		<el-form-item label="规则场景" prop="ruleSceneId">
+			<el-select v-model="ruleFlowData.ruleSceneId" placeholder="请选择">
+				<el-option v-for="(item,index) in ruleSceneData" :label="item.ruleSceneName"
+					:value="item.id" />
+			</el-select>
+		</el-form-item>
 		<el-form-item label="描述" prop="ruleFlowDesc" required>
 			<el-input v-model="ruleFlowData.ruleFlowDesc" type="textarea"></el-input>
 		</el-form-item>
@@ -60,7 +66,8 @@
 	})
 
 	const props = defineProps < {
-		ruleFlowData: Object
+		ruleFlowData: Object,
+		ruleSceneData:Array,
 	} > ()
 	
 	const emit = defineEmits(['cancelFlowEdit','successFlowAdd','successFlowUpdate']);
@@ -76,6 +83,7 @@
 					"parentRuleFlowCode": flowEditFormRef.value["model"].parentRuleFlowCode,
 					"groupName": flowEditFormRef.value["model"].groupName,
 					"ruleFlowDesc": flowEditFormRef.value["model"].ruleFlowDesc,
+					"ruleSceneId": flowEditFormRef.value["model"].ruleSceneId,
 				}
 				if(id>0){
 					updateVeryRuleFlow(param)
@@ -122,4 +130,5 @@
 			}
 		});
 	}
+	
 </script>

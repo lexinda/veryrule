@@ -2,8 +2,11 @@ package com.lexinda.veryrule.platform.controller;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigInteger;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,6 +21,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.xwpf.usermodel.XWPFAbstractNum;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFNumbering;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.XWPFTable;
+import org.apache.poi.xwpf.usermodel.XWPFTableCell;
+import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.apache.xmlbeans.XmlException;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTAbstractNum;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTNumbering;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblWidth;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STMerge;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +53,8 @@ import com.lexinda.veryrule.annotation.VeryRuleSingle;
 import com.lexinda.veryrule.base.key.RuleCode;
 import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.common.RuleResult;
+import com.lexinda.veryrule.platform.model.VeryRuleDocumentModel;
+import com.lexinda.veryrule.platform.model.VeryRuleDocumentModel.Param;
 import com.lexinda.veryrule.platform.model.VeryRuleFlowModel;
 import com.lexinda.veryrule.platform.model.VeryRuleFlowTempletModel;
 import com.lexinda.veryrule.platform.service.VeryRuleFlowService;
@@ -70,17 +90,17 @@ public class VeryRuleFlowController {
 
 	@Autowired
 	private VeryRule veryRule;
-	
+
 	@Value("${veryrule.scene.path}")
 	private String scenePath;
-	
+
 	@Value("${server.name}")
 	private String serverName;
 
 	@RequestMapping(value = "/getVeryRuleFlowPage", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 //	@VeryRuleFlow(ruleFlowCode = "test")
 	@VeryRuleSingle(ruleCode = RuleCode.NOTNULL, ruleKey = "parentRuleFlowCode,currentPage", ruleErrMsg = "不能为空")
-	public RestApiResponse getVeryRuleFlowPage(String data,RuleResult ruleResult) throws Exception {
+	public RestApiResponse getVeryRuleFlowPage(String data, RuleResult ruleResult) throws Exception {
 		RestApiResponse res = new RestApiResponse();
 		res.setErrorCode(1);
 		res.setElapsedTime(System.currentTimeMillis());
@@ -170,6 +190,12 @@ public class VeryRuleFlowController {
 			} else {
 				veryRuleFlowData.setGroupName("");
 			}
+			String ruleFlowDocument = param.getString("ruleFlowDocument");
+			if (StringUtils.isNotBlank(ruleFlowDocument)) {
+				veryRuleFlowData.setRuleFlowDocument(ruleFlowDocument);
+			} else {
+				veryRuleFlowData.setRuleFlowDocument("");
+			}
 			String ruleFlowDesc = param.getString("ruleFlowDesc");
 			if (StringUtils.isNotBlank(ruleFlowDesc)) {
 				veryRuleFlowData.setRuleFlowDesc(ruleFlowDesc);
@@ -236,6 +262,7 @@ public class VeryRuleFlowController {
 			dataParam.put("ruleFlowName", param.getString("ruleFlowName"));
 			dataParam.put("groupName", param.getString("groupName"));
 			dataParam.put("ruleFlowDesc", param.getString("ruleFlowDesc"));
+			dataParam.put("ruleSceneId", param.getString("ruleSceneId"));
 			veryRuleFlowMbService.updateById(dataParam);
 			res.setErrorCode(0);
 		} catch (Exception e) {
@@ -516,35 +543,35 @@ public class VeryRuleFlowController {
 			JSONObject param = JSON.parseObject(data);
 			String ruleFlowTemplet = param.getString("ruleFlowTemplet");
 			String ruleFlowTempletCode = param.getString("ruleFlowTempletCode");
-			if(StringUtils.isNotBlank(ruleFlowTemplet)||StringUtils.isNotBlank(ruleFlowTempletCode)) {
+			if (StringUtils.isNotBlank(ruleFlowTemplet) || StringUtils.isNotBlank(ruleFlowTempletCode)) {
 				List<RuleBo> ruleList = new ArrayList<RuleBo>();
-				if(StringUtils.isNotBlank(ruleFlowTemplet)){
+				if (StringUtils.isNotBlank(ruleFlowTemplet)) {
 					ruleList = JSON.parseArray(ruleFlowTemplet, RuleBo.class);
-				}else {
-					Map<String,Object> dataParam = new HashMap<String,Object>();
+				} else {
+					Map<String, Object> dataParam = new HashMap<String, Object>();
 					dataParam.put("ruleFlowTempletCode", ruleFlowTempletCode);
 					List<VeryRuleFlowTempletModel> veryRuleFlowTempletList = veryRuleFlowTempletMbService
 							.selectVeryRuleFlowTempletList(dataParam);
-					if(veryRuleFlowTempletList.size()>0) {
+					if (veryRuleFlowTempletList.size() > 0) {
 						ruleList = JSON.parseArray(veryRuleFlowTempletList.get(0).getRuleFlowTemplet(), RuleBo.class);
 					}
 				}
-				if(ruleList.size()>0) {
+				if (ruleList.size() > 0) {
 					RuleResult ruleResult = veryRule.fireTest(ruleList);
-					Map<String,String> result = new LinkedHashMap<String, String>();
-					ruleList.forEach(rule->{
-						if(ruleResult.getResult().get(rule.getRuleCode())!=null) {
+					Map<String, String> result = new LinkedHashMap<String, String>();
+					ruleList.forEach(rule -> {
+						if (ruleResult.getResult().get(rule.getRuleCode()) != null) {
 							result.put(rule.getRuleCode(), ruleResult.getResult().get(rule.getRuleCode()).toString());
-						}else {
+						} else {
 							result.put(rule.getRuleCode(), "");
 						}
 					});
 					res.setBody(result);
 					res.setErrorCode(0);
-				}else {
+				} else {
 					res.setErrorDesc("无此规则");
 				}
-			}else {
+			} else {
 				res.setErrorDesc("无效规则");
 			}
 		} catch (Exception e) {
@@ -565,15 +592,14 @@ public class VeryRuleFlowController {
 		try {
 			JSONObject param = JSON.parseObject(data);
 			String ruleFlowCode = param.getString("ruleFlowCode");
-			Map<String,Object> dataParam = new HashMap<String,Object>();
+			Map<String, Object> dataParam = new HashMap<String, Object>();
 			dataParam.put("ruleFlowCode", ruleFlowCode);
-			List<VeryRuleFlowModel> veryRuleFlowTempletList = veryRuleFlowMbService
-					.selectVeryRuleFlowList(dataParam);
+			List<VeryRuleFlowModel> veryRuleFlowTempletList = veryRuleFlowMbService.selectVeryRuleFlowList(dataParam);
 			String ruleFlowDocument = "";
-			if(veryRuleFlowTempletList.size()>0) {
+			if (veryRuleFlowTempletList.size() > 0) {
 				ruleFlowDocument = veryRuleFlowTempletList.get(0).getRuleFlowDocument();
 			}
-			Map<String,String> result = new LinkedHashMap<String, String>();
+			Map<String, String> result = new LinkedHashMap<String, String>();
 			result.put("ruleFlowDocument", ruleFlowDocument);
 			res.setBody(result);
 			res.setErrorCode(0);
@@ -585,7 +611,7 @@ public class VeryRuleFlowController {
 		res.setServerTime(System.currentTimeMillis());
 		return res;
 	}
-	
+
 	@RequestMapping(value = "/updateVeryRuleFlowDocument", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@VeryRuleSingle(ruleCode = RuleCode.NOTNULL, ruleKey = "ruleFlowCode,ruleFlowDocument", ruleErrMsg = "不能为空")
 	public RestApiResponse updateVeryRuleFlowDocument(String data) throws Exception {
@@ -597,14 +623,13 @@ public class VeryRuleFlowController {
 			Map<String, Object> dataParam = new HashMap<String, Object>();
 			dataParam.put("ruleFlowCode", param.getString("ruleFlowCode"));
 			List<VeryRuleFlowModel> veryRuleFlowList = veryRuleFlowMbService.selectVeryRuleFlowList(dataParam);
-			if(veryRuleFlowList.size()>0) {
+			if (veryRuleFlowList.size() > 0) {
 				Map<String, Object> dataUpdateParam = new HashMap<String, Object>();
 				dataUpdateParam.put("id", veryRuleFlowList.get(0).getId());
 				dataUpdateParam.put("ruleFlowDocument", param.getString("ruleFlowDocument"));
 				dataUpdateParam.put("versionTo", veryRuleFlowList.get(0).getVersion() + 1);
 				dataUpdateParam.put("version", veryRuleFlowList.get(0).getVersion());
-				int result = veryRuleFlowMbService.updateById(dataUpdateParam);
-				System.out.println(result);
+				veryRuleFlowMbService.updateById(dataUpdateParam);
 			}
 			res.setErrorCode(0);
 		} catch (Exception e) {
@@ -615,7 +640,7 @@ public class VeryRuleFlowController {
 		res.setServerTime(System.currentTimeMillis());
 		return res;
 	}
-	
+
 	public List<VeryRuleFlowModel> getSubVeryRuleFlow(String parentRuleFlowCode,
 			List<VeryRuleFlowModel> veryRuleFlowList, List<VeryRuleFlowModel> veryRuleFlowResultList) {
 		List<VeryRuleFlowModel> subVeryRuleFlowList = veryRuleFlowList.stream()
@@ -661,7 +686,7 @@ public class VeryRuleFlowController {
 	}
 
 	// 业务场景详情页面
-	@RequestMapping(value="/showSceneInfo", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@RequestMapping(value = "/showSceneInfo", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@VeryRuleSingle(ruleCode = RuleCode.NOTNULL, ruleKey = "ruleFlowTempletCode", ruleErrMsg = "不能为空")
 	public RestApiResponse showSceneInfo(String data) {
 		RestApiResponse res = new RestApiResponse();
@@ -674,7 +699,8 @@ public class VeryRuleFlowController {
 			if (file.exists()) {
 				File[] files = file.listFiles();
 				for (File fileItem : files) {
-					imageList.add(serverName+"/veryrule/sceneImage/"+param.getString("ruleFlowTempletCode") + "/" + fileItem.getName());
+					imageList.add(serverName + "/veryrule/sceneImage/" + param.getString("ruleFlowTempletCode") + "/"
+							+ fileItem.getName());
 				}
 			}
 		} catch (Exception e) {
@@ -683,7 +709,7 @@ public class VeryRuleFlowController {
 		res.setBody(imageList);
 		return res;
 	}
-	
+
 	@RequestMapping(value = "/sceneImage/{path}/{img}", method = RequestMethod.GET)
 	public void sceneImage(HttpServletRequest request, HttpServletResponse response, @PathVariable("path") String path,
 			@PathVariable("img") String img) throws IOException {
@@ -726,4 +752,277 @@ public class VeryRuleFlowController {
 		}
 	}
 
+	static String cTAbstractNumBulletXML = "<w:abstractNum xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" w:abstractNumId=\"0\">"
+			+ "<w:multiLevelType w:val=\"hybridMultilevel\"/>" + "<w:lvl w:ilvl=\"0\">" + "<w:start w:val=\"1\"/>"
+			+ "<w:numFmt w:val=\"decimal\"/>" + "<w:lvlText w:val=\"%1、\"/>" + "<w:lvlJc w:val=\"left\"/>" + "<w:pPr>"
+			+ "<w:ind w:left=\"720\" w:hanging=\"360\"/>" + "</w:pPr>" + "</w:lvl>"
+			+ "<w:lvl w:ilvl=\"1\" w:tentative=\"1\">" + "<w:start w:val=\"1\"/>" + "<w:numFmt w:val=\"decimal\"/>"
+			+ "<w:lvlText w:val=\"%1.%2\"/>" + "<w:lvlJc w:val=\"left\"/>" + "<w:pPr>"
+			+ "<w:ind w:left=\"1440\" w:hanging=\"360\"/>" + "</w:pPr>" + "</w:lvl>"
+			+ "<w:lvl w:ilvl=\"2\" w:tentative=\"1\">" + "<w:start w:val=\"1\"/>" + "<w:numFmt w:val=\"decimal\"/>"
+			+ "<w:lvlText w:val=\"%1.%2.%3\"/>" + "<w:lvlJc w:val=\"left\"/>" + "<w:pPr>"
+			+ "<w:ind w:left=\"2160\" w:hanging=\"360\"/>" + "</w:pPr>" + "</w:lvl>" + "</w:abstractNum>";
+
+	public static void createMergeHCell(XWPFTableRow row, int from, int to, String text, boolean showColor) {
+		for (int colIndex = from; colIndex < to; colIndex++) {
+			XWPFTableCell cell = row.getCell(colIndex);
+			if (cell == null) {
+				cell = row.createCell();
+			}
+			cell.setText(text);
+			if (showColor) {
+				cell.getCTTc().addNewTcPr().addNewShd().setFill("6495ED");
+			}
+			if (colIndex == from) {
+				cell.getCTTc().addNewTcPr().addNewHMerge().setVal(STMerge.RESTART);
+			} else {
+				cell.getCTTc().addNewTcPr().addNewHMerge().setVal(STMerge.CONTINUE);
+			}
+		}
+	}
+	
+	@RequestMapping(value = "/downVeryRuleFlowDocument", method = RequestMethod.GET)
+	public void downVeryRuleFlowDocument(HttpServletRequest request, HttpServletResponse response) throws IOException, XmlException {
+		Map<String,Object> dataParam = new HashMap<String,Object>();
+		dataParam.put("ruleFlowCode", request.getParameter("ruleFlowCode"));
+		List<VeryRuleFlowModel> veryRuleFlowList = veryRuleFlowMbService.selectVeryRuleFlowList(dataParam);
+		String ruleFlowName = "",ruleDocument = "";
+		if(veryRuleFlowList.size()>0) {
+			VeryRuleFlowModel veryRuleFlowModel = veryRuleFlowList.get(0);
+			ruleFlowName = veryRuleFlowModel.getRuleFlowName();
+			ruleDocument = veryRuleFlowModel.getRuleFlowDocument();
+		}
+//		String str = "[{\"id\":2,\"domains\":[{\"key\":\"beta\",\"value\":\"2\"}],\"name\":\"2\",\"author\":\"2\",\"key\":\"2\",\"request\":{\"type\":\"post\",\"contentType\":\"application/json\"},\"paramIn\":[{\"id\":0,\"field\":\"\",\"require\":\"是\",\"dtype\":\"String\",\"desc\":\"\"}],\"paramInExample\":\"2\",\"paramOut\":[{\"id\":0,\"field\":\"\",\"require\":\"是\",\"dtype\":\"String\",\"desc\":\"\"}],\"paramOutExample\":\"2\",\"desc\":\"2\"},{\"id\":2,\"domains\":[{\"key\":\"beta\",\"value\":\"1\"}],\"name\":\"1\",\"author\":\"1\",\"key\":\"1\",\"request\":{\"type\":\"post\",\"contentType\":\"application/json\"},\"paramIn\":[{\"id\":0,\"field\":\"\",\"require\":\"是\",\"dtype\":\"String\",\"desc\":\"\"}],\"paramInExample\":\"\",\"paramOut\":[{\"id\":0,\"field\":\"\",\"require\":\"是\",\"dtype\":\"String\",\"desc\":\"\"}],\"paramOutExample\":\"\",\"desc\":\"\"}]";
+		List<VeryRuleDocumentModel> veryRuleDocumentModelList = JSON.parseArray(ruleDocument, VeryRuleDocumentModel.class);
+		XWPFDocument document = new XWPFDocument();
+
+		{
+
+			XWPFParagraph paragraph = document.createParagraph();
+
+			XWPFRun run = paragraph.createRun();
+
+			CTNumbering cTNumbering = CTNumbering.Factory.parse(cTAbstractNumBulletXML);
+
+			CTAbstractNum cTAbstractNum = cTNumbering.getAbstractNumArray(0);
+
+			XWPFAbstractNum abstractNum = new XWPFAbstractNum(cTAbstractNum);
+
+			XWPFNumbering numbering = document.createNumbering();
+
+			BigInteger abstractNumID = numbering.addAbstractNum(abstractNum);
+
+			BigInteger numID = numbering.addNum(abstractNumID);
+
+			System.out.println("numID: " + numID);
+
+			for (VeryRuleDocumentModel veryRuleDocumentModel : veryRuleDocumentModelList) {
+
+				paragraph = document.createParagraph();
+
+				paragraph.setNumID(numID);
+
+				run = paragraph.createRun();
+
+				run.setText(veryRuleDocumentModel.getName());
+
+				XWPFTable table = document.createTable();
+				table.setWidth(5 * 1300); // should be 5 inches width
+
+				// create CTTblGrid for this table with widths of the 2 columns.
+
+				// necessary for Libreoffice/Openoffice to accept the column widths.
+
+				// first column = 2 inches width
+
+				table.getCTTbl().addNewTblGrid().addNewGridCol().setW(BigInteger.valueOf(5 * 1300));
+
+				// set width for first column = 2 inches
+
+				CTTblWidth tblWidth = table.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW();
+
+				tblWidth.setW(BigInteger.valueOf(5 * 1300));
+
+				// STTblWidth.DXA is used to specify width in twentieths of a point.
+
+				tblWidth.setType(STTblWidth.DXA);
+
+				// 接口地址
+				XWPFTableRow row = table.getRow(0);
+				List<VeryRuleDocumentModel.Domain> domains = veryRuleDocumentModel.getDomains();
+				for (VeryRuleDocumentModel.Domain domain : domains) {
+					createMergeHCell(row, 0, 5, "接口地址" + domain.getKey() + "：" + domain.getValue(), true);
+				}
+				// 负责人
+				XWPFTableRow authorRow = table.createRow();
+				createMergeHCell(authorRow, 0, 5, "负责人：" + veryRuleDocumentModel.getAuthor(), true);
+				// Key
+				XWPFTableRow keyRow = table.createRow();
+				createMergeHCell(keyRow, 0, 5, "Key：" + veryRuleDocumentModel.getAuthor(), true);
+
+				XWPFTableRow timeRow = table.createRow();
+				createMergeHCell(timeRow, 0, 5, "接口对接时间（假接口）：", true);
+
+				XWPFTableRow devTimeRow = table.createRow();
+				createMergeHCell(devTimeRow, 0, 5, "接口Dev环境时间：", true);
+
+				XWPFTableRow bodyRow = table.createRow();
+				createMergeHCell(bodyRow, 0, 5, "业务入参(body部分)：", true);
+
+				XWPFTableRow paramInTitle = table.createRow();
+				XWPFTableCell cell = paramInTitle.getCell(0);
+				cell.setText("入参字段");
+				XWPFTableCell cell1 = paramInTitle.getCell(1);
+				cell1.setText("字段名称");
+				XWPFTableCell cell2 = paramInTitle.getCell(2);
+				cell2.setText("类型");
+				XWPFTableCell cell3 = paramInTitle.getCell(3);
+				cell3.setText("必填");
+				XWPFTableCell cell4 = paramInTitle.getCell(4);
+				cell4.setText("说明");
+
+				List<Param> paramIn = veryRuleDocumentModel.getParamIn();
+				for (Param param : paramIn) {
+					XWPFTableRow rowIn = table.createRow();
+					for (int col = 0; col < 5; col++) {
+						XWPFTableCell cellIn = rowIn.getCell(col);
+						if (cellIn == null) {
+							cellIn = rowIn.createCell();
+						}
+						switch (col) {
+						case 0:
+							cellIn.setText(param.getField());
+							break;
+						case 1:
+							cellIn.setText(param.getName());
+							break;
+						case 2:
+							cellIn.setText(param.getDtype());
+							break;
+						case 3:
+							cellIn.setText(param.getRequire());
+							break;
+						case 4:
+							cellIn.setText(param.getDesc());
+							break;
+						default:
+							break;
+						}
+					}
+				}
+				// 举例
+				XWPFTableRow exampleRow = table.createRow();
+				createMergeHCell(exampleRow, 0, 5, "举例：", true);
+				XWPFTableRow exampleDataRow = table.createRow();
+				createMergeHCell(exampleDataRow, 0, 5, veryRuleDocumentModel.getParamInExample(), false);
+
+				// 业务出参(状态部分)：
+				XWPFTableRow paramStatusRow = table.createRow();
+				createMergeHCell(paramStatusRow, 0, 5, "业务出参(状态部分)：", true);
+				XWPFTableRow paramStatusTitle = table.createRow();
+				XWPFTableCell cellStatusOut = paramStatusTitle.getCell(0);
+				cellStatusOut.setText("出参字段");
+				XWPFTableCell cellStatusOut1 = paramStatusTitle.getCell(1);
+				cellStatusOut1.setText("字段名称");
+				XWPFTableCell cellStatusOut2 = paramStatusTitle.getCell(2);
+				cellStatusOut2.setText("类型");
+				createMergeHCell(paramStatusTitle, 3, 5, "说明", false);
+
+				for (int statusIndex = 0; statusIndex < 5; statusIndex++) {
+					XWPFTableRow paramStatusDataRow = table.createRow();
+					XWPFTableCell cellStatusOutData = paramStatusDataRow.getCell(0);
+					XWPFTableCell cellStatusOutData1 = paramStatusDataRow.getCell(1);
+					XWPFTableCell cellStatusOutData2 = paramStatusDataRow.getCell(2);
+					switch (statusIndex) {
+					case 0:
+						cellStatusOutData.setText("body/data");
+						cellStatusOutData1.setText("返回结果");
+						cellStatusOutData2.setText("Object");
+						createMergeHCell(paramStatusDataRow, 3, 5, "data:接口转发app专用", false);
+						break;
+					case 1:
+						cellStatusOutData.setText("errorCode");
+						cellStatusOutData1.setText("相应代码");
+						cellStatusOutData2.setText("Integer");
+						createMergeHCell(paramStatusDataRow, 3, 5, "成功0失败其他", false);
+						break;
+					case 2:
+						cellStatusOutData.setText("errorDesc");
+						cellStatusOutData1.setText("错误描述");
+						cellStatusOutData2.setText("String");
+						createMergeHCell(paramStatusDataRow, 3, 5, "", false);
+						break;
+					case 3:
+						cellStatusOutData.setText("elapsedTime");
+						cellStatusOutData1.setText("执行时间");
+						cellStatusOutData2.setText("Long");
+						createMergeHCell(paramStatusDataRow, 3, 5, "", false);
+						break;
+					case 4:
+						cellStatusOutData.setText("serverTime");
+						cellStatusOutData1.setText("服务器时间");
+						cellStatusOutData2.setText("Long");
+						createMergeHCell(paramStatusDataRow, 3, 5, "", false);
+						break;
+					default:
+						break;
+					}
+				}
+
+				// 出参
+				XWPFTableRow paramOutRow = table.createRow();
+				createMergeHCell(paramOutRow, 0, 5, "业务出参(body/data部分)：", true);
+				XWPFTableRow paramOutTitle = table.createRow();
+				XWPFTableCell cellOut = paramOutTitle.getCell(0);
+				cellOut.setText("出参字段");
+				XWPFTableCell cellOut1 = paramOutTitle.getCell(1);
+				cellOut1.setText("字段名称");
+				XWPFTableCell cellOut2 = paramOutTitle.getCell(2);
+				cellOut2.setText("类型");
+				createMergeHCell(paramOutTitle, 3, 5, "说明", false);
+
+				List<Param> paramOut = veryRuleDocumentModel.getParamOut();
+				for (Param param : paramOut) {
+					XWPFTableRow rowOut = table.createRow();
+					for (int col = 0; col < 5; col++) {
+						XWPFTableCell outCell = rowOut.getCell(col);
+						if (outCell == null) {
+							outCell = rowOut.createCell();
+						}
+						switch (col) {
+						case 0:
+							outCell.setText(param.getField());
+							break;
+						case 1:
+							outCell.setText(param.getName());
+							break;
+						case 2:
+							outCell.setText(param.getDtype());
+							break;
+						case 3:
+							createMergeHCell(rowOut, 3, 5, param.getDesc(), false);
+							break;
+						default:
+							break;
+						}
+					}
+				}
+				// 举例
+				XWPFTableRow exampleOutRow = table.createRow();
+				createMergeHCell(exampleOutRow, 0, 5, "举例：", true);
+				XWPFTableRow exampleOutDataRow = table.createRow();
+				createMergeHCell(exampleOutDataRow, 0, 5, veryRuleDocumentModel.getParamOutExample(), false);
+			}
+
+			String fileName = ruleFlowName+"_"+System.currentTimeMillis()+".docx";
+			response.setContentType("application/force-download");
+            response.addHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode(fileName, "utf-8"));
+            OutputStream out = response.getOutputStream();
+            document.write(out);
+            out.close();
+		}
+	
+	}
+
+	public static void main(String[] args) throws Exception {}
 }

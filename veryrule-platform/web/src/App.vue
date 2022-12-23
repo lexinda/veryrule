@@ -2,6 +2,8 @@
 	<el-tabs type="border-card" style="margin-bottom: 10px;" @tab-click="tabClick">
 		<el-tab-pane label="规则流">
 		</el-tab-pane>
+		<el-tab-pane label="规则场景">
+		</el-tab-pane>
 		<el-tab-pane label="规则集">
 		</el-tab-pane>
 		<el-tab-pane label="规则工具">
@@ -27,9 +29,13 @@
 			})
 		}else if(target.index == 1){
 			router.push({
-				name: "ruleSet"
+				name: "ruleScene"
 			})
 		}else if(target.index == 2){
+			router.push({
+				name: "ruleSet"
+			})
+		}else if(target.index == 3){
 			router.push({
 				name: "ruleTool"
 			})

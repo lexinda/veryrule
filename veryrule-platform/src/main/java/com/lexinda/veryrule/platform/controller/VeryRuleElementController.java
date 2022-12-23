@@ -21,9 +21,12 @@ import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lexinda.veryrule.annotation.VeryRuleSingle;
 import com.lexinda.veryrule.base.key.RuleCode;
+import com.lexinda.veryrule.platform.enums.VeryRuleElementGroupEnum;
 import com.lexinda.veryrule.platform.model.VeryRuleElementMenuModel;
 import com.lexinda.veryrule.platform.model.VeryRuleElementModel;
+import com.lexinda.veryrule.platform.model.VeryRuleSceneModel;
 import com.lexinda.veryrule.platform.service.mybatis.VeryRuleElementMbService;
+import com.lexinda.veryrule.platform.service.mybatis.VeryRuleSceneMbService;
 import com.lexinda.veryrule.vo.RestApiResponse;
 
 /**
@@ -41,6 +44,9 @@ public class VeryRuleElementController {
 
 	@Autowired
 	private VeryRuleElementMbService veryRuleElementService;
+	
+	@Autowired
+	private VeryRuleSceneMbService veryRuleSceneMbService;
 
 	@RequestMapping(value = "/getVeryRuleElementList", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@VeryRuleSingle(ruleCode = RuleCode.NOTNULL, ruleKey = "currentPage,ruleType", ruleErrMsg = "不能为空")
@@ -93,6 +99,8 @@ public class VeryRuleElementController {
 		RestApiResponse res = new RestApiResponse();
 		res.setErrorCode(1);
 		res.setElapsedTime(System.currentTimeMillis());
+		Map<String,Object> body = new HashMap<String,Object>();
+		body.put("haveScene", 0);
 		try {
 			JSONObject param = JSON.parseObject(data);
 			Map<String, Object> dataParam = new HashMap<String, Object>();
@@ -106,9 +114,16 @@ public class VeryRuleElementController {
 			}
 			dataParam.put("orderRuleType",1);
 			List<VeryRuleElementModel> veryRuleElementList = veryRuleElementService.selectVeryRuleElementList(dataParam);
+			List<VeryRuleSceneModel> veryRuleSceneList = new ArrayList<VeryRuleSceneModel>();
+			if(StringUtils.isNotBlank(param.getString("ruleSceneId"))) {
+				Map<String, Object> dataSceneParam = new HashMap<String, Object>();
+				dataSceneParam.put("pid",param.getString("ruleSceneId"));
+				veryRuleSceneList = veryRuleSceneMbService.selectVeryRuleSceneList(dataSceneParam);
+			}
+			//展示树形
+			List<VeryRuleElementMenuModel> veryRuleElementMenuList = new ArrayList<VeryRuleElementMenuModel>();
 			if (param.getInteger("ruleMenu") == 1) {
 				Set<String> groupNameSet = new HashSet<String>();
-				List<VeryRuleElementMenuModel> veryRuleElementMenuList = new ArrayList<VeryRuleElementMenuModel>();
 				veryRuleElementList.stream().forEach(vgr -> {
 					VeryRuleElementMenuModel veryRuleElementMenu = JSON.parseObject(JSON.toJSONString(vgr),
 							VeryRuleElementMenuModel.class);
@@ -140,12 +155,51 @@ public class VeryRuleElementController {
 						}
 					});
 				}
-				res.setBody(veryRuleElementMenuList);
+				if(veryRuleSceneList.size()>0) {
+					List<VeryRuleElementMenuModel> veryRuleSceneMenuList = new ArrayList<VeryRuleElementMenuModel>();
+					veryRuleSceneList.stream().forEach(vrs->{
+						VeryRuleElementMenuModel veryRuleElementModel = new VeryRuleElementMenuModel();
+						veryRuleElementModel.setId(vrs.getId());
+						veryRuleElementModel.setRuleCode(vrs.getRuleSceneCode());
+						veryRuleElementModel.setRuleName(vrs.getRuleSceneName());
+						veryRuleElementModel.setGroupName(vrs.getRuleSceneName());
+						veryRuleElementModel.setChildren(veryRuleElementMenuList);
+						veryRuleSceneMenuList.add(veryRuleElementModel);
+					});
+					body.put("haveScene", 1);
+					body.put("ruleScene", veryRuleSceneList);
+					body.put("ruleMenu", veryRuleSceneMenuList);
+				}else {
+					body.put("ruleMenu", veryRuleElementMenuList);
+				}
+				
 			} else {
-				res.setBody(veryRuleElementList);
+				if(veryRuleSceneList.size()>0) {
+					veryRuleElementList.stream().forEach(vgr -> {
+						VeryRuleElementMenuModel veryRuleElementMenu = JSON.parseObject(JSON.toJSONString(vgr),
+								VeryRuleElementMenuModel.class);
+						veryRuleElementMenuList.add(veryRuleElementMenu);
+					});
+					List<VeryRuleElementMenuModel> veryRuleSceneMenuList = new ArrayList<VeryRuleElementMenuModel>();
+					veryRuleSceneList.stream().forEach(vrs->{
+						VeryRuleElementMenuModel veryRuleElementModel = new VeryRuleElementMenuModel();
+						veryRuleElementModel.setId(vrs.getId());
+						veryRuleElementModel.setRuleCode(vrs.getRuleSceneCode());
+						veryRuleElementModel.setRuleName(vrs.getRuleSceneName());
+						veryRuleElementModel.setGroupName(vrs.getRuleSceneName());
+						veryRuleElementModel.setChildren(veryRuleElementMenuList);
+						veryRuleSceneMenuList.add(veryRuleElementModel);
+					});
+					body.put("haveScene", 1);
+					body.put("ruleScene", veryRuleSceneList);
+					body.put("ruleMenu", veryRuleSceneMenuList);
+				}else {
+					body.put("ruleMenu", veryRuleElementMenuList);
+				}
+				
 			}
+			res.setBody(body);
 			res.setErrorCode(0);
-
 		} catch (Exception e) {
 			res.setErrorDesc(e.getMessage());
 		}
@@ -274,6 +328,17 @@ public class VeryRuleElementController {
 			logger.error(e.getMessage());
 			res.setErrorDesc(e.getMessage());
 		}
+		res.setElapsedTime(System.currentTimeMillis() - res.getElapsedTime());
+		res.setServerTime(System.currentTimeMillis());
+		return res;
+	}
+	
+	@RequestMapping(value = "/getVeryRuleElementGroup", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	public RestApiResponse getVeryRuleElementGroup(String data) throws Exception {
+		RestApiResponse res = new RestApiResponse();
+		res.setErrorCode(0);
+		res.setElapsedTime(System.currentTimeMillis());
+		res.setBody(VeryRuleElementGroupEnum.toList());
 		res.setElapsedTime(System.currentTimeMillis() - res.getElapsedTime());
 		res.setServerTime(System.currentTimeMillis());
 		return res;

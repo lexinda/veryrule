@@ -4,22 +4,20 @@ import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.lexinda.veryrule.bo.RuleFlowBo;
+import com.lexinda.veryrule.bo.RuleBo;
 
 /**
  * 
  * @author lexinda
  *
  */
-public class VeryRuleFlowModel extends RuleFlowBo{
+public class VeryRuleElementGroupModel extends RuleBo{
 	@TableId(value = "id", type = IdType.AUTO)
 	private Integer id;
-	private String ruleFlowDesc;
-	private String ruleFlowTempletCode;
-	private String ruleFlowDocument;
-	private Integer ruleSceneId;
+	private String ruleName;
+	private String ruleDesc;
+	private String groupName;
 	private Integer version;
-	private boolean hasChildren;
 	private String createId;
 	private Date createTime;
 	private String updateId;
@@ -30,17 +28,42 @@ public class VeryRuleFlowModel extends RuleFlowBo{
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public String getRuleFlowDesc() {
-		return ruleFlowDesc;
+	public String getRuleCode() {
+		return ruleCode;
 	}
-	public void setRuleFlowDesc(String ruleFlowDesc) {
-		this.ruleFlowDesc = ruleFlowDesc;
+	public void setRuleCode(String ruleCode) {
+		this.ruleCode = ruleCode;
 	}
-	public Integer getRuleSceneId() {
-		return ruleSceneId;
+	public String getRuleName() {
+		return ruleName;
 	}
-	public void setRuleSceneId(Integer ruleSceneId) {
-		this.ruleSceneId = ruleSceneId;
+	public void setRuleName(String ruleName) {
+		this.ruleName = ruleName;
+	}
+	
+	public String getRuleValue() {
+		return ruleValue;
+	}
+	public void setRuleValue(String ruleValue) {
+		this.ruleValue = ruleValue;
+	}
+	public String getRuleKey() {
+		return ruleKey;
+	}
+	public void setRuleKey(String ruleKey) {
+		this.ruleKey = ruleKey;
+	}
+	public String getRuleErrMsg() {
+		return ruleErrMsg;
+	}
+	public void setRuleErrMsg(String ruleErrMsg) {
+		this.ruleErrMsg = ruleErrMsg;
+	}
+	public String getRuleDesc() {
+		return ruleDesc;
+	}
+	public void setRuleDesc(String ruleDesc) {
+		this.ruleDesc = ruleDesc;
 	}
 	public Integer getVersion() {
 		return version;
@@ -72,23 +95,10 @@ public class VeryRuleFlowModel extends RuleFlowBo{
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
-	public boolean isHasChildren() {
-		return hasChildren;
+	public String getGroupName() {
+		return groupName;
 	}
-	public void setHasChildren(boolean hasChildren) {
-		this.hasChildren = hasChildren;
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
 	}
-	public String getRuleFlowTempletCode() {
-		return ruleFlowTempletCode;
-	}
-	public void setRuleFlowTempletCode(String ruleFlowTempletCode) {
-		this.ruleFlowTempletCode = ruleFlowTempletCode;
-	}
-	public String getRuleFlowDocument() {
-		return ruleFlowDocument;
-	}
-	public void setRuleFlowDocument(String ruleFlowDocument) {
-		this.ruleFlowDocument = ruleFlowDocument;
-	}
-	
 }

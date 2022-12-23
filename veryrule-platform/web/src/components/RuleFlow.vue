@@ -93,7 +93,7 @@
 		</el-pagination>
 	</div>
 	<el-dialog v-model="flowEditVisible" :title="flowEditTitle" destroy-on-close width="30%">
-		<FlowEdit :ruleFlowData="currentRuleFlowData" @cancelFlowEdit="cancelFlowEdit"
+		<FlowEdit :ruleFlowData="currentRuleFlowData" :ruleSceneData="ruleScene" @cancelFlowEdit="cancelFlowEdit"
 			@successFlowUpdate="successFlowUpdate" @successFlowAdd="successFlowAdd"></FlowEdit>
 	</el-dialog>
 
@@ -101,6 +101,12 @@
 		:fullscreen="true">
 		<FlowTempletEdit @updateVeryRuleFlow="updateVeryRuleFlow" @cancelFlowTempletEdit="cancelFlowTempletEdit"
 			:ruleFlowTemplet="ruleFlowTemplet"></FlowTempletEdit>
+	</el-dialog>
+	
+	<el-dialog v-model="flowSceneTempletEditVisible" :title="currentRuleFlowData.ruleFlowName" destroy-on-close
+		:fullscreen="true">
+		<FlowSceneTempletEdit @updateVeryRuleFlow="updateVeryRuleFlow" @cancelFlowSceneTempletEdit="cancelSceneFlowTempletEdit"
+			:ruleFlowTempletData="ruleFlowTemplet"></FlowSceneTempletEdit>
 	</el-dialog>
 
 	<el-dialog v-model="flowTempletDetailVisible" :title="currentRuleFlowData.ruleFlowName" destroy-on-close
@@ -142,6 +148,7 @@
 	import FlowEdit from "./flow/FlowEdit.vue";
 	import FlowCopy from "./flow/FlowCopy.vue";
 	import FlowTempletEdit from "./flow/FlowTempletEdit.vue";
+	import FlowSceneTempletEdit from "./flow/FlowSceneTempletEdit.vue";
 	import FlowTempletEditDetail from "./flow/FlowTempletEditDetail.vue";
 	import FlowScene from "./flow/FlowScene.vue";
 	import FlowDocument from "./flow/FlowDocument.vue";
@@ -179,6 +186,7 @@
 		}
 		flowEditTitle.value = '新增规则流'
 		flowEditVisible.value = true
+		getRuleScene('0')
 	}
 
 	const queryFlow = () => {
@@ -285,6 +293,7 @@
 		flowEditTitle.value = row.ruleFlowName
 		flowEditVisible.value = true
 		currentRuleFlowData.value = row
+		getRuleScene('0')
 	}
 
 	const handleAdd = (index: number, row: RuleFlow) => {
@@ -375,6 +384,10 @@
 	const cancelFlowTempletEdit = () => {
 		flowTempletEditVisible.value = false
 	}
+	const flowSceneTempletEditVisible = ref(false)
+	const cancelFlowSceneTempletEdit = () => {
+		flowSceneTempletEditVisible.value = false
+	}
 	const updateVeryRuleFlow = (ruleFlowTempletCode) => {
 		currentRuleFlowData.value.ruleFlowTempletCode = ruleFlowTempletCode
 	}
@@ -405,6 +418,7 @@
 	const getFlowTempletData = (templetType) => {
 		ruleFlowTemplet.value = {
 			"ruleFlowId": currentRuleFlowData.value.id,
+			"ruleSceneId": currentRuleFlowData.value.ruleSceneId,
 			"ruleFlowTempletCode": "",
 			"ruleFlowTemplet": [],
 		}
@@ -414,13 +428,19 @@
 		post("/api/getVeryRuleFlowTempletList", param, (data) => {
 			if (data.errorCode == 0) {
 				if (templetType == 1) {
-					flowTempletEditVisible.value = true
+					if(currentRuleFlowData.value.ruleSceneId > 0){
+						flowSceneTempletEditVisible.value = true
+					}else{
+						flowTempletEditVisible.value = true
+					}
+					
 				} else {
 					flowTempletDetailVisible.value = true
 				}
 				if (data.body.length > 0) {
 					ruleFlowTemplet.value = {
 						"ruleFlowId": currentRuleFlowData.value.id,
+						"ruleSceneId": currentRuleFlowData.value.ruleSceneId,
 						"ruleFlowTempletCode": data.body[0].ruleFlowTempletCode,
 						"ruleFlowTemplet": JSON.parse(data.body[0].ruleFlowTemplet),
 					}
@@ -543,6 +563,20 @@
 	}
 	const cancelFlowDocument=()=>{
 		veryFlowDocumentVisible.value = false
+	}
+	
+	const ruleScene = ref([])
+	const getRuleScene = (pid) => {
+		const param = {
+			"pid": pid,
+		}
+		post("/api/getVeryRuleSceneList", param, (data) => {
+			if (data.errorCode == 0) {
+				ruleScene.value = data.body
+			} else {
+				ElMessage.error(data.errorDesc)
+			}
+		});
 	}
 	
 </script>

@@ -16,7 +16,10 @@
 			</el-select>
 		</el-form-item>
 		<el-form-item label="组名" prop="groupName">
-			<el-input v-model="ruleData.groupName"></el-input>
+			<el-select v-model="ruleData.groupName" placeholder="请选择">
+				<el-option v-for="(item,index) in ruleGroupData" :label="item.name"
+					:value="item.name" />
+			</el-select>
 		</el-form-item>
 		<el-form-item label="默认值" prop="ruleValue">
 			<el-input v-model="ruleData.ruleValue"></el-input>
@@ -66,6 +69,7 @@
 
 	const props = defineProps < {
 		ruleData: Object,
+		ruleGroupData:Array,
 	} > ()
 
 	const emit = defineEmits(['cancelRuleEdit', 'successRuleAdd', 'successRuleUpdate']);

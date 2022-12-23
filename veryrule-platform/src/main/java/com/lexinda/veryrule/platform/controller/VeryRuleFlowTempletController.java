@@ -77,7 +77,7 @@ public class VeryRuleFlowTempletController {
 			JSONObject param = JSON.parseObject(data);
 			Map<String, Object> dataParam = new HashMap<String, Object>();
 			String ruleFlowTempletCode = param.getString("ruleFlowTempletCode");
-			if(StringUtils.isNotBlank(ruleFlowTempletCode)) {
+			if(ruleFlowTempletCode!=null) {
 				dataParam.put("ruleFlowTempletCode", ruleFlowTempletCode);
 			}
 			List<VeryRuleFlowTempletModel> veryRuleFlowTempletList = veryRuleFlowTempletService.selectVeryRuleFlowTempletList(dataParam);

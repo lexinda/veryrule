@@ -32,150 +32,152 @@
 			</el-menu>
 		</el-col>
 		<el-col :span="17">
-			<el-table :data="tableCondationData" style="width: 100%;" border @row-click="tableRowClick">
-				<el-table-column label="(无返回值)条件规则名称" align="center">
-					<template #default="scope">
-						<div>{{ scope.row.ruleCode }}
-						<el-icon v-if="scope.row.ruleType == 1">
-						    <Bell />
-						  </el-icon>
-						  <el-icon v-if="scope.row.ruleType == 2">
-						      <BellFilled />
-						    </el-icon>
-							<el-icon v-if="scope.row.ruleType == 3">
-							    <Promotion />
+			<div style="height:85vh;overflow-y:scroll;">
+				<el-table :data="tableCondationData" style="width: 100%;" border @row-click="tableRowClick">
+					<el-table-column label="(无返回值)条件规则名称" align="center">
+						<template #default="scope">
+							<div>{{ scope.row.ruleCode }}
+							<el-icon v-if="scope.row.ruleType == 1">
+								<Bell />
 							  </el-icon>
-						</div>
-						<div>{{ scope.row.ruleName }}</div>
-					</template>
-				</el-table-column>
-				<el-table-column label="指定入参key" prop="ruleKey">
-				</el-table-column>
-				<el-table-column label="默认值" prop="ruleValue">
-				</el-table-column>
-				<el-table-column label="异常提示" prop="ruleErrMsg">
-				</el-table-column>
-				<el-table-column label="操作" width="220">
-					<template #default="scope">
-						<el-popconfirm title="是否删除?" @confirm="handleDelete(scope.$index, scope.row)">
-							<template #reference>
-								<el-button size="small" type="danger">删除</el-button>
-							</template>
-						</el-popconfirm>
-						<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-						<el-button-group style="margin-left:10px;">
-							<el-button type="primary" :icon="SortUp" size="small" title="向上" v-if="scope.$index == 0"
-								disabled>
-							</el-button>
-							<el-button type="primary" :icon="SortUp" size="small" title="向上" v-else
-								@click="handleUp(scope.$index, scope.row)">
-							</el-button>
-							<el-button type="primary" :icon="SortDown" size="small" title="向下"
-								v-if="scope.$index == tableCondationData.length-1" disabled>
-							</el-button>
-							<el-button type="primary" :icon="SortDown" size="small" title="向下" v-else
-								@click="handleDown(scope.$index, scope.row)">
-							</el-button>
-						</el-button-group>
-					</template>
-				</el-table-column>
-			</el-table>
-			<el-table :data="tableResultCondationData" style="width: 100%;" border @row-click="tableRowClick">
-				<el-table-column label="(有返回值)条件规则名称" align="center">
-					<template #default="scope">
-						<div>{{ scope.row.ruleCode }}
-						<el-icon v-if="scope.row.ruleType == 1">
-						    <Bell />
-						  </el-icon>
-						  <el-icon v-if="scope.row.ruleType == 2">
-						      <BellFilled />
-						    </el-icon>
-							<el-icon v-if="scope.row.ruleType == 3">
-							    <Promotion />
+							  <el-icon v-if="scope.row.ruleType == 2">
+								  <BellFilled />
+								</el-icon>
+								<el-icon v-if="scope.row.ruleType == 3">
+									<Promotion />
+								  </el-icon>
+							</div>
+							<div>{{ scope.row.ruleName }}</div>
+						</template>
+					</el-table-column>
+					<el-table-column label="指定入参key" prop="ruleKey">
+					</el-table-column>
+					<el-table-column label="默认值" prop="ruleValue">
+					</el-table-column>
+					<el-table-column label="异常提示" prop="ruleErrMsg">
+					</el-table-column>
+					<el-table-column label="操作" width="220">
+						<template #default="scope">
+							<el-popconfirm title="是否删除?" @confirm="handleDelete(scope.$index, scope.row)">
+								<template #reference>
+									<el-button size="small" type="danger">删除</el-button>
+								</template>
+							</el-popconfirm>
+							<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+							<el-button-group style="margin-left:10px;">
+								<el-button type="primary" :icon="SortUp" size="small" title="向上" v-if="scope.$index == 0"
+									disabled>
+								</el-button>
+								<el-button type="primary" :icon="SortUp" size="small" title="向上" v-else
+									@click="handleUp(scope.$index, scope.row)">
+								</el-button>
+								<el-button type="primary" :icon="SortDown" size="small" title="向下"
+									v-if="scope.$index == tableCondationData.length-1" disabled>
+								</el-button>
+								<el-button type="primary" :icon="SortDown" size="small" title="向下" v-else
+									@click="handleDown(scope.$index, scope.row)">
+								</el-button>
+							</el-button-group>
+						</template>
+					</el-table-column>
+				</el-table>
+				<el-table :data="tableResultCondationData" style="width: 100%;" border @row-click="tableRowClick">
+					<el-table-column label="(有返回值)条件规则名称" align="center">
+						<template #default="scope">
+							<div>{{ scope.row.ruleCode }}
+							<el-icon v-if="scope.row.ruleType == 1">
+								<Bell />
 							  </el-icon>
-						</div>
-						<div>{{ scope.row.ruleName }}</div>
-					</template>
-				</el-table-column>
-				<el-table-column label="指定入参key" prop="ruleKey">
-				</el-table-column>
-				<el-table-column label="默认值" prop="ruleValue">
-				</el-table-column>
-				<el-table-column label="异常提示" prop="ruleErrMsg">
-				</el-table-column>
-				<el-table-column label="操作" width="220">
-					<template #default="scope">
-						<el-popconfirm title="是否删除?" @confirm="handleDelete(scope.$index, scope.row)">
-							<template #reference>
-								<el-button size="small" type="danger">删除</el-button>
-							</template>
-						</el-popconfirm>
-						<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-						<el-button-group style="margin-left:10px;">
-							<el-button type="primary" :icon="SortUp" size="small" title="向上" v-if="scope.$index == 0"
-								disabled>
-							</el-button>
-							<el-button type="primary" :icon="SortUp" size="small" title="向上" v-else
-								@click="handleUp(scope.$index, scope.row)">
-							</el-button>
-							<el-button type="primary" :icon="SortDown" size="small" title="向下"
-								v-if="scope.$index == tableResultCondationData.length-1" disabled>
-							</el-button>
-							<el-button type="primary" :icon="SortDown" size="small" title="向下" v-else
-								@click="handleDown(scope.$index, scope.row)">
-							</el-button>
-						</el-button-group>
-					</template>
-				</el-table-column>
-			</el-table>
-			<el-table :data="tableActionData" style="width: 100%;" border @row-click="tableRowClick">
-				<el-table-column label="(执行动作)规则名称" align="center">
-					<template #default="scope">
-						<div>{{ scope.row.ruleCode }}
-						<el-icon v-if="scope.row.ruleType == 1">
-						    <Bell />
-						  </el-icon>
-						  <el-icon v-if="scope.row.ruleType == 2">
-						      <BellFilled />
-						    </el-icon>
-							<el-icon v-if="scope.row.ruleType == 3">
-							    <Promotion />
+							  <el-icon v-if="scope.row.ruleType == 2">
+								  <BellFilled />
+								</el-icon>
+								<el-icon v-if="scope.row.ruleType == 3">
+									<Promotion />
+								  </el-icon>
+							</div>
+							<div>{{ scope.row.ruleName }}</div>
+						</template>
+					</el-table-column>
+					<el-table-column label="指定入参key" prop="ruleKey">
+					</el-table-column>
+					<el-table-column label="默认值" prop="ruleValue">
+					</el-table-column>
+					<el-table-column label="异常提示" prop="ruleErrMsg">
+					</el-table-column>
+					<el-table-column label="操作" width="220">
+						<template #default="scope">
+							<el-popconfirm title="是否删除?" @confirm="handleDelete(scope.$index, scope.row)">
+								<template #reference>
+									<el-button size="small" type="danger">删除</el-button>
+								</template>
+							</el-popconfirm>
+							<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+							<el-button-group style="margin-left:10px;">
+								<el-button type="primary" :icon="SortUp" size="small" title="向上" v-if="scope.$index == 0"
+									disabled>
+								</el-button>
+								<el-button type="primary" :icon="SortUp" size="small" title="向上" v-else
+									@click="handleUp(scope.$index, scope.row)">
+								</el-button>
+								<el-button type="primary" :icon="SortDown" size="small" title="向下"
+									v-if="scope.$index == tableResultCondationData.length-1" disabled>
+								</el-button>
+								<el-button type="primary" :icon="SortDown" size="small" title="向下" v-else
+									@click="handleDown(scope.$index, scope.row)">
+								</el-button>
+							</el-button-group>
+						</template>
+					</el-table-column>
+				</el-table>
+				<el-table :data="tableActionData" style="width: 100%;" border @row-click="tableRowClick">
+					<el-table-column label="(执行动作)规则名称" align="center">
+						<template #default="scope">
+							<div>{{ scope.row.ruleCode }}
+							<el-icon v-if="scope.row.ruleType == 1">
+								<Bell />
 							  </el-icon>
-						</div>
-						<div>{{ scope.row.ruleName }}</div>
-					</template>
-				</el-table-column>
-				<el-table-column label="指定入参key" prop="ruleKey">
-				</el-table-column>
-				<el-table-column label="默认值" prop="ruleValue">
-				</el-table-column>
-				<el-table-column label="异常提示" prop="ruleErrMsg">
-				</el-table-column>
-				<el-table-column label="操作" width="220">
-					<template #default="scope">
-						<el-popconfirm title="是否删除?" @confirm="handleDelete(scope.$index, scope.row)">
-							<template #reference>
-								<el-button size="small" type="danger">删除</el-button>
-							</template>
-						</el-popconfirm>
-						<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-						<el-button-group style="margin-left:10px;">
-							<el-button type="primary" :icon="SortUp" size="small" title="向上" v-if="scope.$index == 0"
-								disabled>
-							</el-button>
-							<el-button type="primary" :icon="SortUp" size="small" title="向上" v-else
-								@click="handleUp(scope.$index, scope.row)">
-							</el-button>
-							<el-button type="primary" :icon="SortDown" size="small" title="向下"
-								v-if="scope.$index == tableActionData.length-1" disabled>
-							</el-button>
-							<el-button type="primary" :icon="SortDown" size="small" title="向下" v-else
-								@click="handleDown(scope.$index, scope.row)">
-							</el-button>
-						</el-button-group>
-					</template>
-				</el-table-column>
-			</el-table>
+							  <el-icon v-if="scope.row.ruleType == 2">
+								  <BellFilled />
+								</el-icon>
+								<el-icon v-if="scope.row.ruleType == 3">
+									<Promotion />
+								  </el-icon>
+							</div>
+							<div>{{ scope.row.ruleName }}</div>
+						</template>
+					</el-table-column>
+					<el-table-column label="指定入参key" prop="ruleKey">
+					</el-table-column>
+					<el-table-column label="默认值" prop="ruleValue">
+					</el-table-column>
+					<el-table-column label="异常提示" prop="ruleErrMsg">
+					</el-table-column>
+					<el-table-column label="操作" width="220">
+						<template #default="scope">
+							<el-popconfirm title="是否删除?" @confirm="handleDelete(scope.$index, scope.row)">
+								<template #reference>
+									<el-button size="small" type="danger">删除</el-button>
+								</template>
+							</el-popconfirm>
+							<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+							<el-button-group style="margin-left:10px;">
+								<el-button type="primary" :icon="SortUp" size="small" title="向上" v-if="scope.$index == 0"
+									disabled>
+								</el-button>
+								<el-button type="primary" :icon="SortUp" size="small" title="向上" v-else
+									@click="handleUp(scope.$index, scope.row)">
+								</el-button>
+								<el-button type="primary" :icon="SortDown" size="small" title="向下"
+									v-if="scope.$index == tableActionData.length-1" disabled>
+								</el-button>
+								<el-button type="primary" :icon="SortDown" size="small" title="向下" v-else
+									@click="handleDown(scope.$index, scope.row)">
+								</el-button>
+							</el-button-group>
+						</template>
+					</el-table-column>
+				</el-table>
+			</div>
 		</el-col>
 		<el-col :span="4">
 			<div style="height:85vh;">
@@ -256,8 +258,22 @@
 		ruleFlowTemplet: Object
 	} > ()
 	
+	const tableCondationData: RuleData[] = ref([])
+	
+	const tableResultCondationData: RuleData[] = ref([])
+	
+	const tableActionData: RuleData[] = ref([])
+	
 	onMounted(() => {
 		getVeryRuleElementMenu(1)
+		if(props.ruleFlowTemplet.ruleFlowTemplet.length>0){
+			tableCondationData.value = props.ruleFlowTemplet.ruleFlowTemplet.filter(item => item.ruleType == 1)
+			
+			tableResultCondationData.value = props.ruleFlowTemplet.ruleFlowTemplet.filter(item => item.ruleType == 2)
+			
+			tableActionData.value = props.ruleFlowTemplet.ruleFlowTemplet.filter(item => item.ruleType == 3)
+		}
+		
 	})
 
 	const emit = defineEmits(['updateVeryRuleFlow']);
@@ -272,7 +288,7 @@
 		}
 		post("/api/getVeryRuleElementMenu", param, (data) => {
 			if (data.errorCode == 0) {
-				menuData.value = data.body
+				menuData.value = data.body.ruleMenu
 			}
 		});
 	}
@@ -343,11 +359,7 @@
 	
 	const templetEditVisible = ref(false)
 	
-	const tableCondationData: RuleData[] = ref(props.ruleFlowTemplet.ruleFlowTemplet.filter(item => item.ruleType == 1))
 	
-	const tableResultCondationData: RuleData[] = ref(props.ruleFlowTemplet.ruleFlowTemplet.filter(item => item.ruleType == 2))
-	
-	const tableActionData: RuleData[] = ref(props.ruleFlowTemplet.ruleFlowTemplet.filter(item => item.ruleType == 3))
 	
 	const templetEditType = ref(1)
 	

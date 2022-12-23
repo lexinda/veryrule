@@ -21,6 +21,8 @@ public interface VeryRuleDbMapper extends BaseMapper<VeryRuleFlowModel> {
 	void createVeryRuleFlowTemplet();
 	
 	void createVeryRuleFlowTempletLog();
+	
+	void createVeryRuleScene();
 }
 
 

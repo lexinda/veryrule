@@ -28,4 +28,8 @@ public class VeryRuleDbMbService extends ServiceImpl<VeryRuleDbMapper, VeryRuleF
     public void createVeryRuleFlowTempletLog() {
         baseMapper.createVeryRuleFlowTempletLog();
     }
+    
+    public void createVeryRuleScene() {
+        baseMapper.createVeryRuleScene();
+    }
 }

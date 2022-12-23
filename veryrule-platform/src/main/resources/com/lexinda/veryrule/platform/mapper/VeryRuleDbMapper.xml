@@ -68,4 +68,21 @@
 		  PRIMARY KEY (`id`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     </update>
+    
+    <update id="createVeryRuleScene">
+        CREATE TABLE very_rule_scene (
+		  `id` int(5) NOT NULL AUTO_INCREMENT,
+		  `pid` int(5) NOT NULL DEFAULT 0,
+		  `rule_scene_code` varchar(45) NOT NULL DEFAULT '',
+		  `rule_scene_name` varchar(50) NOT NULL DEFAULT '',
+		  `rule_scene_type` tinyint(5) NOT NULL DEFAULT '1',
+		  `rule_scene_desc` text NOT NULL,
+		  `version` tinyint(5) NOT NULL DEFAULT '0',
+		  `create_id` varchar(30) NOT NULL DEFAULT '',
+		  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+		  `update_id` varchar(30) NOT NULL DEFAULT '',
+		  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+		  PRIMARY KEY (`id`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    </update>
 </mapper>

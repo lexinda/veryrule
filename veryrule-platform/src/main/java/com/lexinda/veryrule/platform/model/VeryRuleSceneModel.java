@@ -11,15 +11,16 @@ import com.lexinda.veryrule.bo.RuleFlowBo;
  * @author lexinda
  *
  */
-public class VeryRuleFlowModel extends RuleFlowBo{
+public class VeryRuleSceneModel{
 	@TableId(value = "id", type = IdType.AUTO)
 	private Integer id;
-	private String ruleFlowDesc;
-	private String ruleFlowTempletCode;
-	private String ruleFlowDocument;
-	private Integer ruleSceneId;
-	private Integer version;
+	private Integer pid;
+	private String ruleSceneCode;
+	private String ruleSceneName;
+	private String ruleSceneType;
+	private String ruleSceneDesc;
 	private boolean hasChildren;
+	private Integer version;
 	private String createId;
 	private Date createTime;
 	private String updateId;
@@ -30,17 +31,41 @@ public class VeryRuleFlowModel extends RuleFlowBo{
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public String getRuleFlowDesc() {
-		return ruleFlowDesc;
+	public Integer getPid() {
+		return pid;
 	}
-	public void setRuleFlowDesc(String ruleFlowDesc) {
-		this.ruleFlowDesc = ruleFlowDesc;
+	public void setPid(Integer pid) {
+		this.pid = pid;
 	}
-	public Integer getRuleSceneId() {
-		return ruleSceneId;
+	public String getRuleSceneCode() {
+		return ruleSceneCode;
 	}
-	public void setRuleSceneId(Integer ruleSceneId) {
-		this.ruleSceneId = ruleSceneId;
+	public void setRuleSceneCode(String ruleSceneCode) {
+		this.ruleSceneCode = ruleSceneCode;
+	}
+	public String getRuleSceneName() {
+		return ruleSceneName;
+	}
+	public void setRuleSceneName(String ruleSceneName) {
+		this.ruleSceneName = ruleSceneName;
+	}
+	public String getRuleSceneType() {
+		return ruleSceneType;
+	}
+	public void setRuleSceneType(String ruleSceneType) {
+		this.ruleSceneType = ruleSceneType;
+	}
+	public String getRuleSceneDesc() {
+		return ruleSceneDesc;
+	}
+	public void setRuleSceneDesc(String ruleSceneDesc) {
+		this.ruleSceneDesc = ruleSceneDesc;
+	}
+	public boolean isHasChildren() {
+		return hasChildren;
+	}
+	public void setHasChildren(boolean hasChildren) {
+		this.hasChildren = hasChildren;
 	}
 	public Integer getVersion() {
 		return version;
@@ -71,24 +96,6 @@ public class VeryRuleFlowModel extends RuleFlowBo{
 	}
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
-	}
-	public boolean isHasChildren() {
-		return hasChildren;
-	}
-	public void setHasChildren(boolean hasChildren) {
-		this.hasChildren = hasChildren;
-	}
-	public String getRuleFlowTempletCode() {
-		return ruleFlowTempletCode;
-	}
-	public void setRuleFlowTempletCode(String ruleFlowTempletCode) {
-		this.ruleFlowTempletCode = ruleFlowTempletCode;
-	}
-	public String getRuleFlowDocument() {
-		return ruleFlowDocument;
-	}
-	public void setRuleFlowDocument(String ruleFlowDocument) {
-		this.ruleFlowDocument = ruleFlowDocument;
 	}
 	
 }

@@ -99,7 +99,7 @@
 	</el-row>
 
 	<el-dialog v-model="ruleEditVisible" :title="ruleEditTitle" destroy-on-close width="30%">
-		<RuleEdit :ruleData="currentRuleData" @cancelRuleEdit="cancelRuleEdit" @successRuleUpdate="successRuleUpdate"
+		<RuleEdit :ruleGroupData="ruleGroup" :ruleData="currentRuleData" @cancelRuleEdit="cancelRuleEdit" @successRuleUpdate="successRuleUpdate"
 			@successRuleAdd="successRuleAdd"></RuleEdit>
 	</el-dialog>
 </template>
@@ -170,6 +170,7 @@
 		if(ruleType.value==12){
 			currentRuleData.value.ruleType="1"
 		}
+		getVeryRuleElementGroup();
 	}
 	/* table */
 	interface Rule {
@@ -214,6 +215,7 @@
 		currentRuleData.value = row
 		ruleEditTitle.value = "编辑规则"
 		ruleEditVisible.value = true
+		getVeryRuleElementGroup()
 	}
 	const handleDelete = (index: number, row: User) => {
 		const param = {
@@ -257,6 +259,18 @@
 		ruleEditVisible.value = false
 		pageCurrent.value = 1
 		getVeryRuleElementList()
+	}
+	const ruleGroup = ref([])
+	const getVeryRuleElementGroup = () => {
+		const param = {
+		}
+		post("/api/getVeryRuleElementGroup", param, (data) => {
+			if (data.errorCode == 0) {
+				ruleGroup.value = data.body
+			}else{
+				ElMessage.error(data.errorDesc)
+			}
+		});
 	}
 </script>
 

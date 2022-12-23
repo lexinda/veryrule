@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lexinda.veryrule.platform.mapper.VeryRuleSceneMapper">
+
+	<resultMap id="BaseResultMap" type="com.lexinda.veryrule.platform.model.VeryRuleSceneModel">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="pid" property="pid" jdbcType="INTEGER"/>
+        <result column="rule_scene_code" property="ruleSceneCode" jdbcType="VARCHAR"/>
+        <result column="rule_scene_name" property="ruleSceneName" jdbcType="VARCHAR"/>
+        <result column="rule_scene_type" property="ruleSceneType" jdbcType="TINYINT"/>
+        <result column="rule_scene_desc" property="ruleSceneDesc" jdbcType="VARCHAR"/>
+        <result column="version" property="version" jdbcType="TINYINT"/>
+        <result column="create_id" property="createId" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_id" property="updateId" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+        id,pid,rule_scene_code,rule_scene_name,rule_scene_type,rule_scene_desc,
+        version,create_id,create_time,update_id,update_time
+    </sql>
+    
+    <sql id="Base_Condition">
+        <where>
+            <if test="pm.id != null">and id = #{pm.id,jdbcType=INTEGER}</if>
+            <if test="pm.pid != null">and pid = #{pm.pid,jdbcType=INTEGER}</if>
+            <if test="pm.ruleSceneName != null">and rule_scene_name = #{pm.ruleSceneName,jdbcType=VARCHAR}</if>
+            <if test="pm.ruleSceneCode != null">and rule_scene_code = #{pm.ruleSceneCode,jdbcType=VARCHAR}</if>
+            <if test="pm.ruleSceneNameL != null">and rule_scene_name like CONCAT('%',#{ruleSceneNameL ,jdbcType=VARCHAR},'%' )</if>
+            <if test="pm.ruleSceneNameCode != null">and (rule_scene_name = #{pm.ruleSceneNameV,jdbcType=VARCHAR} or rule_scene_code = #{pm.ruleSceneCodeV,jdbcType=VARCHAR})</if>
+        	<if test="pm.pids!= null">
+				and pid in 
+				    <foreach collection="pm.pids" item="item" open="(" close=")" separator=",">
+				    #{item}
+				   </foreach>
+			</if>
+        </where>
+    </sql>
+
+    <select id="selectVeryRuleSceneList" resultMap="BaseResultMap">
+        SELECT 
+		<include refid="Base_Column_List"></include>
+		FROM very_rule_scene 
+		<include refid="Base_Condition"></include>
+		order by create_time desc
+    </select>
+    
+    <insert id="insert" parameterType="com.lexinda.veryrule.platform.model.VeryRuleSceneModel">
+        insert into very_rule_scene
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="pid != null">
+                pid,
+            </if>
+             <if test="ruleSceneCode != null">
+                rule_scene_code,
+            </if>
+            <if test="ruleSceneName != null">
+                rule_scene_name,
+            </if>
+            <if test="ruleSceneType != null">
+                rule_scene_type,
+            </if>
+            <if test="ruleSceneDesc != null">
+                rule_scene_desc,
+            </if>
+            <if test="version != null">
+                version,
+            </if>
+            <if test="createId != null">
+                create_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateId != null">
+                update_id,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="pid != null">
+                #{pid,jdbcType=BIGINT},
+            </if>
+            <if test="ruleSceneCode != null">
+                #{ruleSceneCode,jdbcType=VARCHAR},
+            </if>
+            <if test="ruleSceneName != null">
+                #{ruleSceneName,jdbcType=VARCHAR},
+            </if>
+            <if test="ruleSceneType != null">
+                #{ruleSceneType,jdbcType=VARCHAR},
+            </if>
+            <if test="ruleSceneDesc != null">
+                #{ruleSceneDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="version != null">
+                #{version,jdbcType=TINYINT},
+            </if>
+            <if test="createId != null">
+                #{createId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateId != null">
+                #{updateId,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+        </trim>
+    </insert>
+ 
+    <update id="updateById" parameterType="java.util.HashMap">
+        update very_rule_scene
+        <set>
+        	<if test="pm.ruleSceneCode != null">rule_scene_code= #{pm.ruleSceneCode,jdbcType=VARCHAR},</if>
+            <if test="pm.ruleSceneName != null">rule_scene_name= #{pm.ruleSceneName,jdbcType=VARCHAR},</if>
+            <if test="pm.ruleSceneType != null">rule_scene_type = #{pm.ruleSceneType,jdbcType=TINYINT},</if>
+            <if test="pm.ruleSceneDesc != null">rule_scene_desc = #{pm.ruleSceneDesc,jdbcType=VARCHAR},</if>
+            <if test="pm.updateId != null">update_id = #{pm.updateId,jdbcType=VARCHAR},</if>
+            <if test="pm.updateTime != null">update_time = #{pm.updateTime,jdbcType=TIMESTAMP},</if>
+            version = #{pm.versionTo,jdbcType=TINYINT}
+        </set>
+          where id = #{pm.id,jdbcType=VARCHAR} and version = #{pm.version,jdbcType=VARCHAR}            
+    </update>
+    
+    <delete id="deleteById" parameterType="java.util.HashMap">
+        DELETE FROM very_rule_scene
+        WHERE id=#{pm.id}
+    </delete>
+    
+</mapper>

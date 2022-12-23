@@ -1,7 +1,7 @@
 <template>
 	<el-button size="small" type="primary" :icon="Plus" plain @click="addDocument()" style="margin-left:20px;">添加
 	</el-button>
-	<el-button disabled size="small" type="primary" :icon="Document" plain @click="addDocument()" style="margin-left:20px;">导出
+	<el-button size="small" v-if="tableData.length>0" type="primary" :icon="Document" plain @click="downloadDocument()" style="margin-left:20px;">导出
 	</el-button>
 	<el-table :data="tableData" :border="parentBorder" style="width: 100%">
 		<el-table-column type="expand">
@@ -18,7 +18,8 @@
 							style="margin-left: 60px;">{{ props.row.request.contentType }}</span></p>
 					<p m="t-0 b-2"><span style="font-weight: bold;">入参:</span>
 						<el-table border :data="props.row.paramIn" :border="childBorder">
-							<el-table-column label="参数名" prop="field" />
+							<el-table-column label="参数" prop="field" />
+							<el-table-column label="参数名" prop="name" />
 							<el-table-column label="必选" prop="require" />
 							<el-table-column label="类型" prop="dtype" />
 							<el-table-column label="说明" prop="desc" />
@@ -29,7 +30,8 @@
 					</p>
 					<p m="t-0 b-2"><span style="font-weight: bold;">出参:</span>
 						<el-table border :data="props.row.paramOut" :border="childBorder">
-							<el-table-column label="参数名" prop="field" />
+							<el-table-column label="参数" prop="field" />
+							<el-table-column label="参数名" prop="name" />
 							<el-table-column label="必选" prop="require" />
 							<el-table-column label="类型" prop="dtype" />
 							<el-table-column label="说明" prop="desc" />
@@ -58,8 +60,8 @@
 		</el-table-column>
 	</el-table>
 
-	<el-dialog v-model="documentEditVisible" destroy-on-close width="500px">
-		<el-form ref="documentFormRef" :model="documentForm" style="max-width: 450px;mars-top:20px;">
+	<el-dialog v-model="documentEditVisible" destroy-on-close width="700px">
+		<el-form ref="documentFormRef" :model="documentForm" style="max-width: 650px;mars-top:20px;">
 			<el-form-item v-for="(domain, index) in documentForm.domains" :key="domain.key" :label="'URL' + index"
 				:prop="'domains.' + index + '.value'" :rules="{
 			         required: true,
@@ -129,13 +131,15 @@
 			<el-form-item label="入参" :label-width="formLabelWidth">
 				<el-button type="warning" plain size="small" :icon="Plus" circle @click="addParam(1)"></el-button>
 				<el-table :data="documentForm.paramIn" style="width: 100%;font-size:8px;">
-					<el-table-column label="参数名" width="80" prop="field">
+					<el-table-column label="参数" width="100" prop="field">
+					</el-table-column>
+					<el-table-column label="参数名" width="120" prop="name">
 					</el-table-column>
 					<el-table-column label="必选" width="60" prop="require">
 					</el-table-column>
 					<el-table-column label="类型" width="60" prop="dtype">
 					</el-table-column>
-					<el-table-column label="说明" width="70" prop="desc">
+					<el-table-column label="说明" width="120" prop="desc">
 					</el-table-column>
 					<el-table-column label="操作">
 						<template #default="scope">
@@ -155,13 +159,15 @@
 			<el-form-item label="出参" :label-width="formLabelWidth">
 				<el-button type="warning" plain size="small" :icon="Plus" circle @click="addParam(2)"></el-button>
 				<el-table :data="documentForm.paramOut" style="width: 100%;font-size:8px;">
-					<el-table-column label="参数名" width="80" prop="field">
+					<el-table-column label="参数" width="100" prop="field">
+					</el-table-column>
+					<el-table-column label="参数名" width="120" prop="name">
 					</el-table-column>
 					<el-table-column label="必选" width="60" prop="require">
 					</el-table-column>
 					<el-table-column label="类型" width="60" prop="dtype">
 					</el-table-column>
-					<el-table-column label="说明" width="70" prop="desc">
+					<el-table-column label="说明" width="120" prop="desc">
 					</el-table-column>
 					<el-table-column label="操作">
 						<template #default="scope">
@@ -196,6 +202,16 @@
 
 	<el-dialog v-model="documenParamtEditVisible" destroy-on-close width="500px">
 		<el-form ref="documentParamFormRef" :model="documentParamForm" style="max-width: 450px;mars-top:20px;">
+			<el-form-item label="参数" :label-width="formLabelWidth" :rules="[
+				     {
+				 	  						  type: 'string',
+				       required: true,
+				       message: '请输入字段',
+				       trigger: 'blur',
+				     },
+				   ]">
+				<el-input v-model="documentParamForm.field" />
+			</el-form-item>
 			<el-form-item label="参数名" :label-width="formLabelWidth" :rules="[
 				     {
 				 	  						  type: 'string',
@@ -204,7 +220,7 @@
 				       trigger: 'blur',
 				     },
 				   ]">
-				<el-input v-model="documentParamForm.field" />
+				<el-input v-model="documentParamForm.name" />
 			</el-form-item>
 			<el-form-item label="必选" :label-width="formLabelWidth">
 				<el-select v-model="documentParamForm.require">
@@ -280,7 +296,7 @@
 		documentRuleFlowCode: String
 	} > ()
 
-	const formLabelWidth = '90px'
+	const formLabelWidth = '80px'
 	const documentFormRef = ref < FormInstance > ()
 	const documentForm = reactive({
 		id: 0,
@@ -298,6 +314,7 @@
 		paramIn: [{
 			id: 0,
 			field: '',
+			name:'',
 			require: '是',
 			dtype: 'String',
 			desc: '',
@@ -306,6 +323,7 @@
 		paramOut: [{
 			id: 0,
 			field: '',
+			name:'',
 			require: '是',
 			dtype: 'String',
 			desc: '',
@@ -358,6 +376,7 @@
 		documentForm.paramIn = [{
 			id: 0,
 			field: '',
+			name:'',
 			require: '是',
 			dtype: 'String',
 			desc: '',
@@ -366,6 +385,7 @@
 		documentForm.paramOut = [{
 			id: 0,
 			field: '',
+			name:'',
 			require: '是',
 			dtype: 'String',
 			desc: '',
@@ -415,6 +435,7 @@
 		id: 0,
 		type: 1,
 		field: '',
+		name:'',
 		require: '是',
 		dtype: 'String',
 		desc: '',
@@ -424,6 +445,7 @@
 		let param = {
 			id: 0,
 			field: '',
+			name:'',
 			require: '是',
 			dtype: 'String',
 			desc: '',
@@ -489,4 +511,10 @@
 	}
 
 	const tableData = ref(props.veryFlowDocumentData)
+	
+	const downloadDocument = ()=>{
+		location.href = "http://localhost:8090/veryrule/downVeryRuleFlowDocument?ruleFlowCode="+props.documentRuleFlowCode
+	}
+	
+	
 </script>
