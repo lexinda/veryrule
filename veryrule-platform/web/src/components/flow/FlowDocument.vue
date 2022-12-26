@@ -55,7 +55,11 @@
 		<el-table-column align="center" width="140" label="操作">
 			<template #default="scope">
 				<el-button size="small" @click="editDocument(scope.$index, scope.row)">编辑</el-button>
-				<el-button size="small" type="danger" @click="deleteDocument(scope.$index, scope.row)">删除</el-button>
+				<el-popconfirm title="是否删除?" @confirm="deleteDocument(scope.$index, scope.row)">
+					<template #reference>
+						<el-button size="small" type="danger">删除</el-button>
+					</template>
+				</el-popconfirm>
 			</template>
 		</el-table-column>
 	</el-table>
@@ -266,10 +270,12 @@
 		ref,
 		nextTick
 	} from 'vue'
+	import {
+		ElMessage
+	} from 'element-plus'
 	import type {
 		FormInstance,
 		FormRules,
-		ElMessage
 	} from 'element-plus'
 
 	import post from "../../axios/post.js";
@@ -414,7 +420,13 @@
 						}
 					})
 				} else {
-					documentForm.id = tableData.value.length + 1
+					var dataId = 1
+					tableData.value.forEach(function(data) {
+						if(data.id>dataId){
+							dataId = data.id+1;
+						}
+					})
+					documentForm.id = dataId
 					tableData.value.push(documentForm)
 				}
 				console.log(documentForm.id)
