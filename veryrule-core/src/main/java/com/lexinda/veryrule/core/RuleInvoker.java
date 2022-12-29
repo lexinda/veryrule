@@ -35,11 +35,7 @@ public class RuleInvoker extends RuleInvokerAbst implements Cloneable {
 					subject.contation(param,condation.getKey());
 				}
 			}catch(Exception e) {
-				String msg = e.getCause().getMessage();
-				if(msg.equals("")||msg==null) {
-					msg = e.getMessage();
-				}
-				throw new RuntimeException(msg);
+				throw new RuntimeException(e.getCause()!=null?e.getCause().getMessage():e.getMessage());
 			}
 		});
 	}
@@ -65,7 +61,7 @@ public class RuleInvoker extends RuleInvokerAbst implements Cloneable {
 						futurelist.add(f);
 					}
 				}catch(Exception e) {
-					throw new RuntimeException(e.getMessage());
+					throw new RuntimeException(e.getCause()!=null?e.getCause().getMessage():e.getMessage());
 				}
 			});
 			if(futurelist.size()>0) {
@@ -97,7 +93,7 @@ public class RuleInvoker extends RuleInvokerAbst implements Cloneable {
 						}
 					}
 				}catch(Exception e) {
-					throw new RuntimeException(e.getMessage());
+					throw new RuntimeException(e.getCause()!=null?e.getCause().getMessage():e.getMessage());
 				}
 			});
 		}
@@ -125,7 +121,7 @@ public class RuleInvoker extends RuleInvokerAbst implements Cloneable {
 					}
 				}
 			}catch(Exception e) {
-				throw new RuntimeException(e.getMessage());
+				throw new RuntimeException(e.getCause()!=null?e.getCause().getMessage():e.getMessage());
 			}
 		});
 		if(!resultMap.isEmpty()) {

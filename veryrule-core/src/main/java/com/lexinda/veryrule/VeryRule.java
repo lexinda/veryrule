@@ -123,19 +123,22 @@ public class VeryRule extends RuleEngine {
 				int ruleType = rule.getRuleType()==null?1:rule.getRuleType();
 				if(ruleType==1) {
 					IRuleCondation condationAction = (IRuleCondation) builder.ruleCondationMap.get(rule.getRuleCode());
-					if (condationAction != null) {
-						ruleCondations.put(rule, condationAction);
+					if(condationAction == null) {
+						throw new RuntimeException(rule.getRuleCode()+" rule class not found");
 					}
+					ruleCondations.put(rule, condationAction);
 				}else if(ruleType==2) {
 					IRuleResultCondation resultCondationAction = (IRuleResultCondation) builder.ruleResultCondationMap.get(rule.getRuleCode());
-					if (resultCondationAction != null) {
-						ruleResultCondations.put(rule, resultCondationAction);
+					if(resultCondationAction == null) {
+						throw new RuntimeException(rule.getRuleCode()+" rule class not found");
 					}
+					ruleResultCondations.put(rule, resultCondationAction);
 				}else if(ruleType==3) {
 					IRuleAction ruleAction = (IRuleAction) builder.ruleActionMap.get(rule.getRuleCode());
-					if (ruleAction != null) {
-						ruleActions.put(rule, ruleAction);
+					if(ruleAction == null) {
+						throw new RuntimeException(rule.getRuleCode()+" rule class not found");
 					}
+					ruleActions.put(rule, ruleAction);
 				}
 			});
 			return getResult(param, ruleCondations, ruleResultCondations, ruleActions, isTest,threadPoolExecutor);

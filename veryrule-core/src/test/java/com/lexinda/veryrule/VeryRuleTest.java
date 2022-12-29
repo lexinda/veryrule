@@ -13,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.lexinda.veryrule.base.key.RuleCode;
 import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.common.RuleType;
 
@@ -57,7 +56,7 @@ public class VeryRuleTest {
 		param = new HashMap<String, Object>();
 		param.put("a", "abc123");
 		res = new ArrayList<RuleBo>();
-		RuleBo nn = new RuleBo(RuleCode.NOTNULL, "", "a", "不可为空",RuleType.CONDATION);
+		RuleBo nn = new RuleBo("notNull", "", "a", "不可为空",RuleType.CONDATION);
 		res.add(nn);
 		RuleBo one = new RuleBo(RuleTestCode.RULERESULTCONDATIONONE, "", "", "测试",RuleType.RESULT_CONDATION);
 		RuleBo two = new RuleBo(RuleTestCode.RULERESULTCONDATIONTWO, "", "", "测试",RuleType.RESULT_CONDATION);

@@ -16,25 +16,40 @@ public class TestRuleListener implements IRuleListener {
 	public void initRule() {
 		System.out.println("init");
 	}
-	
+
 	@Override
 	public void ruleFlowStart(Map<String, Object> param) {
-		// TODO Auto-generated method stub
-		System.out.println(param);
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				System.out.println(param);
+			}
+		}).start();
 	}
 
 	@Override
 	public void ruleListener(Object[] args, Object result) {
-		// TODO Auto-generated method stub
-		System.out.println(args);
-		System.out.println(result);
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				System.out.println(args);
+				System.out.println(result);
+			}
+		}).start();
 	}
 
 	@Override
 	public void ruleFlowEnd(Map<String, Object> param, RuleResult result) {
-		// TODO Auto-generated method stub
-		System.out.println(param);
-		System.out.println(result);
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				System.out.println(param);
+				System.out.println(result);
+			}
+		}).start();
 	}
 
 }

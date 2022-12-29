@@ -2,7 +2,6 @@ package com.lexinda.veryrule.platform.controller;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
@@ -32,9 +31,12 @@ import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.apache.xmlbeans.XmlException;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTAbstractNum;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTNumbering;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblLayoutType;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblWidth;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STMerge;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblLayoutType;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -827,25 +829,10 @@ public class VeryRuleFlowController {
 				run.setText(veryRuleDocumentModel.getName());
 
 				XWPFTable table = document.createTable();
-				table.setWidth(5 * 1300); // should be 5 inches width
-
-				// create CTTblGrid for this table with widths of the 2 columns.
-
-				// necessary for Libreoffice/Openoffice to accept the column widths.
-
-				// first column = 2 inches width
-
-				table.getCTTbl().addNewTblGrid().addNewGridCol().setW(BigInteger.valueOf(5 * 1300));
-
-				// set width for first column = 2 inches
-
-				CTTblWidth tblWidth = table.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW();
-
-				tblWidth.setW(BigInteger.valueOf(5 * 1300));
-
-				// STTblWidth.DXA is used to specify width in twentieths of a point.
-
-				tblWidth.setType(STTblWidth.DXA);
+				table.setWidth(5 * 1300);
+				CTTblPr tblPr =  table.getCTTbl().getTblPr();
+				CTTblLayoutType t = tblPr.isSetTblLayout()?tblPr.getTblLayout():tblPr.addNewTblLayout();
+				t.setType(STTblLayoutType.FIXED);
 
 				// 接口地址
 				XWPFTableRow row = table.getRow(0);
@@ -872,14 +859,34 @@ public class VeryRuleFlowController {
 				XWPFTableRow paramInTitle = table.createRow();
 				XWPFTableCell cell = paramInTitle.getCell(0);
 				cell.setText("入参字段");
+				CTTcPr ctTcPr = cell.getCTTc().isSetTcPr() ? cell.getCTTc().getTcPr() : cell.getCTTc().addNewTcPr();
+				CTTblWidth ctTblWidth = ctTcPr.addNewTcW();
+				ctTblWidth.setW(BigInteger.valueOf(150));
+				ctTblWidth.setType(STTblWidth.DXA);
 				XWPFTableCell cell1 = paramInTitle.getCell(1);
 				cell1.setText("字段名称");
+				CTTcPr ctTcPr1 = cell1.getCTTc().isSetTcPr() ? cell1.getCTTc().getTcPr() : cell1.getCTTc().addNewTcPr();
+				CTTblWidth ctTblWidth1 = ctTcPr1.addNewTcW();
+				ctTblWidth1.setW(BigInteger.valueOf(100));
+				ctTblWidth1.setType(STTblWidth.DXA);
 				XWPFTableCell cell2 = paramInTitle.getCell(2);
 				cell2.setText("类型");
+				CTTcPr ctTcPr2 = cell2.getCTTc().isSetTcPr() ? cell2.getCTTc().getTcPr() : cell2.getCTTc().addNewTcPr();
+				CTTblWidth ctTblWidth2 = ctTcPr2.addNewTcW();
+				ctTblWidth2.setW(BigInteger.valueOf(50));
+				ctTblWidth2.setType(STTblWidth.DXA);
 				XWPFTableCell cell3 = paramInTitle.getCell(3);
 				cell3.setText("必填");
+				CTTcPr ctTcPr3 = cell3.getCTTc().isSetTcPr() ? cell3.getCTTc().getTcPr() : cell3.getCTTc().addNewTcPr();
+				CTTblWidth ctTblWidth3 = ctTcPr3.addNewTcW();
+				ctTblWidth3.setW(BigInteger.valueOf(50));
+				ctTblWidth3.setType(STTblWidth.DXA);
 				XWPFTableCell cell4 = paramInTitle.getCell(4);
 				cell4.setText("说明");
+				CTTcPr ctTcPr4 = cell4.getCTTc().isSetTcPr() ? cell4.getCTTc().getTcPr() : cell4.getCTTc().addNewTcPr();
+				CTTblWidth ctTblWidth4 = ctTcPr4.addNewTcW();
+				ctTblWidth4.setW(BigInteger.valueOf(150));
+				ctTblWidth4.setType(STTblWidth.DXA);
 
 				List<Param> paramIn = veryRuleDocumentModel.getParamIn();
 				for (Param param : paramIn) {
