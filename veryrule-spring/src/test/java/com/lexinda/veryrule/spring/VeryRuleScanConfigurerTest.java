@@ -42,7 +42,7 @@ public class VeryRuleScanConfigurerTest {
 		param = new HashMap<>();
 		param.put("a", "123a");
 		res = new ArrayList<RuleBo>();
-		res.add(new RuleBo("regexRuleCondation","a","(\\D*)(\\d+)(.*)","regex",RuleType.CONDATION));
+		res.add(new RuleBo("regexRuleCondation","a","(\\D*)(\\d+)(.*)","regex",RuleType.CONDATION,2));
 	}
 
 	@Test

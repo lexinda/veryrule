@@ -114,6 +114,13 @@
 		<FlowTempletEditDetail @cancelFlowTempletDetailEdit="cancelFlowTempletDetailEdit"
 			:ruleFlowTemplet="ruleFlowTemplet"></FlowTempletEditDetail>
 	</el-dialog>
+	
+	<el-dialog v-model="flowSceneTempletDetailVisible" :title="currentRuleFlowData.ruleFlowName" destroy-on-close
+		:fullscreen="true">
+		<FlowSceneTempletEditDetail @cancelFlowSceneTempletDetail="cancelFlowSceneTempletDetail"
+			:ruleFlowTempletData="ruleFlowTemplet"></FlowSceneTempletEditDetail>
+	</el-dialog>
+	
 	<el-dialog v-model="veryFlowtempletCopyVisible" destroy-on-close width="500px">
 		<FlowCopy :veryFlowAllData="veryFlowAllData" :veryFlowtempletCopyData = "veryFlowtempletCopyData"
 		 @cancelFlowCopy="cancelFlowCopy" @successFlowCopy="successFlowCopy"></FlowCopy>
@@ -150,6 +157,7 @@
 	import FlowTempletEdit from "./flow/FlowTempletEdit.vue";
 	import FlowSceneTempletEdit from "./flow/FlowSceneTempletEdit.vue";
 	import FlowTempletEditDetail from "./flow/FlowTempletEditDetail.vue";
+	import FlowSceneTempletEditDetail from "./flow/FlowSceneTempletEditDetail.vue";
 	import FlowScene from "./flow/FlowScene.vue";
 	import FlowDocument from "./flow/FlowDocument.vue";
 	import {
@@ -388,6 +396,12 @@
 	const cancelFlowSceneTempletEdit = () => {
 		flowSceneTempletEditVisible.value = false
 	}
+	
+	const flowSceneTempletDetailVisible = ref(false)
+	const cancelFlowSceneTempletDetail = ()=>{
+		flowSceneTempletDetailVisible.value = false
+	}
+	
 	const updateVeryRuleFlow = (ruleFlowTempletCode) => {
 		currentRuleFlowData.value.ruleFlowTempletCode = ruleFlowTempletCode
 	}
@@ -435,7 +449,11 @@
 					}
 					
 				} else {
-					flowTempletDetailVisible.value = true
+					if(currentRuleFlowData.value.ruleSceneId > 0){
+						flowSceneTempletDetailVisible.value = true
+					}else{
+						flowTempletDetailVisible.value = true
+					}
 				}
 				if (data.body.length > 0) {
 					ruleFlowTemplet.value = {

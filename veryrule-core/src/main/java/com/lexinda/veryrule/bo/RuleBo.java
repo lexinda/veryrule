@@ -31,15 +31,58 @@ public class RuleBo {
 	 */
 	protected Integer ruleType;
 	
+	/**
+	 * 带返回值的条件-是否异步
+	 * 1:异步
+	 * 非1：同步
+	 */
+	protected Integer ruleAsyn;
+	/**
+	 * 表达式
+	 */
+	protected String ruleExpr;
+	
 	public RuleBo() {
 	}
-
+	
 	public RuleBo(String ruleCode, String ruleValue, String ruleKey, String ruleErrMsg,Integer ruleType) {
 		this.ruleCode = ruleCode;
 		this.ruleValue = ruleValue;
 		this.ruleKey = ruleKey;
 		this.ruleErrMsg = ruleErrMsg;
 		this.ruleType = ruleType;
+		this.ruleAsyn = 1;
+		this.ruleExpr = "";
+	}
+	
+	public RuleBo(String ruleCode, String ruleValue, String ruleKey, String ruleErrMsg,Integer ruleType,Integer ruleAsyn) {
+		this.ruleCode = ruleCode;
+		this.ruleValue = ruleValue;
+		this.ruleKey = ruleKey;
+		this.ruleErrMsg = ruleErrMsg;
+		this.ruleType = ruleType;
+		this.ruleAsyn = ruleAsyn;
+		this.ruleExpr = "";
+	}
+	
+	public RuleBo(String ruleCode, String ruleValue, String ruleKey, String ruleErrMsg,Integer ruleType,String ruleExpr) {
+		this.ruleCode = ruleCode;
+		this.ruleValue = ruleValue;
+		this.ruleKey = ruleKey;
+		this.ruleErrMsg = ruleErrMsg;
+		this.ruleType = ruleType;
+		this.ruleAsyn = 1;
+		this.ruleExpr = ruleExpr;
+	}
+	
+	public RuleBo(String ruleCode, String ruleValue, String ruleKey, String ruleErrMsg,Integer ruleType,Integer ruleAsyn,String ruleExpr) {
+		this.ruleCode = ruleCode;
+		this.ruleValue = ruleValue;
+		this.ruleKey = ruleKey;
+		this.ruleErrMsg = ruleErrMsg;
+		this.ruleType = ruleType;
+		this.ruleAsyn = ruleAsyn;
+		this.ruleExpr = ruleExpr;
 	}
 
 	public String getRuleCode() {
@@ -82,10 +125,26 @@ public class RuleBo {
 		this.ruleType = ruleType;
 	}
 
+	public Integer getRuleAsyn() {
+		return ruleAsyn;
+	}
+
+	public void setRuleAsyn(Integer ruleAsyn) {
+		this.ruleAsyn = ruleAsyn;
+	}
+
+	public String getRuleExpr() {
+		return ruleExpr;
+	}
+
+	public void setRuleExpr(String ruleExpr) {
+		this.ruleExpr = ruleExpr;
+	}
+
 	@Override
 	public String toString() {
 		return "RuleBo [ruleCode=" + ruleCode + ", ruleValue=" + ruleValue + ", ruleKey=" + ruleKey + ", ruleErrMsg="
-				+ ruleErrMsg + ", ruleType=" + ruleType + "]";
+				+ ruleErrMsg + ", ruleType=" + ruleType + ", ruleAsyn=" + ruleAsyn+ ", ruleExpr=" + ruleExpr + "]";
 	}
 
 }

@@ -20,8 +20,9 @@ import com.lexinda.veryrule.core.interfaces.IRuleTest;
 public class RuleInvoker extends RuleInvokerAbst implements Cloneable {
 	
 	@Override
-	public <R extends RuleBo> void doRuleCondation(Map<String, Object> param, Map<R, IRuleCondation> ruleCondations,RuleProxyHandler ruleProxyHandler,boolean isTest) {
-		ruleCondations.entrySet().stream().forEach(condation->{
+	public <R extends RuleBo> void doRuleCondation(Map<String, Object> param, Map<R, Object> condations,RuleProxyHandler ruleProxyHandler,boolean isTest) {
+		Map<String, Object> condationResultMap = new HashMap<String, Object>();
+		condations.entrySet().stream().forEach(condation->{
 			try {
 				RuleProxyHandler ruleHandler = ruleProxyHandler.clone();
 				ruleHandler.setTarget(condation.getValue());
@@ -31,13 +32,25 @@ public class RuleInvoker extends RuleInvokerAbst implements Cloneable {
 						ruleResult.addResultAll(testResult);
 					}
 				}else {
-					IRuleCondation subject = (IRuleCondation) Proxy.newProxyInstance(IRuleCondation.class.getClassLoader(), new Class<?>[] {IRuleCondation.class}, ruleHandler);
-					subject.contation(param,condation.getKey());
+					if(condation.getKey().getRuleType() == 1 ) {
+						IRuleCondation subject = (IRuleCondation) Proxy.newProxyInstance(IRuleCondation.class.getClassLoader(), new Class<?>[] {IRuleCondation.class}, ruleHandler);
+						subject.contation(param,condation.getKey());
+					}else if(condation.getKey().getRuleType() == 2 ) {
+						IRuleResultCondation subject = (IRuleResultCondation) Proxy.newProxyInstance(IRuleResultCondation.class.getClassLoader(), new Class<?>[] {IRuleResultCondation.class}, ruleHandler);
+						Map<String, Object> condationResult = (Map<String, Object>)subject.contation(param,condation.getKey());
+						if (condationResult != null) {
+							condationResultMap.putAll(condationResult);
+						}
+					}
+					
 				}
 			}catch(Exception e) {
 				throw new RuntimeException(e.getCause()!=null?e.getCause().getMessage():e.getMessage());
 			}
 		});
+		if(!condationResultMap.isEmpty()) {
+			ruleResult.setCondationResult(condationResultMap);
+		}
 	}
 
 	@Override

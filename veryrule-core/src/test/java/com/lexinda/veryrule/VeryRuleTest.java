@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.lexinda.veryrule.bo.RuleBo;
+import com.lexinda.veryrule.common.RuleResult;
 import com.lexinda.veryrule.common.RuleType;
 
 /**
@@ -58,10 +59,10 @@ public class VeryRuleTest {
 		res = new ArrayList<RuleBo>();
 		RuleBo nn = new RuleBo("notNull", "", "a", "不可为空",RuleType.CONDATION);
 		res.add(nn);
-		RuleBo one = new RuleBo(RuleTestCode.RULERESULTCONDATIONONE, "", "", "测试",RuleType.RESULT_CONDATION);
+		RuleBo one = new RuleBo(RuleTestCode.RULERESULTCONDATIONONE, "", "", "测试",RuleType.RESULT_CONDATION,2);
 		RuleBo two = new RuleBo(RuleTestCode.RULERESULTCONDATIONTWO, "", "", "测试",RuleType.RESULT_CONDATION);
 		RuleBo three = new RuleBo(RuleTestCode.RULERESULTCONDATIONTHREE, "", "", "测试",RuleType.RESULT_CONDATION);
-		RuleBo action = new RuleBo(RuleTestCode.TESTRULEACTION, "", "", "测试",RuleType.ACTION);
+		RuleBo action = new RuleBo(RuleTestCode.TESTRULEACTION, "", "", "测试",RuleType.ACTION,2);
 		res.add(one);
 		res.add(two);
 		res.add(three);
@@ -76,7 +77,8 @@ public class VeryRuleTest {
 //			for(int i=0;i<1000000;i++) {
 //				veryRule.fire(param, res);
 //			}
-			veryRule.fire(param, res);
+//			veryRule.fire(param, res);
+			RuleResult ruleResult = veryRule.fireTest(res);
 			System.out.println(System.currentTimeMillis()-time);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

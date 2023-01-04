@@ -13,7 +13,7 @@
 					  </el-icon>:动作
 			</i>
 			<el-table :data="tableCondationData" style="width: 100%;" border>
-				<el-table-column label="(无返回值)条件规则名称" align="center">
+				<el-table-column label="(条件)规则名称" align="center">
 					<template #default="scope">
 						<div>{{ scope.row.ruleCode }}
 						<el-icon v-if="scope.row.ruleType == 1">
@@ -26,31 +26,8 @@
 							    <Promotion />
 							  </el-icon>
 						</div>
-						<div>{{ scope.row.ruleName }}</div>
-					</template>
-				</el-table-column>
-				<el-table-column label="指定入参key" prop="ruleKey">
-				</el-table-column>
-				<el-table-column label="默认值" prop="ruleValue">
-				</el-table-column>
-				<el-table-column label="异常提示" prop="ruleErrMsg">
-				</el-table-column>
-			</el-table>
-			<el-table :data="tableResultCondationData" style="width: 100%;" border>
-				<el-table-column label="(有返回值)条件规则名称" align="center">
-					<template #default="scope">
-						<div>{{ scope.row.ruleCode }}
-						<el-icon v-if="scope.row.ruleType == 1">
-						    <Bell />
-						  </el-icon>
-						  <el-icon v-if="scope.row.ruleType == 2">
-						      <BellFilled />
-						    </el-icon>
-							<el-icon v-if="scope.row.ruleType == 3">
-							    <Promotion />
-							  </el-icon>
-						</div>
-						<div>{{ scope.row.ruleName }}</div>
+						<div v-if="scope.row.ruleAsyn == 1">{{ scope.row.ruleName }}(<font color="red">异步</font>)</div>
+						<div v-else>{{ scope.row.ruleName }}</div>
 					</template>
 				</el-table-column>
 				<el-table-column label="指定入参key" prop="ruleKey">
@@ -123,6 +100,9 @@
 			BellFilled,
 			Promotion
 		} from '@element-plus/icons-vue'
+	import {
+			ElMessage
+		} from 'element-plus'
 	import post from "../../axios/post.js";
 	
 	const props = defineProps < {
@@ -173,9 +153,7 @@
 		ruleDesc: string
 	}
 
-	const tableCondationData: RuleData[] = ref(props.ruleFlowTemplet.ruleFlowTemplet.filter(item => item.ruleType == 1))
-	
-	const tableResultCondationData : RuleData[] = ref(props.ruleFlowTemplet.ruleFlowTemplet.filter(item => item.ruleType == 2)) 
+	const tableCondationData: RuleData[] = ref(props.ruleFlowTemplet.ruleFlowTemplet.filter(item => item.ruleType != 3))
 	
 	const tableActionData: RuleData[] = ref(props.ruleFlowTemplet.ruleFlowTemplet.filter(item => item.ruleType == 3))
 

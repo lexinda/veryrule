@@ -20,7 +20,7 @@ public class RuleResultCondationTwo implements IRuleResultCondation {
 	@Override
 	public <R extends RuleBo> Map<String, Object> contation(Map<String, Object> param, R rule) throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println("contation");
+		System.out.println("contation two");
 		Map<String, Object> result = new HashMap<String,Object>();
 //		Thread.sleep(3000);
 		result.put("two", 2);

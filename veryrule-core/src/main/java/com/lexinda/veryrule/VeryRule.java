@@ -115,7 +115,7 @@ public class VeryRule extends RuleEngine {
 	 */
 	private <R extends RuleBo> RuleResult fireWithCondation(Map<String, Object> param, List<R> rules, boolean isTest,ThreadPoolExecutor threadPoolExecutor)
 			throws Exception {
-		Map<R, IRuleCondation> ruleCondations = new LinkedHashMap<R, IRuleCondation>();
+		Map<R, Object> condations = new LinkedHashMap<R, Object>();
 		Map<R, IRuleResultCondation> ruleResultCondations = new LinkedHashMap<R, IRuleResultCondation>();
 		Map<R, IRuleAction> ruleActions = new LinkedHashMap<R, IRuleAction>();
 		if (rules != null) {
@@ -126,13 +126,20 @@ public class VeryRule extends RuleEngine {
 					if(condationAction == null) {
 						throw new RuntimeException(rule.getRuleCode()+" rule class not found");
 					}
-					ruleCondations.put(rule, condationAction);
+					condations.put(rule, condationAction);
 				}else if(ruleType==2) {
 					IRuleResultCondation resultCondationAction = (IRuleResultCondation) builder.ruleResultCondationMap.get(rule.getRuleCode());
 					if(resultCondationAction == null) {
 						throw new RuntimeException(rule.getRuleCode()+" rule class not found");
 					}
-					ruleResultCondations.put(rule, resultCondationAction);
+					/*
+					 * 有返回值的规则条件默认并行执行
+					 */
+					if(rule.getRuleAsyn() == 1) {
+						ruleResultCondations.put(rule, resultCondationAction);
+					}else {
+						condations.put(rule, resultCondationAction);
+					}
 				}else if(ruleType==3) {
 					IRuleAction ruleAction = (IRuleAction) builder.ruleActionMap.get(rule.getRuleCode());
 					if(ruleAction == null) {
@@ -141,7 +148,7 @@ public class VeryRule extends RuleEngine {
 					ruleActions.put(rule, ruleAction);
 				}
 			});
-			return getResult(param, ruleCondations, ruleResultCondations, ruleActions, isTest,threadPoolExecutor);
+			return getResult(param, condations, ruleResultCondations, ruleActions, isTest,threadPoolExecutor);
 		} else {
 			return null;
 		}

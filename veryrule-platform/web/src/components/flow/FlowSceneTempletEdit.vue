@@ -37,15 +37,19 @@
 				<div v-for="(scene,index) in ruleScene">
 					<fieldset style="margin-top: 10px;min-width: 90%;border: 1px solid #dcdfe6;" v-if="ruleFlowTempletData.ruleFlowTemplet[scene.ruleSceneCode].length>0">
 						<legend style="font-size: 16px;">{{scene.ruleSceneName}}({{scene.ruleSceneCode}})</legend>
-						<el-table :data="ruleFlowTempletData.ruleFlowTemplet[scene.ruleSceneCode].filter(item => item.ruleType == 1)" v-if="ruleFlowTempletData.ruleFlowTemplet[scene.ruleSceneCode].filter(item => item.ruleType == 1).length>0" style="width: 100%;" border @row-click="tableRowClick">
-							<el-table-column label="(无返回值)条件规则名称" align="center">
+						<el-table :data="ruleFlowTempletData.ruleFlowTemplet[scene.ruleSceneCode].filter(item => item.ruleType != 3)" v-if="ruleFlowTempletData.ruleFlowTemplet[scene.ruleSceneCode].filter(item => item.ruleType != 3).length>0" style="width: 100%;" border @row-click="tableRowClick">
+							<el-table-column label="(条件)规则名称" align="center">
 								<template #default="scope">
 									<div>{{ scope.row.ruleCode }}
-									<el-icon>
-									    <Bell />
+									<el-icon v-if="scope.row.ruleType == 1">
+										<Bell />
 									  </el-icon>
+									  <el-icon v-if="scope.row.ruleType == 2">
+										  <BellFilled />
+										</el-icon>
 									</div>
-									<div>{{ scope.row.ruleName }}</div>
+									<div v-if="scope.row.ruleAsyn == 1">{{ scope.row.ruleName }}(<font color="red">异步</font>)</div>
+									<div v-else>{{ scope.row.ruleName }}</div>
 								</template>
 							</el-table-column>
 							<el-table-column label="指定入参key" prop="ruleKey">
@@ -70,49 +74,7 @@
 											@click="handleUp(scope.$index, scope.row,scene.ruleSceneCode)">
 										</el-button>
 										<el-button type="primary" :icon="SortDown" size="small" title="向下"
-											v-if="scope.$index == ruleFlowTempletData.ruleFlowTemplet[scene.ruleSceneCode].filter(item => item.ruleType == 1).length-1" disabled>
-										</el-button>
-										<el-button type="primary" :icon="SortDown" size="small" title="向下" v-else
-											@click="handleDown(scope.$index, scope.row,scene.ruleSceneCode)">
-										</el-button>
-									</el-button-group>
-								</template>
-							</el-table-column>
-						</el-table>
-						<el-table :data="ruleFlowTempletData.ruleFlowTemplet[scene.ruleSceneCode].filter(item => item.ruleType == 2)" v-if="ruleFlowTempletData.ruleFlowTemplet[scene.ruleSceneCode].filter(item => item.ruleType == 2).length>0" style="width: 100%;" border @row-click="tableRowClick">
-							<el-table-column label="(有返回值)条件规则名称" align="center">
-								<template #default="scope">
-									<div>{{ scope.row.ruleCode }}
-									  <el-icon>
-									      <BellFilled />
-									    </el-icon>
-									</div>
-									<div>{{ scope.row.ruleName }}</div>
-								</template>
-							</el-table-column>
-							<el-table-column label="指定入参key" prop="ruleKey">
-							</el-table-column>
-							<el-table-column label="默认值" prop="ruleValue">
-							</el-table-column>
-							<el-table-column label="异常提示" prop="ruleErrMsg">
-							</el-table-column>
-							<el-table-column label="操作" width="220">
-								<template #default="scope">
-									<el-popconfirm title="是否删除?" @confirm="handleDelete(scope.$index, scope.row,scene.ruleSceneCode)">
-										<template #reference>
-											<el-button size="small" type="danger">删除</el-button>
-										</template>
-									</el-popconfirm>
-									<el-button size="small" @click="handleEdit(scope.$index, scope.row,scene.ruleSceneCode)">编辑</el-button>
-									<el-button-group style="margin-left:10px;">
-										<el-button type="primary" :icon="SortUp" size="small" title="向上" v-if="scope.$index == 0"
-											disabled>
-										</el-button>
-										<el-button type="primary" :icon="SortUp" size="small" title="向上" v-else
-											@click="handleUp(scope.$index, scope.row,scene.ruleSceneCode)">
-										</el-button>
-										<el-button type="primary" :icon="SortDown" size="small" title="向下"
-											v-if="scope.$index == ruleFlowTempletData.ruleFlowTemplet[scene.ruleSceneCode].filter(item => item.ruleType == 2).length-1" disabled>
+											v-if="scope.$index == ruleFlowTempletData.ruleFlowTemplet[scene.ruleSceneCode].filter(item => item.ruleType != 3).length-1" disabled>
 										</el-button>
 										<el-button type="primary" :icon="SortDown" size="small" title="向下" v-else
 											@click="handleDown(scope.$index, scope.row,scene.ruleSceneCode)">
@@ -336,8 +298,6 @@
 	
 	const tableCondationData: RuleData[] = ref([])
 	
-	const tableResultCondationData: RuleData[] = ref([])
-	
 	const tableActionData: RuleData[] = ref([])
 	
 	const templetEditType = ref(1)
@@ -361,7 +321,11 @@
 	const handleUp = (index: number, row: RuleData,sceneCode: String) => {
 		let itemIndex = index - 1
 		let allTableData = props.ruleFlowTempletData.ruleFlowTemplet[sceneCode]
-		let tableData = allTableData.filter(item => item.ruleType == row.ruleType )
+		var tableData = allTableData.filter(item => item.ruleType != row.ruleType )
+		if(row.ruleType == 3){
+			tableData = allTableData.filter(item => item.ruleType == row.ruleType )
+		}
+		
 		let itemData = tableData[itemIndex]
 		var oldIndex = 0
 		var newIndex = 0
@@ -381,7 +345,10 @@
 	const handleDown = (index: number, row: RuleData,sceneCode: String) => {
 		let itemIndex = index + 1
 		let allTableData = props.ruleFlowTempletData.ruleFlowTemplet[sceneCode]
-		let tableData = allTableData.filter(item => item.ruleType == row.ruleType )
+		var tableData = allTableData.filter(item => item.ruleType != row.ruleType )
+		if(row.ruleType == 3){
+			tableData = allTableData.filter(item => item.ruleType == row.ruleType )
+		}
 		let itemData = tableData[itemIndex]
 		var oldIndex = 0
 		var newIndex = 0

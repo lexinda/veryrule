@@ -19,7 +19,7 @@ public class RegexRuleCondation implements IRuleCondation {
 	@Override
 	public <R extends RuleBo> void contation(Map<String, Object> param, R rule) throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println("contation");
+		System.out.println("contation regex");
 	}
 
 }

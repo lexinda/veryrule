@@ -23,7 +23,7 @@ public class RuleEngine<R extends RuleBo> {
 	protected RuleInvoker ruleInvoker;
 	protected RuleProxyHandler ruleProxyHandler = null;
 
-	protected RuleResult getResult(Map<String, Object> param, Map<R, IRuleCondation> ruleCondations,
+	protected RuleResult getResult(Map<String, Object> param, Map<R, Object> condations,
 			Map<R, IRuleResultCondation> ruleResultCondations, Map<R, IRuleAction> ruleActions, boolean isTest,
 			ThreadPoolExecutor threadPoolExecutor) throws Exception {
 		RuleInvoker invoke = (RuleInvoker) ruleInvoker.clone();
@@ -32,7 +32,7 @@ public class RuleEngine<R extends RuleBo> {
 			ruleProxyHandler.getRuleListener().ruleFlowStart(param);
 		}
 		
-		invoke.doRuleCondation(param, ruleCondations,ruleProxyHandler,isTest);
+		invoke.doRuleCondation(param, condations,ruleProxyHandler,isTest);
 		
 		invoke.doRuleResultCondation(param, ruleResultCondations,ruleProxyHandler,isTest,threadPoolExecutor);
 		

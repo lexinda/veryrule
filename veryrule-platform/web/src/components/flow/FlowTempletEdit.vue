@@ -34,7 +34,7 @@
 		<el-col :span="17">
 			<div style="height:85vh;overflow-y:scroll;">
 				<el-table :data="tableCondationData" style="width: 100%;" border @row-click="tableRowClick">
-					<el-table-column label="(无返回值)条件规则名称" align="center">
+					<el-table-column label="(条件)规则名称" align="center">
 						<template #default="scope">
 							<div>{{ scope.row.ruleCode }}
 							<el-icon v-if="scope.row.ruleType == 1">
@@ -43,11 +43,9 @@
 							  <el-icon v-if="scope.row.ruleType == 2">
 								  <BellFilled />
 								</el-icon>
-								<el-icon v-if="scope.row.ruleType == 3">
-									<Promotion />
-								  </el-icon>
 							</div>
-							<div>{{ scope.row.ruleName }}</div>
+							<div v-if="scope.row.ruleAsyn == 1">{{ scope.row.ruleName }}(<font color="red">异步</font>)</div>
+							<div v-else>{{ scope.row.ruleName }}</div>
 						</template>
 					</el-table-column>
 					<el-table-column label="指定入参key" prop="ruleKey">
@@ -81,65 +79,11 @@
 						</template>
 					</el-table-column>
 				</el-table>
-				<el-table :data="tableResultCondationData" style="width: 100%;" border @row-click="tableRowClick">
-					<el-table-column label="(有返回值)条件规则名称" align="center">
-						<template #default="scope">
-							<div>{{ scope.row.ruleCode }}
-							<el-icon v-if="scope.row.ruleType == 1">
-								<Bell />
-							  </el-icon>
-							  <el-icon v-if="scope.row.ruleType == 2">
-								  <BellFilled />
-								</el-icon>
-								<el-icon v-if="scope.row.ruleType == 3">
-									<Promotion />
-								  </el-icon>
-							</div>
-							<div>{{ scope.row.ruleName }}</div>
-						</template>
-					</el-table-column>
-					<el-table-column label="指定入参key" prop="ruleKey">
-					</el-table-column>
-					<el-table-column label="默认值" prop="ruleValue">
-					</el-table-column>
-					<el-table-column label="异常提示" prop="ruleErrMsg">
-					</el-table-column>
-					<el-table-column label="操作" width="220">
-						<template #default="scope">
-							<el-popconfirm title="是否删除?" @confirm="handleDelete(scope.$index, scope.row)">
-								<template #reference>
-									<el-button size="small" type="danger">删除</el-button>
-								</template>
-							</el-popconfirm>
-							<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-							<el-button-group style="margin-left:10px;">
-								<el-button type="primary" :icon="SortUp" size="small" title="向上" v-if="scope.$index == 0"
-									disabled>
-								</el-button>
-								<el-button type="primary" :icon="SortUp" size="small" title="向上" v-else
-									@click="handleUp(scope.$index, scope.row)">
-								</el-button>
-								<el-button type="primary" :icon="SortDown" size="small" title="向下"
-									v-if="scope.$index == tableResultCondationData.length-1" disabled>
-								</el-button>
-								<el-button type="primary" :icon="SortDown" size="small" title="向下" v-else
-									@click="handleDown(scope.$index, scope.row)">
-								</el-button>
-							</el-button-group>
-						</template>
-					</el-table-column>
-				</el-table>
 				<el-table :data="tableActionData" style="width: 100%;" border @row-click="tableRowClick">
 					<el-table-column label="(执行动作)规则名称" align="center">
 						<template #default="scope">
 							<div>{{ scope.row.ruleCode }}
-							<el-icon v-if="scope.row.ruleType == 1">
-								<Bell />
-							  </el-icon>
-							  <el-icon v-if="scope.row.ruleType == 2">
-								  <BellFilled />
-								</el-icon>
-								<el-icon v-if="scope.row.ruleType == 3">
+								<el-icon>
 									<Promotion />
 								  </el-icon>
 							</div>
@@ -260,16 +204,12 @@
 	
 	const tableCondationData: RuleData[] = ref([])
 	
-	const tableResultCondationData: RuleData[] = ref([])
-	
 	const tableActionData: RuleData[] = ref([])
 	
 	onMounted(() => {
 		getVeryRuleElementMenu(1)
 		if(props.ruleFlowTemplet.ruleFlowTemplet.length>0){
-			tableCondationData.value = props.ruleFlowTemplet.ruleFlowTemplet.filter(item => item.ruleType == 1)
-			
-			tableResultCondationData.value = props.ruleFlowTemplet.ruleFlowTemplet.filter(item => item.ruleType == 2)
+			tableCondationData.value = props.ruleFlowTemplet.ruleFlowTemplet.filter(item => item.ruleType == 1 || item.ruleType == 2)
 			
 			tableActionData.value = props.ruleFlowTemplet.ruleFlowTemplet.filter(item => item.ruleType == 3)
 		}
@@ -316,13 +256,7 @@
 					isHave = true
 				}
 			}
-		}else if(ruleItem.ruleType==2){
-			for (var rule in tableResultCondationData.value) {
-				if (tableResultCondationData.value[rule].ruleCode == ruleItem.ruleCode) {
-					isHave = true
-				}
-			}
-		}else if(ruleItem.ruleType==1){
+		}else if(ruleItem.ruleType==1 || ruleItem.ruleType==2){
 			for (var rule in tableCondationData.value) {
 				if (tableCondationData.value[rule].ruleCode == ruleItem.ruleCode) {
 					isHave = true
@@ -334,6 +268,9 @@
 		} else {
 			templetEditType.value = 1
 			templetEditVisible.value = true
+			if(ruleItem.ruleAsyn == undefined){
+				ruleItem.ruleAsyn = String("1");
+			}
 			ruleData.value = ruleItem
 		}
 	}
@@ -349,7 +286,8 @@
 		ruleName: string
 		ruleValue: string
 		ruleKey: string
-		ruleType: number
+		ruleType: number,
+		ruleAsyn:number,
 		ruleErrMsg: string
 		ruleDesc: string
 		children: RuleData[]
@@ -367,6 +305,9 @@
 	
 	const handleEdit = (index: number, row: RuleData) => {
 		templetEditType.value = 2
+		if(row.ruleAsyn == undefined){
+			row.ruleAsyn = String("1");
+		}
 		ruleData.value = row
 		currentTableDataIndex.value = index
 		templetEditVisible.value = true
@@ -375,9 +316,7 @@
 	const handleDelete = (index: number, row: RuleData) => {
 		if(row.ruleType==3){
 			tableActionData.value = tableActionData.value.filter(item => item.ruleCode != row.ruleCode)
-		}else if(row.ruleType==2){
-			tableResultCondationData.value = tableResultCondationData.value.filter(item => item.ruleCode != row.ruleCode)
-		}else if(row.ruleType==1){
+		}else if(row.ruleType==1 || row.ruleType==2){
 			tableCondationData.value = tableCondationData.value.filter(item => item.ruleCode != row.ruleCode)
 		}
 		refreshJson()
@@ -389,11 +328,7 @@
 			let itemData = tableActionData.value[itemIndex]
 			tableActionData.value[itemIndex] = row
 			tableActionData.value[index] = itemData
-		}else if(row.ruleType == 2){
-			let itemData = tableResultCondationData.value[itemIndex]
-			tableResultCondationData.value[itemIndex] = row
-			tableResultCondationData.value[index] = itemData
-		}else if(row.ruleType == 1){
+		}else if(row.ruleType == 2 || row.ruleType == 1){
 			let itemData = tableCondationData.value[itemIndex]
 			tableCondationData.value[itemIndex] = row
 			tableCondationData.value[index] = itemData
@@ -407,11 +342,7 @@
 			let itemData = tableActionData.value[itemIndex]
 			tableActionData.value[itemIndex] = row
 			tableActionData.value[index] = itemData
-		}else if(row.ruleType == 2){
-			let itemData = tableResultCondationData.value[itemIndex]
-			tableResultCondationData.value[itemIndex] = row
-			tableResultCondationData.value[index] = itemData
-		}else if(row.ruleType == 1){
+		}else if(row.ruleType == 2 || row.ruleType == 1){
 			let itemData = tableCondationData.value[itemIndex]
 			tableCondationData.value[itemIndex] = row
 			tableCondationData.value[index] = itemData
@@ -474,10 +405,6 @@
 				tableData.push(tableCondationData.value[rc])
 			}
 			
-			for(var rrc = 0;rrc<tableResultCondationData.value.length;rrc++){
-				tableData.push(tableResultCondationData.value[rrc])
-			}
-			
 			for(var ra = 0;ra<tableActionData.value.length;ra++){
 				tableData.push(tableActionData.value[ra])
 			}
@@ -490,9 +417,7 @@
 		templetEditVisible.value = false
 		if(templet.ruleType==3){
 			tableActionData.value.push(templet)
-		}else if(templet.ruleType==2){
-			tableResultCondationData.value.push(templet)
-		}else if(templet.ruleType==1){
+		}else if(templet.ruleType==1 || templet.ruleType==2){
 			tableCondationData.value.push(templet)
 		}
 		refreshJson()
@@ -503,9 +428,7 @@
 		var tableData = []
 		if(templet.ruleType == 3){
 			tableData = tableActionData.value
-		}else if(templet.ruleType == 2){
-			tableData = tableResultCondationData.value
-		}else if(templet.ruleType == 1){
+		}else if(templet.ruleType == 1 || templet.ruleType == 2){
 			tableData = tableCondationData.value
 		}
 		for (var rule in tableData.value) {

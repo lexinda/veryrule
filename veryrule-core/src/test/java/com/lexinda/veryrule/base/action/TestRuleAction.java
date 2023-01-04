@@ -21,7 +21,7 @@ public class TestRuleAction implements IRuleAction {
 	public <R extends RuleBo> Map<String, Object> action(Map<String, Object> param, Map<String, Object> condation,
 			R rule) throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println(condation);
+		System.out.println("action test");
 		return null;
 	}
 	

@@ -11,6 +11,12 @@
 			<span v-if="ruleData.ruleType == 2">条件(有返回值)</span>
 			<span v-if="ruleData.ruleType == 3">动作</span>
 		</el-form-item>
+		<el-form-item label="是否异步:" prop="ruleAsyn"  v-if="ruleData.ruleType == 2">
+			<el-select v-model="ruleData.ruleAsyn">
+				<el-option  label="异步" value="1" />
+				<el-option  label="同步" value="2" />
+			</el-select>
+		</el-form-item>
 		<el-form-item label="异常提示:" prop="ruleErrMsg">
 			<el-input v-model="ruleData.ruleErrMsg" type="textarea"></el-input>
 		</el-form-item>
@@ -48,6 +54,7 @@
 					"ruleValue": TempletEditFormRef.value["model"].ruleValue,
 					"ruleKey": TempletEditFormRef.value["model"].ruleKey,
 					"ruleType": TempletEditFormRef.value["model"].ruleType,
+					"ruleAsyn": TempletEditFormRef.value["model"].ruleAsyn,
 					"ruleErrMsg": TempletEditFormRef.value["model"].ruleErrMsg,
 				}
 				if (props.templetEditType == 1) {

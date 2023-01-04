@@ -22,4 +22,5 @@ public @interface VeryRuleSingle {
 	String ruleKey() default "";
 	String ruleErrMsg() default "";
 	int ruleType() default RuleType.CONDATION;
+	int ruleAsyn() default 1;
 }

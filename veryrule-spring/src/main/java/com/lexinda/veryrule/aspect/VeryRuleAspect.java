@@ -37,7 +37,7 @@ public class VeryRuleAspect {
 		Object result= null;
 		Signature signature = proceedingJoinPoint.getSignature();
 		MethodSignature methodSignature = (MethodSignature) signature;
-		RuleBo ruleModel = new RuleBo(veryRuleSingle.ruleCode(),veryRuleSingle.ruleValue(),veryRuleSingle.ruleKey(),veryRuleSingle.ruleErrMsg(),veryRuleSingle.ruleType());
+		RuleBo ruleModel = new RuleBo(veryRuleSingle.ruleCode(),veryRuleSingle.ruleValue(),veryRuleSingle.ruleKey(),veryRuleSingle.ruleErrMsg(),veryRuleSingle.ruleType(),veryRuleSingle.ruleAsyn());
 		try{
 			RuleResult ruleResult = veryRule.fire(getParam(methodSignature,proceedingJoinPoint.getArgs()),ruleModel);
 			Object[] args = proceedingJoinPoint.getArgs();
