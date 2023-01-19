@@ -44,7 +44,6 @@
 		<include refid="Base_Column_List"></include>
 		FROM very_rule_scene 
 		<include refid="Base_Condition"></include>
-		order by create_time desc
     </select>
     
     <insert id="insert" parameterType="com.lexinda.veryrule.platform.model.VeryRuleSceneModel">

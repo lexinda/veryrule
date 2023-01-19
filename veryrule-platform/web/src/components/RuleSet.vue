@@ -58,13 +58,17 @@
 								    <Promotion />
 								  </el-icon>
 						</div>
-						<div style="text-align: center">
+						<div style="text-align: center" v-if="scope.row.groupName != ''">
+							({{ scope.row.ruleCode }}∈{{ scope.row.groupName }})
+						</div>
+						<div style="text-align: center" v-else>
 							({{ scope.row.ruleCode }})
 						</div>
 					</template>
 				</el-table-column>
-				<el-table-column label="分组" prop="groupName"></el-table-column>
+				<el-table-column label="指定对象" prop="ruleKey"></el-table-column>
 				<el-table-column label="默认值" prop="ruleValue"></el-table-column>
+				<el-table-column label="表达式" prop="ruleExpr"></el-table-column>
 				<el-table-column label="描述">
 					<template #default="scope">
 						<el-popover effect="light" trigger="hover" placement="top" width="auto">

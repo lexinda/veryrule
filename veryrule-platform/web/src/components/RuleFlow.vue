@@ -78,7 +78,7 @@
 				
 				<div style="margin-top: 5px;">
 					<el-button size="small" type="primary" @click="showTest(scope.$index, scope.row)">测试</el-button>
-					<el-button size="small" type="primary" @click="showScene(scope.$index, scope.row)">场景</el-button>
+					<el-button size="small" type="primary" @click="showScene(scope.$index, scope.row)">应用展示</el-button>
 					<el-button size="small" type="primary" @click="showDocument(scope.$index, scope.row)">接口文档</el-button>
 				</div>
 				
@@ -300,6 +300,9 @@
 	const handleEdit = (index: number, row: RuleFlow) => {
 		flowEditTitle.value = row.ruleFlowName
 		flowEditVisible.value = true
+		if(row.ruleSceneId == 0){
+			row.ruleSceneId = '0'
+		}
 		currentRuleFlowData.value = row
 		getRuleScene('0')
 	}
@@ -536,9 +539,9 @@
 	const showScene=(index: number, row: RuleFlow)=>{
 		veryFlowSceneData.value = []
 		const param = {
-			"ruleFlowTempletCode": row.ruleFlowTempletCode
+			"ruleFlowCode": row.ruleFlowCode
 		}
-		veryFlowSceneTitle.value = row.ruleFlowName+"-场景"
+		veryFlowSceneTitle.value = row.ruleFlowName+"-应用展示"
 		post("/api/showSceneInfo", param, (data) => {
 			if (data.errorCode == 0) {
 				

@@ -21,8 +21,14 @@
 					:value="item.name" />
 			</el-select>
 		</el-form-item>
+		<el-form-item label="指定对象" prop="ruleKey">
+			<el-input v-model="ruleData.ruleKey"></el-input>
+		</el-form-item>
 		<el-form-item label="默认值" prop="ruleValue">
 			<el-input v-model="ruleData.ruleValue"></el-input>
+		</el-form-item>
+		<el-form-item label="表达式" prop="ruleExpr">
+			<el-input v-model="ruleData.ruleExpr"></el-input>
 		</el-form-item>
 		<el-form-item label="描述" prop="ruleDesc" required>
 			<el-input v-model="ruleData.ruleDesc" type="textarea"></el-input>
@@ -89,6 +95,8 @@
 					"ruleValue": ruleEditFormRef.value["model"].ruleValue,
 					"groupName": ruleEditFormRef.value["model"].groupName,
 					"ruleDesc": ruleEditFormRef.value["model"].ruleDesc,
+					"ruleKey": ruleEditFormRef.value["model"].ruleKey,
+					"ruleExpr": ruleEditFormRef.value["model"].ruleExpr,
 					"ruleType": ruleType,
 				}
 				if (id > 0) {

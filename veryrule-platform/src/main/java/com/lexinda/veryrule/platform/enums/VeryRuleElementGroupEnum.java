@@ -7,13 +7,13 @@ import java.util.Map;
 
 public enum VeryRuleElementGroupEnum {
 
-	GROUP_ONE(1, "组1"),
-	GROUP_TWO(2, "组2");
+	NODE("node", "节点"),
+	DATA("date", "数据");
 
-    private int code;
+    private String code;
     private String name;
 
-    VeryRuleElementGroupEnum(int code, String name) {
+    VeryRuleElementGroupEnum(String code, String name) {
         this.code = code;
         this.name = name;
     }
@@ -30,24 +30,37 @@ public enum VeryRuleElementGroupEnum {
         return list;
     }
 
-    public static String getView(Integer code) {
+    public static String getName(String code) {
         if (code == null) {
             return "";
         }
         VeryRuleElementGroupEnum[] enumList = VeryRuleElementGroupEnum.values();
         for (VeryRuleElementGroupEnum e : enumList) {
-            if (e.code == code) {
+            if (e.code.equals(code)) {
                 return e.name;
             }
         }
         return "";
     }
+    
+    public static String getCode(String name) {
+        if (name == null) {
+            return "";
+        }
+        VeryRuleElementGroupEnum[] enumList = VeryRuleElementGroupEnum.values();
+        for (VeryRuleElementGroupEnum e : enumList) {
+            if (e.name.equals(name)) {
+                return e.code;
+            }
+        }
+        return "";
+    }
 
-    public int getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public void setCode(String code) {
         this.code = code;
     }
 

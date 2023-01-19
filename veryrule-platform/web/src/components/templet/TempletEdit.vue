@@ -17,6 +17,9 @@
 				<el-option  label="同步" value="2" />
 			</el-select>
 		</el-form-item>
+		<el-form-item label="表达式:" prop="ruleExpr">
+			<el-input v-model="ruleData.ruleExpr"></el-input>
+		</el-form-item>
 		<el-form-item label="异常提示:" prop="ruleErrMsg">
 			<el-input v-model="ruleData.ruleErrMsg" type="textarea"></el-input>
 		</el-form-item>
@@ -53,6 +56,7 @@
 					"ruleName": props.ruleData.ruleName,
 					"ruleValue": TempletEditFormRef.value["model"].ruleValue,
 					"ruleKey": TempletEditFormRef.value["model"].ruleKey,
+					"ruleExpr": TempletEditFormRef.value["model"].ruleExpr,
 					"ruleType": TempletEditFormRef.value["model"].ruleType,
 					"ruleAsyn": TempletEditFormRef.value["model"].ruleAsyn,
 					"ruleErrMsg": TempletEditFormRef.value["model"].ruleErrMsg,

@@ -10,8 +10,8 @@
 					<p m="t-0 b-2"><span style="font-weight: bold;">描述:</span> <br>
 						<span style="margin-left: 60px;">{{ props.row.desc }}</span>
 					</p>
-					<p m="t-0 b-2"><span style="font-weight: bold;">请求URL:</span><br> <span style="margin-left: 60px;color:red;"
-							v-for="(domain,index) in props.row.domains">{{ domain.key }}:{{ domain.value }}</span><br>
+					<p m="t-0 b-2"><span style="font-weight: bold;">请求URL:</span><br> <div style="margin-left: 60px;color:red;"
+							v-for="(domain,index) in props.row.domains">{{ domain.key }}:{{ domain.value }}</div>
 					</p>
 					<p m="t-0 b-2"><span style="font-weight: bold;">请求方式:</span><br> <span
 							style="margin-left: 60px;">{{ props.row.request.type }}</span><br><span
@@ -20,7 +20,7 @@
 						<el-table border :data="props.row.paramIn" :border="childBorder">
 							<el-table-column label="参数" prop="field" />
 							<el-table-column label="参数名" prop="name" />
-							<el-table-column label="必选" prop="require" />
+							<el-table-column label="必填" prop="require" />
 							<el-table-column label="类型" prop="dtype" />
 							<el-table-column label="说明" prop="desc" />
 						</el-table>
@@ -32,7 +32,6 @@
 						<el-table border :data="props.row.paramOut" :border="childBorder">
 							<el-table-column label="参数" prop="field" />
 							<el-table-column label="参数名" prop="name" />
-							<el-table-column label="必选" prop="require" />
 							<el-table-column label="类型" prop="dtype" />
 							<el-table-column label="说明" prop="desc" />
 						</el-table>
@@ -139,7 +138,7 @@
 					</el-table-column>
 					<el-table-column label="参数名" width="120" prop="name">
 					</el-table-column>
-					<el-table-column label="必选" width="60" prop="require">
+					<el-table-column label="必填" width="60" prop="require">
 					</el-table-column>
 					<el-table-column label="类型" width="60" prop="dtype">
 					</el-table-column>
@@ -166,8 +165,6 @@
 					<el-table-column label="参数" width="100" prop="field">
 					</el-table-column>
 					<el-table-column label="参数名" width="120" prop="name">
-					</el-table-column>
-					<el-table-column label="必选" width="60" prop="require">
 					</el-table-column>
 					<el-table-column label="类型" width="60" prop="dtype">
 					</el-table-column>
@@ -226,7 +223,7 @@
 				   ]">
 				<el-input v-model="documentParamForm.name" />
 			</el-form-item>
-			<el-form-item label="必选" :label-width="formLabelWidth">
+			<el-form-item label="必填" :label-width="formLabelWidth">
 				<el-select v-model="documentParamForm.require">
 					<el-option label="是" value="是" />
 					<el-option label="否" value="否" />
@@ -454,7 +451,7 @@
 	})
 
 	const addParam = (type: number) => {
-		let param = {
+		let row = {
 			id: 0,
 			field: '',
 			name:'',
@@ -463,12 +460,12 @@
 			desc: '',
 		}
 		if (type == 1) {
-			param.id = documentForm.paramIn.length
-			documentForm.paramIn.push(param)
+			row.type = 1
 		} else {
-			param.id = documentForm.paramOut.length
-			documentForm.paramOut.push(param)
+			row.type = 2
 		}
+		documentParamForm.value = row
+		documenParamtEditVisible.value = true
 	}
 
 	const editParam = (index: number, row: Object, type: number) => {
@@ -482,18 +479,34 @@
 	}
 
 	const saveDocumentParam = () => {
+		var haveField = 0
+		var dataIndex = 0;
 		if (documentParamForm.value.type = 1) {
-			documentForm.paramIn.forEach(function(data) {
-				if (documentParamForm.value.id == data.id) {
-					data = documentParamForm.value
+			documentForm.paramIn.forEach(function(data,index) {
+				if (documentParamForm.value.field == data.field) {
+					dataIndex = index
+					haveField = 1
 				}
 			})
+			if(haveField == 0){
+				documentForm.paramIn.push(documentParamForm.value)
+			}
+			if(dataIndex>0){
+				documentForm.paramIn.splice(dataIndex, 1,documentParamForm.value)
+			}
 		} else {
-			documentForm.paramOut.forEach(function(data) {
-				if (documentParamForm.value.id == data.id) {
-					data = documentParamForm.value
+			documentForm.paramOut.forEach(function(data,index) {
+				if (documentParamForm.value.field == data.field) {
+					dataIndex = index
+					haveField = 1
 				}
 			})
+			if(haveField == 0){
+				documentForm.paramOut.push(documentParamForm.value)
+			}
+			if(dataIndex>0){
+				documentForm.paramOut.splice(dataIndex, 1,documentParamForm.value)
+			}
 		}
 		documenParamtEditVisible.value = false
 	}
@@ -505,7 +518,7 @@
 			documentForm.paramOut.splice(index, 1)
 		}
 	}
-
+	const emit = defineEmits(['successVeryRuleFlowDocumentUpdate']);
 	const updateVeryRuleDocument = (param) => {
 		const body = new URLSearchParams()
 		post("/api/updateVeryRuleFlowDocument", param, (data) => {

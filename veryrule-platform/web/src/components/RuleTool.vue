@@ -14,20 +14,20 @@
 					</el-form-item>
 				</el-form>
 			</el-row>
-			<em style="font-size: 10px;color:red;">黄色:规则存在规则流没用到，红色:规则不存在规则流用到</em>
+			<em style="font-size: 10px;color:red;">蓝色：规则存在但没配入规则集，黄色:配入规则集但规则不存在，红色:规则流用到但规则集没配</em>
 			<div style="border: #eeeeee solid 1px;">
 				<span v-for="(rule,index) in diffRule" style="margin-left: 5px;padding-bottom: 5px;">
-					<el-tag class="ml-2" type="danger"   effect="dark" v-if="rule.split('_')[1] == 2">{{rule.split("_")[0]}}</el-tag>
+					<el-tag class="ml-2" type="danger"   effect="dark" v-if="rule.split('_')[1] == 3">{{rule.split("_")[0]}}</el-tag>
 				</span>
 			</div>
 			<div style="border: #eeeeee solid 1px;margin-top: 10px;padding-bottom: 5px;">
 				<span v-for="(rule,index) in diffRule" style="margin-left: 5px;">
-					<el-tag class="ml-2" type="warning"  effect="dark" v-if="rule.split('_')[1] == 1">{{rule.split("_")[0]}}</el-tag>
+					<el-tag class="ml-2" type="warning"  effect="dark" v-if="rule.split('_')[1] == 2">{{rule.split("_")[0]}}</el-tag>
 				</span>
 			</div>
 			<div style="border: #eeeeee solid 1px;margin-top: 10px;padding-bottom: 5px;">
 				<span v-for="(rule,index) in diffRule" style="margin-left: 5px;margin-bottom: 5px;">
-					<el-tag class="ml-2" type="success"   effect="dark" v-if="rule.split('_')[1] == 0">{{rule.split("_")[0]}}</el-tag>
+					<el-tag class="ml-2" type="primary"   effect="dark" v-if="rule.split('_')[1] == 1">{{rule.split("_")[0]}}</el-tag>
 				</span>
 			</div>
 			

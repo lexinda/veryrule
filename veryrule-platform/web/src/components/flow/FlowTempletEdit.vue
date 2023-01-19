@@ -268,8 +268,10 @@
 		} else {
 			templetEditType.value = 1
 			templetEditVisible.value = true
-			if(ruleItem.ruleAsyn == undefined){
+			if(ruleItem.ruleType==2 && ruleItem.ruleAsyn == undefined){
 				ruleItem.ruleAsyn = String("1");
+			}else{
+				ruleItem.ruleAsyn = String("2");
 			}
 			ruleData.value = ruleItem
 		}

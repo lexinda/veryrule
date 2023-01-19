@@ -17,6 +17,7 @@
 		</el-form-item>
 		<el-form-item label="规则场景" prop="ruleSceneId">
 			<el-select v-model="ruleFlowData.ruleSceneId" placeholder="请选择">
+				<el-option label="无" value="0" />
 				<el-option v-for="(item,index) in ruleSceneData" :label="item.ruleSceneName"
 					:value="item.id" />
 			</el-select>

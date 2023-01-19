@@ -35,7 +35,7 @@
 		<el-col :span="16">
 			<div style="height:85vh;overflow-y:scroll;">
 				<div v-for="(scene,index) in ruleScene">
-					<fieldset style="margin-top: 10px;min-width: 90%;border: 1px solid #dcdfe6;" v-if="ruleFlowTempletData.ruleFlowTemplet[scene.ruleSceneCode].length>0">
+					<fieldset style="margin-top: 10px;min-width: 90%;border: 1px solid #dcdfe6;" v-if=" ruleFlowTempletData.ruleFlowTemplet[scene.ruleSceneCode] && ruleFlowTempletData.ruleFlowTemplet[scene.ruleSceneCode].length>0">
 						<legend style="font-size: 16px;">{{scene.ruleSceneName}}({{scene.ruleSceneCode}})</legend>
 						<el-table :data="ruleFlowTempletData.ruleFlowTemplet[scene.ruleSceneCode].filter(item => item.ruleType != 3)" v-if="ruleFlowTempletData.ruleFlowTemplet[scene.ruleSceneCode].filter(item => item.ruleType != 3).length>0" style="width: 100%;" border @row-click="tableRowClick">
 							<el-table-column label="(条件)规则名称" align="center">
@@ -55,6 +55,8 @@
 							<el-table-column label="指定入参key" prop="ruleKey">
 							</el-table-column>
 							<el-table-column label="默认值" prop="ruleValue">
+							</el-table-column>
+							<el-table-column label="表达式" prop="ruleExpr">
 							</el-table-column>
 							<el-table-column label="异常提示" prop="ruleErrMsg">
 							</el-table-column>
@@ -97,6 +99,8 @@
 							<el-table-column label="指定入参key" prop="ruleKey">
 							</el-table-column>
 							<el-table-column label="默认值" prop="ruleValue">
+							</el-table-column>
+							<el-table-column label="表达式" prop="ruleExpr">
 							</el-table-column>
 							<el-table-column label="异常提示" prop="ruleErrMsg">
 							</el-table-column>
@@ -151,7 +155,7 @@
 		</TempletEdit>
 	</el-dialog>
 	<el-dialog v-model="templetCommitVisible" destroy-on-close width="500px">
-		<el-form ref="templetCommitRef" :model="templetCommitData" label-width="140px" :rules="flowTempletEditRules">
+		<el-form style="margin-top:10px;" ref="templetCommitRef" :model="templetCommitData" label-width="140px" :rules="flowTempletEditRules">
 			<el-form-item label="规则流模板标识" prop="ruleFlowTempletCode" required>
 				<el-input v-model="templetCommitData.ruleFlowTempletCode"></el-input>
 			</el-form-item>
@@ -262,7 +266,7 @@
 				
 			}
 		}
-		if(props.ruleFlowTempletData.ruleFlowTemplet[path[0]].filter(item => item.ruleCode == ruleItem.ruleCode).length>0){
+		if(props.ruleFlowTempletData.ruleFlowTemplet[path[0]] != undefined && props.ruleFlowTempletData.ruleFlowTemplet[path[0]].filter(item => item.ruleCode == ruleItem.ruleCode).length>0){
 			isHave = true
 		}
 		if (isHave) {
@@ -270,6 +274,11 @@
 		} else {
 			templetEditType.value = 1
 			templetEditVisible.value = true
+			if(ruleItem.ruleType == 2 && (ruleItem.ruleAsyn == '' || ruleItem.ruleAsyn == null)){
+				ruleItem.ruleAsyn = "1"
+			}else{
+				ruleItem.ruleAsyn = "2"
+			}
 			ruleData.value = ruleItem
 			currentSceneCode.value = path[0]
 		}
@@ -321,9 +330,11 @@
 	const handleUp = (index: number, row: RuleData,sceneCode: String) => {
 		let itemIndex = index - 1
 		let allTableData = props.ruleFlowTempletData.ruleFlowTemplet[sceneCode]
-		var tableData = allTableData.filter(item => item.ruleType != row.ruleType )
+		var tableData = null
 		if(row.ruleType == 3){
-			tableData = allTableData.filter(item => item.ruleType == row.ruleType )
+			tableData = allTableData.filter(item => item.ruleType == 3 )
+		}else{
+			tableData = allTableData.filter(item => item.ruleType != 3 )
 		}
 		
 		let itemData = tableData[itemIndex]
@@ -345,9 +356,11 @@
 	const handleDown = (index: number, row: RuleData,sceneCode: String) => {
 		let itemIndex = index + 1
 		let allTableData = props.ruleFlowTempletData.ruleFlowTemplet[sceneCode]
-		var tableData = allTableData.filter(item => item.ruleType != row.ruleType )
+		var tableData = null
 		if(row.ruleType == 3){
-			tableData = allTableData.filter(item => item.ruleType == row.ruleType )
+			tableData = allTableData.filter(item => item.ruleType == 3 )
+		}else{
+			tableData = allTableData.filter(item => item.ruleType != 3 )
 		}
 		let itemData = tableData[itemIndex]
 		var oldIndex = 0
@@ -423,12 +436,24 @@
 	const successTempletAdd = (templet) => {
 		templetEditVisible.value = false
 		var pushIndex = 0
-		props.ruleFlowTempletData.ruleFlowTemplet[currentSceneCode.value].forEach((item,index)=>{
-			if(item.ruleType == templet.ruleType){
-				pushIndex = index
+		if(props.ruleFlowTempletData.ruleFlowTemplet[currentSceneCode.value] != undefined){
+			props.ruleFlowTempletData.ruleFlowTemplet[currentSceneCode.value].forEach((item,index)=>{
+				if(item.ruleType == templet.ruleType){
+					pushIndex = index
+				}
+			})
+			props.ruleFlowTempletData.ruleFlowTemplet[currentSceneCode.value].splice(pushIndex,0,templet)
+		}else{
+			var templetArr = []
+			templetArr.push(templet)
+			var flowTemplet={}
+			if(JSON.stringify(props.ruleFlowTempletData.ruleFlowTemplet).length>2){
+				flowTemplet = props.ruleFlowTempletData.ruleFlowTemplet
 			}
-		})
-		props.ruleFlowTempletData.ruleFlowTemplet[currentSceneCode.value].splice(pushIndex,0,templet)
+			flowTemplet[currentSceneCode.value] = templetArr
+			props.ruleFlowTempletData.ruleFlowTemplet = flowTemplet
+		}
+		
 		refreshJson()
 	}
 	
@@ -507,5 +532,24 @@
 	}
 	.el-menu--collapse{
 		width:100%;
+	}
+	.el-sub-menu{
+		height:35px;
+	}
+	.el-menu--collapse>.el-menu-item [class^=el-icon], .el-menu--collapse>.el-sub-menu>.el-sub-menu__title [class^=el-icon]{
+		margin:-8px 0 0 0 !important;
+	}
+	.el-sub-menu__title{
+		height:35px !important;
+		line-height: 35px !important;
+		font-size:13px !important;
+	}
+	.el-sub-menu .el-sub-menu__icon-arrow {
+		top: 20px !important;
+	}
+	.el-sub-menu .el-menu-item{
+		height:35px !important;
+		line-height: 35px !important;
+		font-size:13px !important;
 	}
 </style>

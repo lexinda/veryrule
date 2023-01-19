@@ -14,7 +14,7 @@
 			</i>
 				<div style="height:85vh;overflow-y:scroll;">
 					<div v-for="(scene,index) in ruleScene">
-						<fieldset style="margin-top: 10px;min-width: 90%;border: 1px solid #dcdfe6;" v-if="ruleFlowTempletData.ruleFlowTemplet[scene.ruleSceneCode].length>0">
+						<fieldset style="margin-top: 10px;min-width: 90%;border: 1px solid #dcdfe6;" v-if="ruleFlowTempletData.ruleFlowTemplet[scene.ruleSceneCode] && ruleFlowTempletData.ruleFlowTemplet[scene.ruleSceneCode].length>0">
 							<legend style="font-size: 16px;">{{scene.ruleSceneName}}({{scene.ruleSceneCode}})</legend>
 							<el-table :data="ruleFlowTempletData.ruleFlowTemplet[scene.ruleSceneCode].filter(item => item.ruleType != 3)" v-if="ruleFlowTempletData.ruleFlowTemplet[scene.ruleSceneCode].filter(item => item.ruleType != 3).length>0" style="width: 100%;" border @row-click="tableRowClick">
 								<el-table-column label="(条件)规则名称" align="center">
@@ -35,6 +35,8 @@
 								</el-table-column>
 								<el-table-column label="默认值" prop="ruleValue">
 								</el-table-column>
+								<el-table-column label="表达式" prop="ruleExpr">
+								</el-table-column>
 								<el-table-column label="异常提示" prop="ruleErrMsg">
 								</el-table-column>
 							</el-table>
@@ -52,6 +54,8 @@
 								<el-table-column label="指定入参key" prop="ruleKey">
 								</el-table-column>
 								<el-table-column label="默认值" prop="ruleValue">
+								</el-table-column>
+								<el-table-column label="表达式" prop="ruleExpr">
 								</el-table-column>
 								<el-table-column label="异常提示" prop="ruleErrMsg">
 								</el-table-column>
