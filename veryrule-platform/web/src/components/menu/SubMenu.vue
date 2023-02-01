@@ -33,3 +33,22 @@ const props = defineProps<{
 }>()
 
 </script>
+<style>
+	.el-menu {
+		--el-menu-item-height:40px;
+	}
+	.el-menu--collapse>.el-menu-item>span, .el-menu--collapse>.el-sub-menu>.el-sub-menu__title>span {
+	    height: 40px;
+	    width: 100%;
+	    overflow: auto;
+	    visibility: visible;
+	    display: inline-block;
+		font-size: 13px;
+	}
+	.el-sub-menu .el-menu-item {
+	    height: 40px;
+	    line-height: 40px;
+	    padding: 0;
+	    min-width: 200px;
+	}
+</style>
