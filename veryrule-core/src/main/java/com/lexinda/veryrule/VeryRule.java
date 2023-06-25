@@ -157,8 +157,8 @@ public class VeryRule extends RuleEngine {
 	public VeryRule listener(Class<? extends IRuleListener> clazz) throws Exception {
 		IRuleListener ruleListener = clazz.getDeclaredConstructor().newInstance();
 		builder.ruleListener = ruleListener;
-		builder.ruleListener.initRule();
 		builder.ruleProxyHandler.setRuleListener(builder.ruleListener);
+		builder.ruleListener.initRule();
 		return builder;
 	}
 	

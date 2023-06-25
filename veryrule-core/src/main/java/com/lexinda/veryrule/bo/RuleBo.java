@@ -11,7 +11,7 @@ public class RuleBo {
 	 */
 	protected String ruleCode;
 	/**
-	 * 规则默认值/表达式
+	 * 规则默认值
 	 */
 	protected String ruleValue;
 	/**

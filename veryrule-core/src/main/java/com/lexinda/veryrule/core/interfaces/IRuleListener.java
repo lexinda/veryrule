@@ -29,7 +29,7 @@ public interface IRuleListener extends EventListener{
 	 * @param args
 	 * @param result
 	 */
-	void ruleListener(Object[] args, Object result);
+	void ruleEnd(Object[] args, Object result);
 	
 	/**
 	 * 规则流执行结束

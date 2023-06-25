@@ -19,31 +19,28 @@ public class VeryRuleListener implements IRuleListener {
 
 	@Override
 	public void initRule() {
-		// TODO Auto-generated method stub
 		logger.info("------veryrule inited------");
 	}
 
 	@Override
 	public void ruleFlowStart(Map<String, Object> param) {
-		// TODO Auto-generated method stub
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
+				logger.info("------veryrule ruleFlowStart------");
 				logger.info(JSON.toJSONString(param));
 			}
 		}).start();
 	}
 
 	@Override
-	public void ruleListener(Object[] args, Object result) {
-		// TODO Auto-generated method stub
+	public void ruleEnd(Object[] args, Object result) {
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
+				logger.info("------veryrule ruleEnd------");
 				logger.info(JSON.toJSONString(args));
 				logger.info(JSON.toJSONString(result));
 			}
@@ -52,12 +49,11 @@ public class VeryRuleListener implements IRuleListener {
 
 	@Override
 	public void ruleFlowEnd(Map<String, Object> param, RuleResult result) {
-		// TODO Auto-generated method stub
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
+				logger.info("------veryrule ruleFlowEnd------");
 				logger.info(JSON.toJSONString(param));
 				logger.info(JSON.toJSONString(result));
 			}

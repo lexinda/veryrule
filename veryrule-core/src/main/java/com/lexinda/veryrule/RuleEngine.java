@@ -8,6 +8,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.common.RuleResult;
 import com.lexinda.veryrule.core.RuleInvoker;
+import com.lexinda.veryrule.core.RuleInvokerAbst;
 import com.lexinda.veryrule.core.RuleProxyHandler;
 import com.lexinda.veryrule.core.interfaces.IRuleAction;
 import com.lexinda.veryrule.core.interfaces.IRuleCondation;
@@ -20,13 +21,13 @@ public class RuleEngine<R extends RuleBo> {
 	protected Map<String, IRuleResultCondation> ruleResultCondationMap;
 	protected Map<String, IRuleCondation> ruleCondationMap;
 	protected IRuleListener ruleListener;
-	protected RuleInvoker ruleInvoker;
+	protected RuleInvokerAbst ruleInvoker;
 	protected RuleProxyHandler ruleProxyHandler = null;
 
 	protected RuleResult getResult(Map<String, Object> param, Map<R, Object> condations,
 			Map<R, IRuleResultCondation> ruleResultCondations, Map<R, IRuleAction> ruleActions, boolean isTest,
 			ThreadPoolExecutor threadPoolExecutor) throws Exception {
-		RuleInvoker invoke = (RuleInvoker) ruleInvoker.clone();
+		RuleInvoker invoke = (RuleInvoker)((RuleInvoker) ruleInvoker).clone();
 		
 		if(ruleProxyHandler.getRuleListener()!=null) {
 			ruleProxyHandler.getRuleListener().ruleFlowStart(param);
@@ -104,11 +105,11 @@ public class RuleEngine<R extends RuleBo> {
 		this.ruleListener = ruleListener;
 	}
 
-	public void setRuleInvoker(RuleInvoker ruleInvoker) {
+	public void setRuleInvoker(RuleInvokerAbst ruleInvoker) {
 		this.ruleInvoker = ruleInvoker;
 	}
 
-	public RuleInvoker getRuleInvoker() {
+	public RuleInvokerAbst getRuleInvoker() {
 		return ruleInvoker;
 	}
 

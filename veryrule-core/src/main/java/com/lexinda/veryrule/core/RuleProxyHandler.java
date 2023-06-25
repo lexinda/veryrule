@@ -26,7 +26,7 @@ public class RuleProxyHandler implements InvocationHandler,Cloneable {
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		Object result = method.invoke(target, args);
 		if (ruleListener != null) {
-			ruleListener.ruleListener(args, result);
+			ruleListener.ruleEnd(args, result);
 		}
 		return result;
 	}

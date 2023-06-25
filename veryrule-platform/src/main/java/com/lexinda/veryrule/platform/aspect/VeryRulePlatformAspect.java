@@ -25,9 +25,6 @@ import com.lexinda.veryrule.platform.service.mybatis.VeryRuleFlowTempletMbServic
 public class VeryRulePlatformAspect extends VeryRuleAspect{
 
 	@Autowired
-	private VeryRule veryRule;
-	
-	@Autowired
 	private VeryRuleFlowTempletMbService veryRuleFlowTempletMbService;
 	
 	@Autowired
@@ -51,7 +48,6 @@ public class VeryRulePlatformAspect extends VeryRuleAspect{
 	//可写入cache
 	@Override
 	public <R extends RuleBo> List<R> getRuleFlow(String ruleFlowTempletCode) {
-		// TODO Auto-generated method stub
 		Map<String, Object> dataParam = new HashMap<String, Object>();
 		dataParam.put("ruleFlowTempletCode", ruleFlowTempletCode);
 		dataParam.put("status", 1);

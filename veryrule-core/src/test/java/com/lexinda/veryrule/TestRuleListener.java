@@ -23,17 +23,19 @@ public class TestRuleListener implements IRuleListener {
 
 			@Override
 			public void run() {
+				System.out.println("ruleFlowStart");
 				System.out.println(param);
 			}
 		}).start();
 	}
 
 	@Override
-	public void ruleListener(Object[] args, Object result) {
+	public void ruleEnd(Object[] args, Object result) {
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
+				System.out.println("ruleEnd");
 				System.out.println(args);
 				System.out.println(result);
 			}
@@ -46,6 +48,7 @@ public class TestRuleListener implements IRuleListener {
 
 			@Override
 			public void run() {
+				System.out.println("ruleFlowEnd");
 				System.out.println(param);
 				System.out.println(result);
 			}
