@@ -77,7 +77,7 @@
 				</div>
 				
 				<div style="margin-top: 5px;">
-					<el-button size="small" type="primary" @click="showTest(scope.$index, scope.row)">测试</el-button>
+					<el-button v-if="scope.row.ruleFlowTempletCode!=''" size="small" type="primary" @click="showTest(scope.$index, scope.row)">测试</el-button>
 					<el-button size="small" type="primary" @click="showScene(scope.$index, scope.row)">应用展示</el-button>
 					<el-button size="small" type="primary" @click="showDocument(scope.$index, scope.row)">接口文档</el-button>
 				</div>

@@ -79,7 +79,7 @@
 						</template>
 					</el-table-column>
 				</el-table>
-				<el-table :data="tableActionData" style="width: 100%;" border @row-click="tableRowClick">
+				<el-table :data="tableActionData" style="width: 100%;" border @row-click="tableRowClick" v-if="tableActionData.length>0">
 					<el-table-column label="(执行动作)规则名称" align="center">
 						<template #default="scope">
 							<div>{{ scope.row.ruleCode }}
