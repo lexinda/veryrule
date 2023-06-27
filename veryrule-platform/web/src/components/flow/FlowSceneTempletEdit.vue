@@ -243,6 +243,17 @@
 			if (data.errorCode == 0) {
 				menuData.value = data.body.ruleMenu
 				console.log(menuData.value)
+				activesNodes.value = []
+				let ruleFlowTemplet = props.ruleFlowTempletData.ruleFlowTemplet
+				for(var key in ruleFlowTemplet){
+					let templetData = ruleFlowTemplet[key]
+					var ruleCodeArr = []
+					for(var index in templetData){
+						ruleCodeArr.push(templetData[index].ruleCode)
+					}
+					addGroupActivesNodes(key,ruleCodeArr)
+					console.log(activesNodes.value)
+				}
 				haveScene.value = data.body.haveScene
 				if (haveScene.value == 1) {
 					ruleScene.value = data.body.ruleScene
@@ -250,9 +261,41 @@
 			}
 		});
 	}
+	const addGroupActivesNodes = (sceneCode,nodes:Array)=>{
+		for(var s in menuData.value){
+			let ruleScene = menuData.value[s]
+			if(ruleScene.ruleCode == sceneCode){
+				activesNodes.value.push(ruleScene.path)
+				if(ruleScene.children!=null && ruleScene.children.length>0){
+					for(var g in ruleScene.children){
+						let ruleGroup = ruleScene.children[g]
+						var have = 0
+						if(nodes.filter(n => n == ruleGroup.ruleCode).length>0){
+							activesNodes.value.push(ruleGroup.path)
+							continue
+						}else{
+							if(ruleGroup.children!=null && ruleGroup.children.length>0){
+								for(var r in ruleGroup.children){
+									let ruleItem = ruleGroup.children[r]
+									if(nodes.filter(n => n == ruleItem.ruleCode).length>0){
+										activesNodes.value.push(ruleItem.path)
+										have = 1
+									}
+								}
+							}
+						}
+						if(have == 1){
+							activesNodes.value.push(ruleGroup.path)
+						}
+					}
+				}
+				break;
+			}
+		}
+	}
 	const currentSceneCode = ref("")
 	const menuClick = (index, path) => {
-		if(path.length>1){
+		if(path.length>1 && !index.startsWith('g-')){
 			var ruleItem = {}
 			var isHave = false
 			for (var menu in menuData.value) {
@@ -511,6 +554,7 @@
 							message: '保存成功',
 							type: 'success',
 						})
+						getVeryRuleElementMenu(1)
 						templetCommitVisible.value = false
 						emit('updateVeryRuleFlow', ruleFlowTempletCode)
 					} else {

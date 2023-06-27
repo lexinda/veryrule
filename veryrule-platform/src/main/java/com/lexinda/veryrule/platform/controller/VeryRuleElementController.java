@@ -11,6 +11,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -135,12 +136,14 @@ public class VeryRuleElementController {
 							VeryRuleElementMenuModel.class);
 					if (StringUtils.isNotBlank(vgr.getGroupName())) {
 						veryRuleElementMenu.setRuleName(veryRuleElementMenu.getGroupName());
-						veryRuleElementMenu.setRuleCode(VeryRuleElementGroupEnum.getCode(vgr.getGroupName()));
+						veryRuleElementMenu.setRuleCode("g-"+VeryRuleElementGroupEnum.getCode(vgr.getGroupName()));
+						veryRuleElementMenu.setPath(veryRuleElementMenu.getRuleCode());
 						if (!groupNameSet.contains(vgr.getGroupName())) {
 							groupNameSet.add(vgr.getGroupName());
 							veryRuleElementMenuList.add(veryRuleElementMenu);
 						}
 					}else {
+						veryRuleElementMenu.setPath(veryRuleElementMenu.getRuleCode());
 						veryRuleElementMenuList.add(veryRuleElementMenu);
 					}
 					
@@ -153,6 +156,7 @@ public class VeryRuleElementController {
 								if (vr.getGroupName().equals(vrm.getGroupName())) {
 									VeryRuleElementMenuModel veryRuleElementMenu = JSON.parseObject(JSON.toJSONString(vr),
 											VeryRuleElementMenuModel.class);
+									veryRuleElementMenu.setPath(vrm.getRuleCode()+"_"+veryRuleElementMenu.getRuleCode());
 									children.add(veryRuleElementMenu);
 								}
 							});
@@ -167,10 +171,20 @@ public class VeryRuleElementController {
 					veryRuleSceneList.stream().forEach(vrs->{
 						VeryRuleElementMenuModel veryRuleElementModel = new VeryRuleElementMenuModel();
 						veryRuleElementModel.setId(vrs.getId());
+						veryRuleElementModel.setPath(vrs.getRuleSceneCode());
 						veryRuleElementModel.setRuleCode(vrs.getRuleSceneCode());
 						veryRuleElementModel.setRuleName(vrs.getRuleSceneName());
 						veryRuleElementModel.setGroupName(vrs.getRuleSceneName());
-						veryRuleElementModel.setChildren(veryRuleElementMenuList);
+						List<VeryRuleElementMenuModel> veryRuleElementMenuTree = JSON.parseArray(JSON.toJSONString(veryRuleElementMenuList), VeryRuleElementMenuModel.class); 
+						veryRuleElementMenuTree.stream().forEach(vr->{
+							vr.setPath(vrs.getRuleSceneCode()+"_"+vr.getPath());
+							if(vr.getChildren()!=null) {
+								vr.getChildren().stream().forEach(vrc->{
+									vrc.setPath(vrs.getRuleSceneCode()+"_"+vrc.getPath());
+								});
+							}
+						});
+						veryRuleElementModel.setChildren(veryRuleElementMenuTree);
 						veryRuleSceneMenuList.add(veryRuleElementModel);
 					});
 					body.put("haveScene", 1);
@@ -185,6 +199,7 @@ public class VeryRuleElementController {
 					veryRuleElementList.stream().forEach(vgr -> {
 						VeryRuleElementMenuModel veryRuleElementMenu = JSON.parseObject(JSON.toJSONString(vgr),
 								VeryRuleElementMenuModel.class);
+						veryRuleElementMenu.setPath(veryRuleElementMenu.getRuleCode());
 						veryRuleElementMenuList.add(veryRuleElementMenu);
 					});
 					List<VeryRuleElementMenuModel> veryRuleSceneMenuList = new ArrayList<VeryRuleElementMenuModel>();
@@ -192,9 +207,19 @@ public class VeryRuleElementController {
 						VeryRuleElementMenuModel veryRuleElementModel = new VeryRuleElementMenuModel();
 						veryRuleElementModel.setId(vrs.getId());
 						veryRuleElementModel.setRuleCode(vrs.getRuleSceneCode());
+						veryRuleElementModel.setPath(vrs.getRuleSceneCode());
 						veryRuleElementModel.setRuleName(vrs.getRuleSceneName());
 						veryRuleElementModel.setGroupName(vrs.getRuleSceneName());
-						veryRuleElementModel.setChildren(veryRuleElementMenuList);
+						List<VeryRuleElementMenuModel> veryRuleElementMenuTree = JSON.parseArray(JSON.toJSONString(veryRuleElementMenuList), VeryRuleElementMenuModel.class); 
+						veryRuleElementMenuTree.stream().forEach(vr->{
+							vr.setPath(vrs.getRuleSceneCode()+"_"+vr.getPath());
+							if(vr.getChildren()!=null) {
+								vr.getChildren().stream().forEach(vrc->{
+									vrc.setPath(vrs.getRuleSceneCode()+"_"+vrc.getPath());
+								});
+							}
+						});
+						veryRuleElementModel.setChildren(veryRuleElementMenuTree);
 						veryRuleSceneMenuList.add(veryRuleElementModel);
 					});
 					body.put("haveScene", 1);

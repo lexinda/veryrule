@@ -9,6 +9,10 @@ import java.util.List;
  *
  */
 public class VeryRuleElementMenuModel extends VeryRuleElementModel {
+	
+	private boolean arrow;
+	
+	private String path;
 
 	private List<VeryRuleElementMenuModel> children;
 
@@ -18,5 +22,21 @@ public class VeryRuleElementMenuModel extends VeryRuleElementModel {
 
 	public void setChildren(List<VeryRuleElementMenuModel> children) {
 		this.children = children;
+	}
+
+	public boolean isArrow() {
+		return arrow;
+	}
+
+	public void setArrow(boolean arrow) {
+		this.arrow = arrow;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 }
