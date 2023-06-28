@@ -136,6 +136,7 @@ public class VeryRuleElementController {
 							VeryRuleElementMenuModel.class);
 					if (StringUtils.isNotBlank(vgr.getGroupName())) {
 						veryRuleElementMenu.setRuleName(veryRuleElementMenu.getGroupName());
+						veryRuleElementMenu.setArrow(true);
 						veryRuleElementMenu.setRuleCode("g-"+VeryRuleElementGroupEnum.getCode(vgr.getGroupName()));
 						veryRuleElementMenu.setPath(veryRuleElementMenu.getRuleCode());
 						if (!groupNameSet.contains(vgr.getGroupName())) {
@@ -172,6 +173,7 @@ public class VeryRuleElementController {
 						VeryRuleElementMenuModel veryRuleElementModel = new VeryRuleElementMenuModel();
 						veryRuleElementModel.setId(vrs.getId());
 						veryRuleElementModel.setPath(vrs.getRuleSceneCode());
+						veryRuleElementModel.setArrow(true);
 						veryRuleElementModel.setRuleCode(vrs.getRuleSceneCode());
 						veryRuleElementModel.setRuleName(vrs.getRuleSceneName());
 						veryRuleElementModel.setGroupName(vrs.getRuleSceneName());
@@ -207,6 +209,7 @@ public class VeryRuleElementController {
 						VeryRuleElementMenuModel veryRuleElementModel = new VeryRuleElementMenuModel();
 						veryRuleElementModel.setId(vrs.getId());
 						veryRuleElementModel.setRuleCode(vrs.getRuleSceneCode());
+						veryRuleElementModel.setArrow(true);
 						veryRuleElementModel.setPath(vrs.getRuleSceneCode());
 						veryRuleElementModel.setRuleName(vrs.getRuleSceneName());
 						veryRuleElementModel.setGroupName(vrs.getRuleSceneName());

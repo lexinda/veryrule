@@ -102,7 +102,7 @@
 
 	.NavMenu {
 		/*所有产品*/
-		height: 100vh;
+		height: 85vh;
 		whidth: 200px;
 	}
 
@@ -152,7 +152,7 @@
 	}
 
 	.NavMenu .SubMenu .arrow {
-		background: url('../../assets/images/ico_arrow.svg') center right 10px no-repeat;
+		background: url('../images/ico_arrow.svg') center right 10px no-repeat;
 		background-size: 14px;
 		transition: 0.2s
 	}
@@ -188,7 +188,7 @@
 		position: absolute;
 		display: none;
 		z-index: 99999;
-		vh: 100;
+		vh: 85;
 	}
 
 	.NavMenu .SubMenu li:hover ul {

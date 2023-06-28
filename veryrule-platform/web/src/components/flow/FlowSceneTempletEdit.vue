@@ -150,7 +150,7 @@
 									</template>
 								</el-popconfirm>
 							</el-row>
-							<div style="height:80vh;overflow-y:scroll;margin-top: 10px;">
+							<div style="height:80vh;overflow-y:scroll;margin-top: 10px;text-align: left;">
 								<json-viewer :value="jsonData" box sort :expandDepth="9" />
 							</div>
 						</div>
@@ -170,7 +170,7 @@
 			<el-form-item label="规则流模板标识" prop="ruleFlowTempletCode" required>
 				<el-input v-model="templetCommitData.ruleFlowTempletCode"></el-input>
 			</el-form-item>
-			<el-form-item label="规则流模板" prop="ruleFlowTemplet" style="max-height: 500px;overflow-y: scroll;">
+			<el-form-item label="规则流模板" prop="ruleFlowTemplet" style="max-height: 500px;overflow-y: scroll;text-align: left;">
 				<json-viewer :value="templetCommitData.ruleFlowTemplet" box sort :expandDepth="9" />
 			</el-form-item>
 			<el-form-item>
@@ -242,7 +242,6 @@
 		post("/api/getVeryRuleElementMenu", param, (data) => {
 			if (data.errorCode == 0) {
 				menuData.value = data.body.ruleMenu
-				console.log(menuData.value)
 				activesNodes.value = []
 				let ruleFlowTemplet = props.ruleFlowTempletData.ruleFlowTemplet
 				for(var key in ruleFlowTemplet){
@@ -252,7 +251,6 @@
 						ruleCodeArr.push(templetData[index].ruleCode)
 					}
 					addGroupActivesNodes(key,ruleCodeArr)
-					console.log(activesNodes.value)
 				}
 				haveScene.value = data.body.haveScene
 				if (haveScene.value == 1) {
@@ -486,7 +484,27 @@
 	const refreshJson = () => {
 		jsonData.value = {}
 		nextTick(() => {
-			jsonData.value = props.ruleFlowTempletData.ruleFlowTemplet
+			console.log(props.ruleFlowTempletData.ruleFlowTemplet)
+			var jsonValue = {}
+			for(var key in props.ruleFlowTempletData.ruleFlowTemplet){
+				let value = props.ruleFlowTempletData.ruleFlowTemplet[key]
+				if(value !=null && value.length>0){
+					jsonValue[key]=value
+				}
+			}
+			console.log(jsonValue)
+			jsonData.value = jsonValue
+			activesNodes.value = []
+			let ruleFlowTemplet = jsonValue
+			for(var key in ruleFlowTemplet){
+				let templetData = ruleFlowTemplet[key]
+				var ruleCodeArr = []
+				for(var index in templetData){
+					ruleCodeArr.push(templetData[index].ruleCode)
+				}
+				addGroupActivesNodes(key,ruleCodeArr)
+				console.log(activesNodes.value)
+			}
 		})
 	}
 	/* TempletEdit */
@@ -581,6 +599,9 @@
 	})
 </script>
 <style>
+	.common-layout{
+		height: 85vh;
+	}
 	.rule-tips{
 		position: absolute;
 		top:25px;

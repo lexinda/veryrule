@@ -1,7 +1,7 @@
 <template>
 	<el-row class="tac">
 		<el-col :span="17">
-			<i style="font-size:10px;color:#aaaaaa;">
+			<i class="rule-tips">
 				<el-icon>
 				    <Bell />
 				  </el-icon>:条件(无返回值)
@@ -69,7 +69,7 @@
 				<el-row class="mb-4">
 					<el-button style="margin-left:5px;" type="primary" @click="handleTempletTest">测试</el-button>
 				</el-row>
-				<div style="height:80vh;overflow-y:scroll;margin-top: 10px;">
+				<div style="height:80vh;overflow-y:scroll;margin-top: 10px;text-align: left;">
 					<json-viewer :value="jsonData" box sort :expandDepth="9" />
 				</div>
 			</div>
@@ -175,3 +175,12 @@
 		});
 	}
 </script>
+<style scoped>
+	.rule-tips{
+		position: absolute;
+		top:-35px;
+		left:100px;
+		font-size:10px;
+		color:#aaaaaa;
+	}
+</style>
