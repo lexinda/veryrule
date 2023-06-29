@@ -513,12 +513,27 @@
 		templetEditVisible.value = false
 		var pushIndex = 0
 		if (props.ruleFlowTempletData.ruleFlowTemplet[currentSceneCode.value] != undefined) {
-			props.ruleFlowTempletData.ruleFlowTemplet[currentSceneCode.value].forEach((item, index) => {
-				if (item.ruleType == templet.ruleType) {
-					pushIndex = index
+			if(templet.ruleType == 3){
+				props.ruleFlowTempletData.ruleFlowTemplet[currentSceneCode.value].push(templet)
+			}else{
+				if(templet.ruleType == 1){
+					props.ruleFlowTempletData.ruleFlowTemplet[currentSceneCode.value].splice(0, 0, templet)
+				}else{
+					props.ruleFlowTempletData.ruleFlowTemplet[currentSceneCode.value].forEach((item, index) => {
+						if (item.ruleType == 3 && pushIndex == 0) {
+							pushIndex = index
+						}
+					})
+					//有动作规则
+					if(pushIndex>0){
+						pushIndex = pushIndex-1
+						props.ruleFlowTempletData.ruleFlowTemplet[currentSceneCode.value].splice(pushIndex, 0, templet)
+					}else{
+						props.ruleFlowTempletData.ruleFlowTemplet[currentSceneCode.value].push(templet)
+					}
+					
 				}
-			})
-			props.ruleFlowTempletData.ruleFlowTemplet[currentSceneCode.value].splice(pushIndex, 0, templet)
+			}
 		} else {
 			var templetArr = []
 			templetArr.push(templet)

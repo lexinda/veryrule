@@ -7,13 +7,21 @@
 	<parent>
 		<groupId>io.github.lexinda</groupId>
 		<artifactId>veryrule</artifactId>
-		<version>2.3.3</version>
+		<version>2.3.4</version>
 	</parent>
 	<artifactId>veryrule-core</artifactId>
 	<packaging>jar</packaging>
 	<name>veryrule-core</name>
 	<url>http://maven.apache.org</url>
+	<properties>
+		<ognl.version>3.3.4</ognl.version>
+	</properties>
 	<dependencies>
+		<dependency>
+		    <groupId>ognl</groupId>
+		    <artifactId>ognl</artifactId>
+		    <version>${ognl.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

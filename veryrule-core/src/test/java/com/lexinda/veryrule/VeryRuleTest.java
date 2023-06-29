@@ -16,6 +16,7 @@ import org.junit.Test;
 import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.common.RuleResult;
 import com.lexinda.veryrule.common.RuleType;
+import com.lexinda.veryrule.util.VeryRuleOgnlUtil;
 
 /**
  * 
@@ -107,6 +108,22 @@ public class VeryRuleTest {
 	public void testFireTest() {
 		try {
 			veryRule.fireTest(res);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			fail("Not yet implemented");
+		}
+
+	}
+	
+	@Test
+	public void testOgnl() {
+		try {
+			RuleBo ruleBo = new RuleBo();
+			System.out.println(ruleBo.getRuleCode());
+			String expr = "ruleCode='123fsdfd',ruleType=1";
+			VeryRuleOgnlUtil.create().getRule(expr, ruleBo);
+			System.out.println(ruleBo.getRuleCode());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -456,7 +456,9 @@
 		templetEditVisible.value = false
 		if (templet.ruleType == 3) {
 			tableActionData.value.push(templet)
-		} else if (templet.ruleType == 1 || templet.ruleType == 2) {
+		} else if (templet.ruleType == 1) {
+			tableCondationData.value.splice(0,0,templet)
+		}else if (templet.ruleType == 2) {
 			tableCondationData.value.push(templet)
 		}
 		refreshJson()
