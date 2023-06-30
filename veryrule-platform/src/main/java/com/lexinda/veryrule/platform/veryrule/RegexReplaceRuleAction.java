@@ -8,6 +8,7 @@ import java.util.HashMap;
  */
 import java.util.Map;
 
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.lexinda.veryrule.annotation.Rule;
 import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.common.RuleType;
@@ -20,7 +21,7 @@ public class RegexReplaceRuleAction implements IRuleResultCondation {
 	@Override
 	public <R extends RuleBo> Map<String, Object> contation(Map<String, Object> param,R rule) throws Exception {
 		String info = (String) param.get(rule.getRuleKey());
-		if (info == null || "".equals(info)) {
+		if (StringUtils.isNotBlank(info)) {
 			throw new Exception(rule.getRuleKey() + rule.getRuleErrMsg());
 		}
 		String[] regexArr = rule.getRuleValue().split("}}");

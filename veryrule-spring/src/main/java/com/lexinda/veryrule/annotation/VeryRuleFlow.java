@@ -16,4 +16,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 public @interface VeryRuleFlow {
 	String ruleFlowCode() default "";
+	String ruleFlowScene() default "";
 }

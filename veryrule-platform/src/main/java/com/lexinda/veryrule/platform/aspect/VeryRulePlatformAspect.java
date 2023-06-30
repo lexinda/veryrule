@@ -9,6 +9,8 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.lexinda.veryrule.VeryRule;
 import com.lexinda.veryrule.aspect.VeryRuleAspect;
 import com.lexinda.veryrule.bo.RuleBo;
@@ -47,7 +49,7 @@ public class VeryRulePlatformAspect extends VeryRuleAspect{
 	
 	//可写入cache
 	@Override
-	public <R extends RuleBo> List<R> getRuleFlow(String ruleFlowTempletCode) {
+	public <R extends RuleBo> List<R> getRuleFlow(String ruleFlowTempletCode,String ruleFlowScene) {
 		Map<String, Object> dataParam = new HashMap<String, Object>();
 		dataParam.put("ruleFlowTempletCode", ruleFlowTempletCode);
 		dataParam.put("status", 1);
@@ -56,7 +58,14 @@ public class VeryRulePlatformAspect extends VeryRuleAspect{
 		if(veryRuleFlowList.size()>0) {
 			List<VeryRuleFlowTempletModel> veryRuleFlowTemplet = veryRuleFlowTempletMbService.selectVeryRuleFlowTempletList(dataParam);
 			if(veryRuleFlowTemplet.size()>0) {
-				ruleModelList = JSON.parseArray(veryRuleFlowTemplet.get(0).getRuleFlowTemplet(), RuleBo.class);
+				if(StringUtils.isNotBlank(ruleFlowScene)) {
+					JSONObject ruleObj = JSON.parseObject(veryRuleFlowTemplet.get(0).getRuleFlowTemplet());
+					if(ruleObj!=null&&ruleObj.getString(ruleFlowScene)!=null) {
+						ruleModelList = JSON.parseArray(ruleObj.getString(ruleFlowScene), RuleBo.class);
+					}
+				}else {
+					ruleModelList = JSON.parseArray(veryRuleFlowTemplet.get(0).getRuleFlowTemplet(), RuleBo.class);
+				}
 			}
 		}
 		return (List<R>) ruleModelList;

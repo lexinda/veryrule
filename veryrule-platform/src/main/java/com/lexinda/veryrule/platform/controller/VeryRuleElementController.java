@@ -23,6 +23,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lexinda.veryrule.annotation.VeryRuleSingle;
 import com.lexinda.veryrule.base.key.RuleCode;
 import com.lexinda.veryrule.bo.RuleBo;
+import com.lexinda.veryrule.common.RuleType;
 import com.lexinda.veryrule.platform.enums.VeryRuleElementGroupEnum;
 import com.lexinda.veryrule.platform.model.VeryRuleElementMenuModel;
 import com.lexinda.veryrule.platform.model.VeryRuleElementModel;
@@ -31,6 +32,7 @@ import com.lexinda.veryrule.platform.model.VeryRuleSceneModel;
 import com.lexinda.veryrule.platform.service.mybatis.VeryRuleElementMbService;
 import com.lexinda.veryrule.platform.service.mybatis.VeryRuleFlowTempletMbService;
 import com.lexinda.veryrule.platform.service.mybatis.VeryRuleSceneMbService;
+import com.lexinda.veryrule.springboot.VeryRuleProperties;
 import com.lexinda.veryrule.vo.RestApiResponse;
 
 /**
@@ -54,6 +56,9 @@ public class VeryRuleElementController {
 	
 	@Autowired
 	private VeryRuleFlowTempletMbService veryRuleFlowTempletMbService;
+	
+	@Autowired
+	private VeryRuleProperties veryRuleProperties;
 
 	@RequestMapping(value = "/getVeryRuleElementList", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@VeryRuleSingle(ruleCode = RuleCode.NOTNULL, ruleKey = "currentPage,ruleType", ruleErrMsg = "不能为空")
@@ -121,6 +126,9 @@ public class VeryRuleElementController {
 			}
 			dataParam.put("orderRuleType",1);
 			List<VeryRuleElementModel> veryRuleElementList = veryRuleElementService.selectVeryRuleElementList(dataParam);
+			if(veryRuleProperties.isLoadDefaultRule()) {
+				
+			}
 			List<VeryRuleSceneModel> veryRuleSceneList = new ArrayList<VeryRuleSceneModel>();
 			if(StringUtils.isNotBlank(param.getString("ruleSceneId"))) {
 				Map<String, Object> dataSceneParam = new HashMap<String, Object>();
@@ -166,6 +174,18 @@ public class VeryRuleElementController {
 							}
 						}
 					});
+				}
+				if(veryRuleProperties.isLoadDefaultRule()) {
+					VeryRuleElementMenuModel veryRuleElementMenu = new VeryRuleElementMenuModel();
+					veryRuleElementMenu.setId(0);
+					veryRuleElementMenu.setRuleCode(RuleCode.NOTNULL);
+					veryRuleElementMenu.setRuleName("指定key不能为空");
+					veryRuleElementMenu.setRuleType(RuleType.CONDATION);
+					veryRuleElementMenu.setRuleErrMsg("参数不能为空");
+					veryRuleElementMenu.setRuleValue("");
+					veryRuleElementMenu.setRuleExpr("");
+					veryRuleElementMenu.setRuleKey("");
+					veryRuleElementMenuList.add(0,veryRuleElementMenu);
 				}
 				if(veryRuleSceneList.size()>0) {
 					List<VeryRuleElementMenuModel> veryRuleSceneMenuList = new ArrayList<VeryRuleElementMenuModel>();

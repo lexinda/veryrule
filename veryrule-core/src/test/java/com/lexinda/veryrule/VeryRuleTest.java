@@ -122,6 +122,7 @@ public class VeryRuleTest {
 			RuleBo ruleBo = new RuleBo();
 			System.out.println(ruleBo.getRuleCode());
 			String expr = "ruleCode='123fsdfd',ruleType=1";
+			String exprList = "{#{'ruleCode':'123fsdfd','ruleType':1},#{'ruleCode':'234','ruleType':2}}";
 			VeryRuleOgnlUtil.create().getRule(expr, ruleBo);
 			System.out.println(ruleBo.getRuleCode());
 		} catch (Exception e) {

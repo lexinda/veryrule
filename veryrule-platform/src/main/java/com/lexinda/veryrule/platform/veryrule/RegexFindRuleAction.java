@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.lexinda.veryrule.annotation.Rule;
 import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.common.RuleType;
@@ -21,10 +22,13 @@ public class RegexFindRuleAction implements IRuleCondation {
 	@Override
 	public <R extends RuleBo> void contation(Map<String, Object> param, R rule) throws Exception {
 		String info = (String) param.get(rule.getRuleKey());
-		if (info == null || "".equals(info)) {
-			throw new Exception(rule.getRuleKey() + "不能为空");
+		if (StringUtils.isBlank(info)) {
+			throw new Exception("指定入参key不能为空");
 		}
 		String pattern = rule.getRuleValue();
+		if (StringUtils.isBlank(pattern)) {
+			throw new Exception("规则值不能为空");
+		}
 		// 创建 Pattern 对象
 		Pattern r = Pattern.compile(pattern);
 		// 创建 matcher 对象

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.lexinda.veryrule.VeryRule;
+import com.lexinda.veryrule.base.key.RuleCode;
 import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.platform.model.VeryRuleElementModel;
 import com.lexinda.veryrule.platform.model.VeryRuleFlowTempletModel;
@@ -100,7 +101,7 @@ public class VeryRuleFlowToolsController {
 			}
 			//规则没配但是规则流用到
 			ruleFlowTempletMap.entrySet().stream().forEach(rf->{
-				if(ruleElementList.stream().filter(re->re.getRuleCode().equals(rf.getKey())).count()==0) {
+				if(!rf.getKey().equals(RuleCode.NOTNULL)&&ruleElementList.stream().filter(re->re.getRuleCode().equals(rf.getKey())).count()==0) {
 					diffRuleInfo.add(rf.getKey()+"_"+3);
 				}
 			});

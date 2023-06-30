@@ -62,7 +62,7 @@ public class VeryRuleAspect {
 		Signature signature = proceedingJoinPoint.getSignature();
 		MethodSignature methodSignature = (MethodSignature) signature;
 		try{
-			RuleResult ruleResult = veryRule.fire(getParam(methodSignature,proceedingJoinPoint.getArgs()),getRuleFlow(veryRuleFlow.ruleFlowCode()));
+			RuleResult ruleResult = veryRule.fire(getParam(methodSignature,proceedingJoinPoint.getArgs()),getRuleFlow(veryRuleFlow.ruleFlowCode(),veryRuleFlow.ruleFlowScene()));
 			Object[] args = proceedingJoinPoint.getArgs();
 			if(args.length==2) {
 				args[1] = ruleResult;
@@ -87,7 +87,7 @@ public class VeryRuleAspect {
 		return param;
 	}
 	//自定义取值，可从cache/数据库中取值
-	public <R extends RuleBo> List<R> getRuleFlow(String ruleFlowTempletCode){
+	public <R extends RuleBo> List<R> getRuleFlow(String ruleFlowTempletCode,String ruleFlowScene){
 		return new ArrayList<R>();
 	}
 
