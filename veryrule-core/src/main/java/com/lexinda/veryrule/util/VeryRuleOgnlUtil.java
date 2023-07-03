@@ -52,18 +52,9 @@ public class VeryRuleOgnlUtil {
 	//"ruleCode='123fsdfd',ruleType=1"
 	public <T extends RuleBo> T getRule(String expr, T root) throws OgnlException {
 		OgnlContext context = (OgnlContext) Ognl.createDefaultContext(root, new DefaultClassResolver(), new DefaultTypeConverter());
-		context.setRoot(root);
 		Object tree = Ognl.parseExpression(expr);
 		Ognl.getValue(tree, context,context.getRoot());
 		return root;
-	}
-	
-	public <T extends RuleBo> List<RuleBo> getRuleList(String expr, List<RuleBo> root) throws OgnlException {
-		OgnlContext context = (OgnlContext) Ognl.createDefaultContext(root, new DefaultClassResolver(), new DefaultTypeConverter());
-		context.setRoot(root);
-		Object tree = Ognl.parseExpression(expr);
-		List<RuleBo> result = (List) Ognl.getValue(tree, context,context.getRoot());
-		return result;
 	}
 	
 }
