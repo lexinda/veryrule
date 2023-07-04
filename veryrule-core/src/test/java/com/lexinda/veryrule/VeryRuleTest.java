@@ -18,12 +18,6 @@ import com.lexinda.veryrule.common.RuleResult;
 import com.lexinda.veryrule.common.RuleType;
 import com.lexinda.veryrule.util.VeryRuleOgnlUtil;
 
-import ognl.DefaultClassResolver;
-import ognl.DefaultTypeConverter;
-import ognl.Ognl;
-import ognl.OgnlContext;
-import ognl.OgnlException;
-
 /**
  * 
  * @author lexinda
@@ -126,26 +120,18 @@ public class VeryRuleTest {
 	public void testOgnl() {
 		try {
 			RuleBo ruleBo = new RuleBo();
-			RuleFlow rf = new RuleFlow();
-			System.out.println(ruleBo.getRuleCode());
 			String expr = "ruleCode='123fsdfd',ruleType=1";
 			RuleBo ruleBoRes = VeryRuleOgnlUtil.create().getRule(expr,ruleBo);
+			System.out.println(ruleBo.getRuleCode());
 			String exprFlow = "scene='123fsdfd',ruleBoList={\"ruleCode='123fsdfd',ruleType=1\",\"ruleCode='123fsdfd',ruleType=1\"}";
-			RuleFlow ruleFlow = getRuleFlow(exprFlow);
+			VeryRuleOgnlUtil.RuleFlow ruleFlow = VeryRuleOgnlUtil.create().getRuleFlow(exprFlow);
+			System.out.println(ruleFlow.getScene());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			fail("Not yet implemented");
 		}
 
-	}
-	
-	public RuleFlow getRuleFlow(String expr) throws OgnlException {
-		RuleFlow ruleFlow = new RuleFlow();
-		OgnlContext context = (OgnlContext) Ognl.createDefaultContext(ruleFlow, new DefaultClassResolver(), new DefaultTypeConverter());
-		Object tree = Ognl.parseExpression(expr);
-		Ognl.getValue(tree, context,context.getRoot());
-		return ruleFlow;
 	}
 
 }
