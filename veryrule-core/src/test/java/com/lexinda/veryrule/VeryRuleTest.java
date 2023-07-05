@@ -120,11 +120,13 @@ public class VeryRuleTest {
 	public void testOgnl() {
 		try {
 			RuleBo ruleBo = new RuleBo();
-			String expr = "ruleCode='123fsdfd',ruleType=1";
-			RuleBo ruleBoRes = VeryRuleOgnlUtil.create().getRule(expr,ruleBo);
-			System.out.println(ruleBo.getRuleCode());
+//			String expr = "ruleCode='123fsdfd',ruleType=1";
+//			RuleBo ruleBoRes = VeryRuleOgnlUtil.create().getObject(expr,ruleBo);
+//			System.out.println(ruleBo.getRuleCode());
 			String exprFlow = "scene='123fsdfd',ruleBoList={\"ruleCode='123fsdfd',ruleType=1\",\"ruleCode='123fsdfd',ruleType=1\"}";
 			VeryRuleOgnlUtil.RuleFlow ruleFlow = VeryRuleOgnlUtil.create().getRuleFlow(exprFlow);
+//			String exprMap = "#{'123fsdfd':{\"ruleCode='123fsdfd',ruleType=1\",\"ruleCode='123fsdfd',ruleType=1\"}}";
+//			VeryRuleOgnlUtil.create().getRuleFlowSceneExpr(exprMap,ruleBo);
 			System.out.println(ruleFlow.getScene());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

@@ -32,7 +32,7 @@ public class VeryRuleOgnlUtil {
 
 	// #{ 'foo' : 'foo value', 'bar' : 'bar value' }
 	public Map<String, Object> getExprMap(String expr) throws OgnlException {
-		Object tree = Ognl.parseExpression(expr.substring(2, expr.length() - 2));
+		Object tree = Ognl.parseExpression(expr);
 		Map<String, Object> result = (Map<String, Object>) Ognl.getValue(tree, new HashMap<String, Object>());
 		return result;
 	}
@@ -45,7 +45,7 @@ public class VeryRuleOgnlUtil {
 	}
 	
 	//"ruleCode='123fsdfd',ruleType=1"
-	public <T extends RuleBo> T getRule(String expr, T root) throws OgnlException {
+	public <T> T getObject(String expr, T root) throws OgnlException {
 		OgnlContext context = (OgnlContext) Ognl.createDefaultContext(root, new DefaultClassResolver(), new DefaultTypeConverter());
 		Object tree = Ognl.parseExpression(expr);
 		Ognl.getValue(tree, context,context.getRoot());
@@ -59,6 +59,49 @@ public class VeryRuleOgnlUtil {
 		Object tree = Ognl.parseExpression(expr);
 		Ognl.getValue(tree, context,context.getRoot());
 		return ruleFlow;
+	}
+	//{"123fsdfd":[{"ruleCode":"123fsdfd","ruleType":1},{"ruleCode":"123fsdfd","ruleType":1}]}
+	//#{'123fsdfd':{"ruleCode='123fsdfd',ruleType=1","ruleCode='123fsdfd',ruleType=1"}}
+	public <T> Map<String,List<T>> getRuleFlowSceneExpr(String expr,T item) throws OgnlException {
+		Map<String,List<T>> ruleFlowScene = new HashMap<String,List<T>>();
+		OgnlContext context = (OgnlContext) Ognl.createDefaultContext(ruleFlowScene, new DefaultClassResolver(), new DefaultTypeConverter());
+		Object tree = Ognl.parseExpression(expr);
+		Map<String, Object> tempObj = (Map<String, Object>) Ognl.getValue(tree, context,context.getRoot(),RuleFlow.class);
+		if(!tempObj.isEmpty()) {
+			tempObj.entrySet().stream().forEach(to->{
+				List<T> tempValueList = new ArrayList<T>();
+				((List<String>)to.getValue()).stream().forEach(toi->{
+					try {
+						tempValueList.add(getObject(toi,item));
+					} catch (OgnlException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				});
+				ruleFlowScene.put(to.getKey(), tempValueList);
+			});
+		}
+		return ruleFlowScene;
+	}
+	
+	public <T> Map<String,List<T>> getRuleFlowScene(String expr,T item) throws OgnlException {
+		Map<String,List<T>> ruleFlowScene = new HashMap<String,List<T>>();
+		Map<String, Object> tempObj = getExprMap(expr);
+		if(!tempObj.isEmpty()) {
+			tempObj.entrySet().stream().forEach(to->{
+				List<T> tempValueList = new ArrayList<T>();
+				((List<String>)to.getValue()).stream().forEach(toi->{
+					try {
+						tempValueList.add(getObject(toi,item));
+					} catch (OgnlException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				});
+				ruleFlowScene.put(to.getKey(), tempValueList);
+			});
+		}
+		return ruleFlowScene;
 	}
 	
 	public static class RuleFlow {
@@ -78,7 +121,7 @@ public class VeryRuleOgnlUtil {
 				RuleBo ruleBo = new RuleBo();
 				this.ruleBoList = ruleBoList.stream().map(ruleStr -> {
 					try {
-						return VeryRuleOgnlUtil.create().getRule(ruleStr, ruleBo);
+						return VeryRuleOgnlUtil.create().getObject(ruleStr, ruleBo);
 					} catch (OgnlException e) {
 						// TODO Auto-generated catch block
 						return null;
