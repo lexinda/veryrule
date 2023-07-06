@@ -12,6 +12,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.common.RuleResult;
 import com.lexinda.veryrule.core.interfaces.IRuleAction;
+import com.lexinda.veryrule.core.interfaces.IRuleReduce;
 import com.lexinda.veryrule.core.interfaces.IRuleResultCondation;
 
 public abstract class RuleInvokerAbst{
@@ -24,6 +25,8 @@ public abstract class RuleInvokerAbst{
 	
 	public abstract <R extends RuleBo> void doRuleAction(Map<String, Object> param,Map<R, IRuleAction> ruleResultActions,RuleProxyHandler ruleProxyHandler,boolean isTest);
 
+	public abstract void doRuleReduce(IRuleReduce ruleReduce,RuleProxyHandler ruleProxyHandler,boolean isTest) throws Exception;
+	
 	public RuleResult getRuleResult() {
 		return ruleResult;
 	}

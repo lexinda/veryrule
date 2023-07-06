@@ -14,6 +14,7 @@ import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.common.RuleResult;
 import com.lexinda.veryrule.core.interfaces.IRuleAction;
 import com.lexinda.veryrule.core.interfaces.IRuleCondation;
+import com.lexinda.veryrule.core.interfaces.IRuleReduce;
 import com.lexinda.veryrule.core.interfaces.IRuleResultCondation;
 import com.lexinda.veryrule.core.interfaces.IRuleTest;
 
@@ -49,7 +50,7 @@ public class RuleInvoker extends RuleInvokerAbst implements Cloneable {
 			}
 		});
 		if(!condationResultMap.isEmpty()) {
-			ruleResult.setCondationResult(condationResultMap);
+			ruleResult.addCondationResultAll(condationResultMap);
 		}
 	}
 
@@ -110,9 +111,27 @@ public class RuleInvoker extends RuleInvokerAbst implements Cloneable {
 				}
 			});
 		}
-		ruleResult.setCondationResult(condationResultMap);
+		ruleResult.addCondationResultAll(condationResultMap);
 	}
-
+	
+	@Override
+	public void doRuleReduce(IRuleReduce ruleReduce, RuleProxyHandler ruleProxyHandler, boolean isTest)
+			throws Exception {
+		RuleProxyHandler ruleHandler = ruleProxyHandler.clone();
+		ruleHandler.setTarget(ruleReduce);
+		if(isTest) {
+			Map<String, Object> testResult = new HashMap<String, Object>();
+			testResult.put("reduce", ruleReduce.getClass().getName());
+			ruleResult.addResultAll(testResult);
+		}else {
+			IRuleReduce subject = (IRuleReduce) Proxy.newProxyInstance(IRuleReduce.class.getClassLoader(), new Class<?>[] {IRuleReduce.class}, ruleHandler);
+			Map<String, Object> reduceResult = (Map<String, Object>)subject.reduce(ruleResult);
+			if(reduceResult!=null) {
+				ruleResult.addCondationResultAll(reduceResult);
+			}
+		}
+	}
+	
 	@Override
 	public <R extends RuleBo> void doRuleAction(Map<String, Object> param,
 			Map<R, IRuleAction> ruleResultActions,RuleProxyHandler ruleProxyHandler,boolean isTest) {
@@ -165,5 +184,5 @@ public class RuleInvoker extends RuleInvokerAbst implements Cloneable {
 		ruleInvoker.ruleResult = (RuleResult) ruleInvoker.getRuleResult().clone();
 		return obj;
 	}
-	
+
 }

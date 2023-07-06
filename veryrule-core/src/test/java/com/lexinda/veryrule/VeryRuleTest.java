@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.lexinda.veryrule.base.reduce.OgnlRuleReduce;
 import com.lexinda.veryrule.bo.RuleBo;
 import com.lexinda.veryrule.common.RuleResult;
 import com.lexinda.veryrule.common.RuleType;
@@ -53,7 +54,10 @@ public class VeryRuleTest {
 //				.resultCondation(RuleResultCondationThree.class)
 //				.action(TestRuleAction.class)
 //				.listener(TestRuleListener.class);
-		veryRule = VeryRule.builder().rulePackage("com.lexinda.veryrule.base").listener(TestRuleListener.class);
+		OgnlRuleReduceTest ruleReduce = new OgnlRuleReduceTest("");
+		veryRule = VeryRule.builder().rulePackage("com.lexinda.veryrule.base")
+				.reduce(ruleReduce)
+				.listener(TestRuleListener.class);
 		threadPoolExecutor = new ThreadPoolExecutor(2, 20, 20, TimeUnit.SECONDS, new ArrayBlockingQueue<>(3), new ThreadPoolExecutor.CallerRunsPolicy());
 		param = new HashMap<String, Object>();
 		param.put("a", "abc123");

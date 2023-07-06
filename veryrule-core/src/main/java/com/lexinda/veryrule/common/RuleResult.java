@@ -22,8 +22,8 @@ public class RuleResult implements Cloneable{
 		this.result = result;
 	}
 	
-	public void addResult(String code,String name) {
-		this.result.put(code,name);
+	public void addResult(String code,Object value) {
+		this.result.put(code,value);
 	}
 	
 	public void addResultAll(Map<String,Object> result) {
@@ -38,7 +38,11 @@ public class RuleResult implements Cloneable{
 		this.condationResult = condationResult;
 	}
 	
-	public void setCondationResultAll(Map<String,Object> condationResult) {
+	public void addCondationResult(String code,Object value) {
+		this.condationResult.put(code,value);
+	}
+	
+	public void addCondationResultAll(Map<String,Object> condationResult) {
 		this.condationResult.putAll(condationResult);
 	}
 	

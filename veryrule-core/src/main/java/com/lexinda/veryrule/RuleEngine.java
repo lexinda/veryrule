@@ -13,6 +13,7 @@ import com.lexinda.veryrule.core.RuleProxyHandler;
 import com.lexinda.veryrule.core.interfaces.IRuleAction;
 import com.lexinda.veryrule.core.interfaces.IRuleCondation;
 import com.lexinda.veryrule.core.interfaces.IRuleListener;
+import com.lexinda.veryrule.core.interfaces.IRuleReduce;
 import com.lexinda.veryrule.core.interfaces.IRuleResultCondation;
 
 public class RuleEngine<R extends RuleBo> {
@@ -20,6 +21,7 @@ public class RuleEngine<R extends RuleBo> {
 	protected Map<String, IRuleAction> ruleActionMap;
 	protected Map<String, IRuleResultCondation> ruleResultCondationMap;
 	protected Map<String, IRuleCondation> ruleCondationMap;
+	protected IRuleReduce ruleReduce;
 	protected IRuleListener ruleListener;
 	protected RuleInvokerAbst ruleInvoker;
 	protected RuleProxyHandler ruleProxyHandler = null;
@@ -36,6 +38,10 @@ public class RuleEngine<R extends RuleBo> {
 		invoke.doRuleCondation(param, condations,ruleProxyHandler,isTest);
 		
 		invoke.doRuleResultCondation(param, ruleResultCondations,ruleProxyHandler,isTest,threadPoolExecutor);
+		
+		if(ruleReduce!=null) {
+			invoke.doRuleReduce(ruleReduce,ruleProxyHandler,isTest);
+		}
 		
 		invoke.doRuleAction(param, ruleActions,ruleProxyHandler,isTest);
 		
@@ -95,6 +101,14 @@ public class RuleEngine<R extends RuleBo> {
 
 	public void setRuleCondationMap(Map<String, IRuleCondation> ruleCondationMap) {
 		this.ruleCondationMap = ruleCondationMap;
+	}
+	
+	public IRuleReduce getRuleReduce() {
+		return ruleReduce;
+	}
+
+	public void setRuleReduce(IRuleReduce ruleReduce) {
+		this.ruleReduce = ruleReduce;
 	}
 
 	public IRuleListener getRuleListener() {

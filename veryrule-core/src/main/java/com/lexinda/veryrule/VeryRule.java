@@ -20,6 +20,7 @@ import com.lexinda.veryrule.core.RuleProxyHandler;
 import com.lexinda.veryrule.core.interfaces.IRuleAction;
 import com.lexinda.veryrule.core.interfaces.IRuleCondation;
 import com.lexinda.veryrule.core.interfaces.IRuleListener;
+import com.lexinda.veryrule.core.interfaces.IRuleReduce;
 import com.lexinda.veryrule.core.interfaces.IRuleResultCondation;
 
 /**
@@ -152,6 +153,11 @@ public class VeryRule extends RuleEngine {
 		} else {
 			return null;
 		}
+	}
+	
+	public <T extends IRuleReduce> VeryRule reduce(T ruleReduce) throws Exception {
+		builder.ruleReduce = ruleReduce;
+		return builder;
 	}
 	
 	public VeryRule listener(Class<? extends IRuleListener> clazz) throws Exception {
