@@ -127,7 +127,7 @@ public class RuleInvoker extends RuleInvokerAbst implements Cloneable {
 			IRuleReduce subject = (IRuleReduce) Proxy.newProxyInstance(IRuleReduce.class.getClassLoader(), new Class<?>[] {IRuleReduce.class}, ruleHandler);
 			Map<String, Object> reduceResult = (Map<String, Object>)subject.reduce(ruleResult);
 			if(reduceResult!=null) {
-				ruleResult.addCondationResultAll(reduceResult);
+				ruleResult.setCondationResult(reduceResult);
 			}
 		}
 	}

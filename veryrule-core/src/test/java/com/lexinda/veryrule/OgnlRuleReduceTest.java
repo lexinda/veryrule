@@ -23,9 +23,8 @@ public class OgnlRuleReduceTest implements IRuleReduce{
 		OgnlContext context = (OgnlContext) Ognl.createDefaultContext(this);
 		context.put("condation", ruleResult.getCondationResult());
 		Object res = Ognl.getValue("#condation.one > 2", context, context.getRoot());
-		if("false".equals(res.toString())) {
-			ruleResult.getCondationResult().remove("one");
-		}
+		Ognl.getValue("#condation.one = null", context, context.getRoot());
+		Ognl.getValue("#condation.one = 2", context, context.getRoot());
 		System.out.println(res);
 		System.out.println(ruleResult);
 		return null;
