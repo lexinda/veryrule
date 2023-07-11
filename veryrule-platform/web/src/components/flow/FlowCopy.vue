@@ -1,16 +1,16 @@
 <template>
 	<el-form ref="veryFlowtempletCopyRef" :model="veryFlowtempletCopyData" label-width="140px"
 		:rules="ruleFlowCopyrules">
-		<el-form-item label="规则流父级" prop="parentRuleFlowCode" required>
+		<el-form-item label="规则流父级" prop="parentRuleFlowCode">
 			<el-select v-model="veryFlowtempletCopyData.parentRuleFlowCode" placeholder="请选择">
 				<el-option v-for="(item,index) in veryFlowAllData" :label="item.ruleFlowCode"
 					:value="item.ruleFlowName" />
 			</el-select>
 		</el-form-item>
-		<el-form-item label="规则流标识" prop="ruleFlowCode" required>
+		<el-form-item label="规则流标识" prop="ruleFlowCode">
 			<el-input v-model="veryFlowtempletCopyData.ruleFlowCode"></el-input>
 		</el-form-item>
-		<el-form-item label="规则流名称" prop="ruleFlowName" required>
+		<el-form-item label="规则流名称" prop="ruleFlowName">
 			<el-input v-model="veryFlowtempletCopyData.ruleFlowName"></el-input>
 		</el-form-item>
 		<el-form-item>

@@ -531,7 +531,6 @@
 					}else{
 						props.ruleFlowTempletData.ruleFlowTemplet[currentSceneCode.value].push(templet)
 					}
-					
 				}
 			}
 		} else {

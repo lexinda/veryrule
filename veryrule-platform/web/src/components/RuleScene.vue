@@ -226,9 +226,11 @@
 	const cancelSceneEdit = () => {
 		sceneEditVisible.value = false
 	}
-	const successSceneUpdate = () => {
+	const successSceneUpdate = (ruleSceneItem) => {
 		sceneEditVisible.value = false
 		getRuleScenePage("0")
+		ruleSceneItem.id = ruleSceneItem.pid
+		load(ruleSceneItem, null, null)
 	}
 	const ruleSceneTable = ref()
 	const ruleSceneTableRow = ref()

@@ -1,29 +1,29 @@
 <template>
-	<el-form ref="flowEditFormRef" :model="ruleFlowData" label-width="120px" :rules = "flowEditrules">
+	<el-form ref="flowEditFormRef" :model="ruleFlowDataItem" label-width="120px" :rules = "flowEditrules">
 		<el-form-item label="上级流标识" prop="parentRuleFlowCode">
-			<el-input v-model="ruleFlowData.parentRuleFlowCode" disabled></el-input>
+			<el-input v-model="ruleFlowDataItem.parentRuleFlowCode" disabled></el-input>
 		</el-form-item>
-		<el-form-item label="流标识" prop="ruleFlowCode" required  v-if="ruleFlowData.id>0" >
-			<el-input v-model="ruleFlowData.ruleFlowCode" disabled></el-input>
+		<el-form-item label="流标识" prop="ruleFlowCode"  v-if="ruleFlowDataItem.id>0" >
+			<el-input v-model="ruleFlowDataItem.ruleFlowCode" disabled></el-input>
 		</el-form-item>
-		<el-form-item label="流标识" prop="ruleFlowCode" required  v-else >
-			<el-input v-model="ruleFlowData.ruleFlowCode"></el-input>
+		<el-form-item label="流标识" prop="ruleFlowCode"  v-else >
+			<el-input v-model="ruleFlowDataItem.ruleFlowCode"></el-input>
 		</el-form-item>
-		<el-form-item label="流名称" prop="ruleFlowName" required>
-			<el-input v-model="ruleFlowData.ruleFlowName"></el-input>
+		<el-form-item label="流名称" prop="ruleFlowName">
+			<el-input v-model="ruleFlowDataItem.ruleFlowName"></el-input>
 		</el-form-item>
 		<el-form-item label="组织" prop="groupName">
-			<el-input v-model="ruleFlowData.groupName"></el-input>
+			<el-input v-model="ruleFlowDataItem.groupName"></el-input>
 		</el-form-item>
 		<el-form-item label="规则场景" prop="ruleSceneId">
-			<el-select v-model="ruleFlowData.ruleSceneId" placeholder="请选择">
+			<el-select v-model="ruleFlowDataItem.ruleSceneId" placeholder="请选择">
 				<el-option label="无" value="0" />
 				<el-option v-for="(item,index) in ruleSceneData" :label="item.ruleSceneName"
 					:value="item.id" />
 			</el-select>
 		</el-form-item>
-		<el-form-item label="描述" prop="ruleFlowDesc" required>
-			<el-input v-model="ruleFlowData.ruleFlowDesc" type="textarea"></el-input>
+		<el-form-item label="描述" prop="ruleFlowDesc">
+			<el-input v-model="ruleFlowDataItem.ruleFlowDesc" type="textarea"></el-input>
 		</el-form-item>
 		<el-form-item>
 			<el-button type="primary" @click="onSubmit">保存</el-button>
@@ -70,6 +70,17 @@
 		ruleFlowData: Object,
 		ruleSceneData:Array,
 	} > ()
+	
+	const ruleFlowDataItem = ref({
+		"id": props.ruleFlowData.id,
+		"pid": props.ruleFlowData.pid,
+		"ruleFlowCode": props.ruleFlowData.ruleFlowCode,
+		"ruleFlowName": props.ruleFlowData.ruleFlowName,
+		"parentRuleFlowCode": props.ruleFlowData.parentRuleFlowCode,
+		"groupName": props.ruleFlowData.groupName,
+		"ruleFlowDesc": props.ruleFlowData.ruleFlowDesc,
+		"ruleSceneId": props.ruleFlowData.ruleSceneId,
+	})
 	
 	const emit = defineEmits(['cancelFlowEdit','successFlowAdd','successFlowUpdate']);
 
@@ -125,7 +136,7 @@
 				    message: '保存成功',
 				    type: 'success',
 				  })
-				emit('successFlowUpdate')
+				emit('successFlowUpdate',ruleFlowDataItem.value)
 			}else{
 				ElMessage.error(data.errorDesc)
 			}

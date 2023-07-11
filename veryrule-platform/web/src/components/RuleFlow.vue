@@ -172,7 +172,7 @@
 
 	onMounted(() => {
 		pageCurrent.value = 1
-		getRuleFlowPage("root")
+		getRuleFlowPage("root",0)
 	})
 
 	/* ruleFlowForm  */
@@ -199,7 +199,7 @@
 
 	const queryFlow = () => {
 		pageCurrent.value = 1
-		getRuleFlowPage("root")
+		getRuleFlowPage("root",0)
 	}
 
 	/* ruleFlowTable */
@@ -240,6 +240,11 @@
 		post("/api/getVeryRuleFlowPage", param, (data) => {
 			if (data.errorCode == 0) {
 				if (data.body.records.length > 0) {
+					if(data.body.records.length>0){
+						for(var index = 0;index<data.body.records.length;index++){
+							data.body.records[index].pid = row.id
+						}
+					}
 					if (typeof resolve === "function") {
 						resolve(data.body.records)
 					} else {
@@ -258,7 +263,7 @@
 	}
 
 
-	const getRuleFlowPage = (parentRuleFlowCode) => {
+	const getRuleFlowPage = (parentRuleFlowCode,id) => {
 		const param = {
 			"parentRuleFlowCode": parentRuleFlowCode,
 			"currentPage": pageCurrent.value,
@@ -272,6 +277,11 @@
 				pageCurrent.value = data.body.current
 				pageSize.value = data.body.size
 				pageTotal.value = data.body.total
+				if(data.body.records.length>0){
+					for(var index = 0;index<data.body.records.length;index++){
+						data.body.records[index].pid = id
+					}
+				}
 				tableData.value = data.body.records
 			} else {
 				ElMessage.error(data.errorDesc)
@@ -343,7 +353,7 @@
 					}
 				}
 				if(!isDel){
-					getRuleFlowPage("root")
+					getRuleFlowPage("root",0)
 				}
 			} else {
 				ElMessage.error(data.errorDesc)
@@ -357,10 +367,10 @@
 	const small = ref(false)
 	const background = ref(false)
 	const handleSizeChange = (val: number) => {
-		getRuleFlowPage("root")
+		getRuleFlowPage("root",0)
 	}
 	const handleCurrentChange = (val: number) => {
-		getRuleFlowPage("root")
+		getRuleFlowPage("root",0)
 	}
 	/* ruleFlowEdit */
 	const flowEditVisible = ref(false)
@@ -369,9 +379,12 @@
 	const cancelFlowEdit = () => {
 		flowEditVisible.value = false
 	}
-	const successFlowUpdate = () => {
+	const successFlowUpdate = (ruleFlowDataItem) => {
 		flowEditVisible.value = false
-		getRuleFlowPage("root")
+		getRuleFlowPage("root",0)
+		ruleFlowDataItem.id = ruleFlowDataItem.pid
+		ruleFlowDataItem.ruleFlowCode = ruleFlowDataItem.parentRuleFlowCode
+		load(ruleFlowDataItem, null, null)
 	}
 	const ruleFlowTable = ref()
 	const ruleFlowTableRow = ref()
@@ -381,7 +394,7 @@
 			ruleFlowTableRow.value.hasChildren = true
 			ruleFlowTable.value.store.loadOrToggle(ruleFlowTableRow.value)
 		} else {
-			getRuleFlowPage("root")
+			getRuleFlowPage("root",0)
 		}
 		load(ruleFlowTableRow.value, null, null)
 	}

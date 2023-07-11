@@ -1,24 +1,24 @@
 <template>
-	<el-form ref="sceneEditFormRef" :model="ruleSceneData" label-width="120px" :rules = "sceneEditrules">
-		<el-input type="hidden" v-model="ruleSceneData.id"></el-input>
-		<el-input type="hidden" v-model="ruleSceneData.pid"></el-input>
-		<el-form-item label="场景编码" prop="ruleSceneCode" required >
-			<el-input v-if="ruleSceneData.id>0" readonly v-model="ruleSceneData.ruleSceneCode"></el-input>
-			<el-input v-else v-model="ruleSceneData.ruleSceneCode"></el-input>
+	<el-form ref="sceneEditFormRef" :model="ruleSceneItem" label-width="120px" :rules = "sceneEditrules">
+		<el-input type="hidden" v-model="ruleSceneItem.id"></el-input>
+		<el-input type="hidden" v-model="ruleSceneItem.pid"></el-input>
+		<el-form-item label="场景编码" prop="ruleSceneCode" >
+			<el-input v-if="ruleSceneItem.id>0" readonly v-model="ruleSceneItem.ruleSceneCode"></el-input>
+			<el-input v-else v-model="ruleSceneItem.ruleSceneCode"></el-input>
 		</el-form-item>
-		<el-form-item label="场景名称" prop="ruleSceneName" required>
-			<el-input v-model="ruleSceneData.ruleSceneName"></el-input>
+		<el-form-item label="场景名称" prop="ruleSceneName">
+			<el-input v-model="ruleSceneItem.ruleSceneName"></el-input>
 		</el-form-item>
 		<el-form-item label="场景类型:" prop="ruleSceneType">
-			<span v-if="ruleSceneData.ruleSceneType == '1'">
+			<span v-if="ruleSceneItem.ruleSceneType == '1'">
 				场景
 			</span>
 			<span v-else>
 				操作
 			</span>
 		</el-form-item>
-		<el-form-item label="描述" prop="ruleSceneDesc" required>
-			<el-input v-model="ruleSceneData.ruleSceneDesc" type="textarea"></el-input>
+		<el-form-item label="描述" prop="ruleSceneDesc">
+			<el-input v-model="ruleSceneItem.ruleSceneDesc" type="textarea"></el-input>
 		</el-form-item>
 		<el-form-item>
 			<el-button type="primary" @click="onSubmit">保存</el-button>
@@ -59,6 +59,15 @@
 		ruleSceneData: Object
 	} > ()
 	
+	const ruleSceneItem = ref({
+		'id':props.ruleSceneData.id,
+		'pid':props.ruleSceneData.pid,
+		'ruleSceneCode':props.ruleSceneData.ruleSceneCode,
+		'ruleSceneName':props.ruleSceneData.ruleSceneName,
+		'ruleSceneType':props.ruleSceneData.ruleSceneType,
+		'ruleSceneDesc':props.ruleSceneData.ruleSceneDesc,
+	})
+	
 	const emit = defineEmits(['cancelSceneEdit','successSceneAdd','successSceneUpdate']);
 
 	const onSubmit = (res: any) => {
@@ -79,7 +88,6 @@
 					addVeryRuleScene(param)
 				}
 			} else {
-				console.log('error submit!!')
 				return false
 			}
 		})
@@ -112,7 +120,7 @@
 				    message: '保存成功',
 				    type: 'success',
 				  })
-				emit('successSceneUpdate')
+				emit('successSceneUpdate',ruleSceneItem.value)
 			}else{
 				ElMessage.error(data.errorDesc)
 			}
