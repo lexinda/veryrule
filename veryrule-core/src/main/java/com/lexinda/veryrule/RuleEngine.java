@@ -21,14 +21,13 @@ public class RuleEngine<R extends RuleBo> {
 	protected Map<String, IRuleAction> ruleActionMap;
 	protected Map<String, IRuleResultCondation> ruleResultCondationMap;
 	protected Map<String, IRuleCondation> ruleCondationMap;
-	protected IRuleReduce ruleReduce;
 	protected IRuleListener ruleListener;
 	protected RuleInvokerAbst ruleInvoker;
 	protected RuleProxyHandler ruleProxyHandler = null;
 
 	protected RuleResult getResult(Map<String, Object> param, Map<R, Object> condations,
 			Map<R, IRuleResultCondation> ruleResultCondations, Map<R, IRuleAction> ruleActions, boolean isTest,
-			ThreadPoolExecutor threadPoolExecutor) throws Exception {
+			ThreadPoolExecutor threadPoolExecutor,IRuleReduce ruleReduce) throws Exception {
 		RuleInvoker invoke = (RuleInvoker)((RuleInvoker) ruleInvoker).clone();
 		
 		if(ruleProxyHandler.getRuleListener()!=null) {
@@ -103,14 +102,6 @@ public class RuleEngine<R extends RuleBo> {
 		this.ruleCondationMap = ruleCondationMap;
 	}
 	
-	public IRuleReduce getRuleReduce() {
-		return ruleReduce;
-	}
-
-	public void setRuleReduce(IRuleReduce ruleReduce) {
-		this.ruleReduce = ruleReduce;
-	}
-
 	public IRuleListener getRuleListener() {
 		return ruleListener;
 	}

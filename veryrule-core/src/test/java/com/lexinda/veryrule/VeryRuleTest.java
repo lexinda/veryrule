@@ -45,6 +45,8 @@ public class VeryRuleTest {
 	private Map<String, Object> param = null;
 	
 	private List<RuleBo> res = null;
+	
+	private OgnlRuleReduceTest ruleReduce = null;
 
 	@Before
 	public void setUp() throws Exception {
@@ -54,9 +56,8 @@ public class VeryRuleTest {
 //				.resultCondation(RuleResultCondationThree.class)
 //				.action(TestRuleAction.class)
 //				.listener(TestRuleListener.class);
-		OgnlRuleReduceTest ruleReduce = new OgnlRuleReduceTest("");
+		ruleReduce = new OgnlRuleReduceTest("");
 		veryRule = VeryRule.builder().rulePackage("com.lexinda.veryrule.base")
-				.reduce(ruleReduce)
 				.listener(TestRuleListener.class);
 		threadPoolExecutor = new ThreadPoolExecutor(2, 20, 20, TimeUnit.SECONDS, new ArrayBlockingQueue<>(3), new ThreadPoolExecutor.CallerRunsPolicy());
 		param = new HashMap<String, Object>();
@@ -83,7 +84,7 @@ public class VeryRuleTest {
 //				veryRule.fire(param, res);
 //			}
 //			veryRule.fire(param, res);
-			RuleResult ruleResult = veryRule.fireTest(res);
+			RuleResult ruleResult = veryRule.fireTest(res,ruleReduce);
 			System.out.println(System.currentTimeMillis()-time);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

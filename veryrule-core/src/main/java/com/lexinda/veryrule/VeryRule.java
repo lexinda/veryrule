@@ -68,7 +68,7 @@ public class VeryRule extends RuleEngine {
 	 * @throws Exception
 	 */
 	public <R extends RuleBo> RuleResult fire(Map<String, Object> param, R rule) throws Exception {
-		return fireWithCondation(param, Arrays.asList(rule), false,null);
+		return fireWithCondation(param, Arrays.asList(rule), false,null,null);
 	}
 
 	/**
@@ -79,7 +79,19 @@ public class VeryRule extends RuleEngine {
 	 * @throws Exception
 	 */
 	public <R extends RuleBo> RuleResult fire(Map<String, Object> param, List<R> rules) throws Exception {
-		return fireWithCondation(param, rules, false,null);
+		return fireWithCondation(param, rules, false,null,null);
+	}
+	
+	/**
+	 * 
+	 * @param param 入参
+	 * @param rules 需要执行的规则
+	 * @param ruleReduce 聚合处理
+	 * @return
+	 * @throws Exception
+	 */
+	public <R extends RuleBo> RuleResult fire(Map<String, Object> param, List<R> rules,IRuleReduce ruleReduce) throws Exception {
+		return fireWithCondation(param, rules, false,null,ruleReduce);
 	}
 	
 	/**
@@ -92,9 +104,23 @@ public class VeryRule extends RuleEngine {
 	 * @throws Exception
 	 */
 	public <R extends RuleBo> RuleResult fire(Map<String, Object> param, List<R> rules,ThreadPoolExecutor threadPoolExecutor) throws Exception {
-		return fireWithCondation(param, rules, false,threadPoolExecutor);
+		return fireWithCondation(param, rules, false,threadPoolExecutor,null);
 	}
-
+	
+	/**
+	 * 
+	 * @param <R>
+	 * @param param 入参
+	 * @param rules 需要执行的规则
+	 * @param threadPoolExecutor 线程池
+	 * @param ruleReduce 聚合处理
+	 * @return
+	 * @throws Exception
+	 */
+	public <R extends RuleBo> RuleResult fire(Map<String, Object> param, List<R> rules,ThreadPoolExecutor threadPoolExecutor,IRuleReduce ruleReduce) throws Exception {
+		return fireWithCondation(param, rules, false,threadPoolExecutor,ruleReduce);
+	}
+	
 	/**
 	 * 
 	 * @param rules 需要执行的规则
@@ -102,7 +128,17 @@ public class VeryRule extends RuleEngine {
 	 * @throws Exception
 	 */
 	public <R extends RuleBo> RuleResult fireTest(List<R> rules) throws Exception {
-		return fireWithCondation(new HashMap<String, Object>(), rules, true,null);
+		return fireWithCondation(new HashMap<String, Object>(), rules, true,null,null);
+	}
+	
+	/**
+	 * 
+	 * @param rules 需要执行的规则
+	 * @return
+	 * @throws Exception
+	 */
+	public <R extends RuleBo> RuleResult fireTest(List<R> rules,IRuleReduce ruleReduce) throws Exception {
+		return fireWithCondation(new HashMap<String, Object>(), rules, true,null,ruleReduce);
 	}
 
 	/**
@@ -114,7 +150,7 @@ public class VeryRule extends RuleEngine {
 	 * @return
 	 * @throws Exception
 	 */
-	private <R extends RuleBo> RuleResult fireWithCondation(Map<String, Object> param, List<R> rules, boolean isTest,ThreadPoolExecutor threadPoolExecutor)
+	private <R extends RuleBo> RuleResult fireWithCondation(Map<String, Object> param, List<R> rules, boolean isTest,ThreadPoolExecutor threadPoolExecutor,IRuleReduce ruleReduce)
 			throws Exception {
 		Map<R, Object> condations = new LinkedHashMap<R, Object>();
 		Map<R, IRuleResultCondation> ruleResultCondations = new LinkedHashMap<R, IRuleResultCondation>();
@@ -149,15 +185,10 @@ public class VeryRule extends RuleEngine {
 					ruleActions.put(rule, ruleAction);
 				}
 			});
-			return getResult(param, condations, ruleResultCondations, ruleActions, isTest,threadPoolExecutor);
+			return getResult(param, condations, ruleResultCondations, ruleActions, isTest,threadPoolExecutor,ruleReduce);
 		} else {
 			return null;
 		}
-	}
-	
-	public <T extends IRuleReduce> VeryRule reduce(T ruleReduce) throws Exception {
-		builder.ruleReduce = ruleReduce;
-		return builder;
 	}
 	
 	public VeryRule listener(Class<? extends IRuleListener> clazz) throws Exception {
